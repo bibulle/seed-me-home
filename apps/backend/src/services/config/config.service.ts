@@ -20,14 +20,14 @@ class Config {
 
 @Injectable()
 export class ConfigService {
-  private static _config: Config;
+  private _config: Config;
 
-  private static _configFile = 'env-my-own.json';
+  private _configFile = 'env-my-own.json';
 
-  static initialize() {
+  private initialize() {
     // initialize
-    if (!ConfigService._config) {
-      ConfigService._config = new Config();
+    if (!this._config) {
+      this._config = new Config();
 
       // Check the user env
       if (!fs.existsSync(__dirname + '/' + this._configFile)) {
@@ -38,48 +38,48 @@ export class ConfigService {
         // read it
         const env = require('./' + this._configFile);
 
-        for (const attrName in env[ConfigService._config.node_env]) {
-          if (env[ConfigService._config.node_env].hasOwnProperty(attrName)) {
-            ConfigService._config[attrName] = env[ConfigService._config.node_env][attrName];
+        for (const attrName in env[this._config.node_env]) {
+          if (env[this._config.node_env].hasOwnProperty(attrName)) {
+            this._config[attrName] = env[this._config.node_env][attrName];
           }
         }
       }
     }
   }
 
-  public static forceConfigFile(file: string) {
-    delete ConfigService._config;
-    ConfigService._configFile = file;
-    ConfigService.initialize();
+  public forceConfigFile(file: string) {
+    delete this._config;
+    this._configFile = file;
+    this.initialize();
   }
 
-  public static getSeedboxMode() {
-    ConfigService.initialize();
-    return ConfigService._config.seedbox_mode;
+  public getSeedboxMode() {
+    this.initialize();
+    return this._config.seedbox_mode;
   }
 
-  public static getSeedboxHost() {
-    ConfigService.initialize();
-    return ConfigService._config.seedbox_host;
+  public getSeedboxHost() {
+    this.initialize();
+    return this._config.seedbox_host;
   }
 
-  public static getSeedboxPort() {
-    ConfigService.initialize();
-    return ConfigService._config.seedbox_port;
+  public getSeedboxPort() {
+    this.initialize();
+    return this._config.seedbox_port;
   }
 
-  public static getSeedboxPath() {
-    ConfigService.initialize();
-    return ConfigService._config.seedbox_path;
+  public getSeedboxPath() {
+    this.initialize();
+    return this._config.seedbox_path;
   }
 
-  public static getSeedboxUser() {
-    ConfigService.initialize();
-    return ConfigService._config.seedbox_user;
+  public getSeedboxUser() {
+    this.initialize();
+    return this._config.seedbox_user;
   }
 
-  public static getSeedboxPass() {
-    ConfigService.initialize();
-    return ConfigService._config.seedbox_pass;
+  public getSeedboxPass() {
+    this.initialize();
+    return this._config.seedbox_pass;
   }
 }
