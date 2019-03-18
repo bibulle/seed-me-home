@@ -8,6 +8,7 @@
     "build": "ng build",
     "test": "ng test",
     "test:backend:watch": "ng test backend --watch",
+    "test:models:watch": "ng test models --watch",
     "lint": "./node_modules/.bin/nx lint && ng lint",
     "e2e": "ng e2e",
     "affected:apps": "./node_modules/.bin/nx affected:apps",
@@ -28,14 +29,13 @@
     "help": "./node_modules/.bin/nx help",
     "version": "standard-version --no-verify",
     "postprepare": "npm run replace",
-    "replace": "run-s replace:version replace:registry",
-    "replace:version": "replace 'VERSION_PLACEHOLDER' $npm_package_version dist/**/* --include=package.json",
-    "replace:registry": "replace 'REGISTRY_PLACEHOLDER' $npm_package_registry dist/**/* --include=package.json",
+    "replace": "run-s replace:version",
+    "replace:version": "json -I -f libs/models/src/lib/version.json -e \"this.version='`cat package.json | json version`';\"  ",
     "test:ci": "ng test --configuration=ci"
   },
   "standard-version": {
     "scripts": {
-      "postchangelog": "npm run postprepare"
+      "postbump": "echo 9.9.9"
     }
   },
   "husky": {
@@ -99,6 +99,7 @@
     "husky": "^1.3.1",
     "jest": "24.1.0",
     "jest-preset-angular": "7.0.0",
+    "json": "^9.0.6",
     "lint-staged": "^8.1.5",
     "prettier": "1.15.2",
     "replace": "^1.1.0",
