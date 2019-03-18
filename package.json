@@ -35,7 +35,7 @@
   },
   "standard-version": {
     "scripts": {
-      "postbump": "echo 9.9.9"
+      "postbump": "npm run replace"
     }
   },
   "husky": {
