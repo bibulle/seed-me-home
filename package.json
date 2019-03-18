@@ -27,22 +27,20 @@
     "workspace-schematic": "./node_modules/.bin/nx workspace-schematic",
     "dep-graph": "./node_modules/.bin/nx dep-graph",
     "help": "./node_modules/.bin/nx help",
-    "version": "standard-version --no-verify --commit-all",
-    "postprepare": "npm run replace",
-    "replace": "run-s replace:version",
+    "release": "standard-version --no-verify --commit-all",
     "replace:version": "json -I -f libs/models/src/lib/version.json -e \"this.version='`cat package.json | json version`';\" && git add libs/models/src/lib/version.json",
     "test:ci": "ng test --configuration=ci"
   },
   "standard-version": {
     "scripts": {
-      "postbump": "npm run replace"
+      "postbump": "npm run replace:version"
     }
   },
   "husky": {
     "hooks": {
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
       "pre-commit": "lint-staged",
-      "post-commit": "git status && test -z \"$(git status --porcelain)\" && npm run test:ci && npm run version"
+      "post-commit": "git status && test -z \"$(git status --porcelain)\" && npm run test:ci"
     }
   },
   "lint-staged": {
