@@ -26,7 +26,7 @@
     "workspace-schematic": "./node_modules/.bin/nx workspace-schematic",
     "dep-graph": "./node_modules/.bin/nx dep-graph",
     "help": "./node_modules/.bin/nx help",
-    "prepare": "standard-version --no-verify",
+    "version": "standard-version --no-verify",
     "postprepare": "npm run replace",
     "replace": "run-s replace:version replace:registry",
     "replace:version": "replace 'VERSION_PLACEHOLDER' $npm_package_version dist/**/* --include=package.json",
@@ -42,7 +42,7 @@
     "hooks": {
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
       "pre-commit": "lint-staged",
-      "pre-push": "git status && test -z \"$(git status --porcelain)\" && npm run test:ci"
+      "pre-push": "git status && test -z \"$(git status --porcelain)\" && npm run test:ci && npm run version"
     }
   },
   "lint-staged": {
@@ -62,8 +62,6 @@
     }
   },
   "dependencies": {
-    "@nestjs/common": "5.5.0",
-    "@nestjs/core": "5.5.0",
     "@angular/animations": "^7.0.0",
     "@angular/common": "^7.0.0",
     "@angular/compiler": "^7.0.0",
@@ -72,6 +70,9 @@
     "@angular/platform-browser": "^7.0.0",
     "@angular/platform-browser-dynamic": "^7.0.0",
     "@angular/router": "^7.0.0",
+    "@electorrent/node-rtorrent": "^1.2.1",
+    "@nestjs/common": "5.5.0",
+    "@nestjs/core": "5.5.0",
     "core-js": "^2.5.4",
     "rxjs": "6.3.3",
     "zone.js": "^0.8.26"
