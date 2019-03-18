@@ -42,7 +42,7 @@
     "hooks": {
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
       "pre-commit": "lint-staged",
-      "pre-push": "git status && test -z \"$(git status --porcelain)\" && npm run test:ci && npm run version"
+      "post-commit": "git status && test -z \"$(git status --porcelain)\" && npm run test:ci && npm run version"
     }
   },
   "lint-staged": {
