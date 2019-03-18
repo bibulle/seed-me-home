@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.2.5"></a>
+## [0.2.5](https://github.com/bibulle/seed-me-home/compare/v0.2.4...v0.2.5) (2019-03-18)
+
+
+### Bug Fixes
+
+* try to commit the version.json ([1164396](https://github.com/bibulle/seed-me-home/commit/1164396))
+* try to commit the version.json ([e084dde](https://github.com/bibulle/seed-me-home/commit/e084dde))
+
+
+
 <a name="0.2.4"></a>
 ## [0.2.4](https://github.com/bibulle/seed-me-home/compare/v0.2.3...v0.2.4) (2019-03-18)
 
