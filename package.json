@@ -30,7 +30,7 @@
     "version": "standard-version --no-verify --commit-all",
     "postprepare": "npm run replace",
     "replace": "run-s replace:version",
-    "replace:version": "json -I -f libs/models/src/lib/version.json -e \"this.version='`cat package.json | json version`';\"  ",
+    "replace:version": "json -I -f libs/models/src/lib/version.json -e \"this.version='`cat package.json | json version`';\" && git add libs/models/src/lib/version.json",
     "test:ci": "ng test --configuration=ci"
   },
   "standard-version": {
