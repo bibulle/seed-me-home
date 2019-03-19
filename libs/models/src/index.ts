@@ -1,1 +1,1 @@
-export { Status } from './lib/status';
+export { RtorrentStatus } from './lib/rtorrent-status';

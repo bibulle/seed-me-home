@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Status } from '@seed-me-home/models';
+import { RtorrentStatus } from '@seed-me-home/models';
 
 @Component({
   selector: 'app-root',
@@ -9,5 +9,5 @@ import { Status } from '@seed-me-home/models';
 export class AppComponent {
   title = 'frontend';
 
-  status: Status;
+  status: RtorrentStatus;
 }

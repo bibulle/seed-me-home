@@ -22,10 +22,7 @@
             "main": "apps/frontend/src/main.ts",
             "polyfills": "apps/frontend/src/polyfills.ts",
             "tsConfig": "apps/frontend/tsconfig.app.json",
-            "assets": [
-              "apps/frontend/src/favicon.ico",
-              "apps/frontend/src/assets"
-            ],
+            "assets": ["apps/frontend/src/favicon.ico", "apps/frontend/src/assets"],
             "styles": ["apps/frontend/src/styles.scss"],
             "scripts": [],
             "es5BrowserSupport": true
@@ -78,10 +75,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": [
-              "apps/frontend/tsconfig.app.json",
-              "apps/frontend/tsconfig.spec.json"
-            ],
+            "tsConfig": ["apps/frontend/tsconfig.app.json", "apps/frontend/tsconfig.spec.json"],
             "exclude": ["**/node_modules/**"]
           }
         },
@@ -142,7 +136,7 @@
             "outputPath": "dist/apps/backend",
             "main": "apps/backend/src/main.ts",
             "tsConfig": "apps/backend/tsconfig.app.json",
-            "assets": ["apps/backend/src/assets"]
+            "assets": ["apps/backend/src/assets", "apps/backend/src/env-my-own.json"]
           },
           "configurations": {
             "production": {
@@ -168,10 +162,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": [
-              "apps/backend/tsconfig.app.json",
-              "apps/backend/tsconfig.spec.json"
-            ],
+            "tsConfig": ["apps/backend/tsconfig.app.json", "apps/backend/tsconfig.spec.json"],
             "exclude": ["**/node_modules/**"]
           }
         },
@@ -200,10 +191,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": [
-              "libs/models/tsconfig.lib.json",
-              "libs/models/tsconfig.spec.json"
-            ],
+            "tsConfig": ["libs/models/tsconfig.lib.json", "libs/models/tsconfig.spec.json"],
             "exclude": ["**/node_modules/**"]
           }
         },

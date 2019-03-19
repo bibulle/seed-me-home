@@ -1,13 +1,13 @@
 //import { Test } from '@nestjs/testing';
 
-describe('model status', () => {
+describe('model RtorrentStatus', () => {
   beforeAll(async () => {
     //    const app = await Test.createTestingModule({
     //      providers: []
     //    }).compile();
   });
 
-  it('Always OK"', () => {
+  it('Always OK', () => {
     expect(true).toEqual(true);
   });
 });

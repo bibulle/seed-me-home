@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import * as fs from 'fs';
 
 //noinspection JSUnusedLocalSymbols
-const debug = require('debug')('server:debug:config');
-const error = require('debug')('server:error:config');
+const debug = require('debug')('server:debug:config:service');
+const error = require('debug')('server:error:config:service');
 
 class Config {
   public version = 'VERSION_PLACEHOLDER';
@@ -31,12 +31,13 @@ export class ConfigService {
 
       // Check the user env
       if (!fs.existsSync(__dirname + '/' + this._configFile)) {
-        error("Your environment is not set, create the '" + __dirname + '/' + this._configFile + "' file.");
-        error("   on can copy it from the 'config/env-model.json' file.");
+        error("ERROR : Your environment is not set, create the '" + __dirname + '/' + this._configFile + "' file.");
+        error("          you can copy it from the 'config/env-model.json' file.");
         process.exit(1);
       } else {
         // read it
-        const env = require('./' + this._configFile);
+        const rawData = fs.readFileSync(__dirname + '/' + this._configFile);
+        const env = JSON.parse(rawData.toString());
 
         for (const attrName in env[this._config.node_env]) {
           if (env[this._config.node_env].hasOwnProperty(attrName)) {
