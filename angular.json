@@ -156,7 +156,8 @@
         "serve": {
           "builder": "@nrwl/builders:node-execute",
           "options": {
-            "buildTarget": "backend:build"
+            "buildTarget": "backend:build",
+            "port": 7778
           }
         },
         "lint": {

@@ -55,34 +55,40 @@ export class RtorrentService {
     });
   }
 
-  getTorrents(callback: (err, status) => void) {
+  getTorrents(): Promise<RtorrentStatus> {
     this._initialize();
-    this._getAll((err, status) => {
-      if (status) {
-        status = _.map(
-          status.torrents,
-          _.partialRight(_.pick, [
-            'hash',
-            'path',
-            'name',
-            'size',
-            'completed',
-            'down_rate',
-            'down_total',
-            'up_rate',
-            'up_total',
-            'createdAt',
-            'complete',
-            'addtime',
-            'files',
-            'ratio',
-            'leechers',
-            'seeders'
-          ])
-        );
-      }
+    return new Promise<RtorrentStatus>((resolve, reject) => {
+      this._getAll((err, status) => {
+        if (err) {
+          reject(err);
+        } else {
+          if (status) {
+            status = _.map(
+              status.torrents,
+              _.partialRight(_.pick, [
+                'hash',
+                'path',
+                'name',
+                'size',
+                'completed',
+                'down_rate',
+                'down_total',
+                'up_rate',
+                'up_total',
+                'createdAt',
+                'complete',
+                'addtime',
+                'files',
+                'ratio',
+                'leechers',
+                'seeders'
+              ])
+            );
+          }
 
-      callback(err, status);
+          resolve(status);
+        }
+      });
     });
   }
 

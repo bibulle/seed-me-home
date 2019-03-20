@@ -36,4 +36,9 @@ describe('Rtorrent Controller', () => {
       done();
     });
   });
+
+  it('torrents should be ok', async () => {
+    service.forceRtorrentForMocking(RtorrentServiceTestValues.MOCK_TORRENT);
+    expect(await controller.getTorrents()).toEqual(RtorrentServiceTestValues.MOCK_ANSWER_TORRENTS);
+  });
 });

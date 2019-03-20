@@ -11,4 +11,9 @@ export class RtorrentController {
   async getStatus(): Promise<RtorrentStatus> {
     return this.rtorrentService.getStatus();
   }
+
+  @Get('torrents')
+  async getTorrents(): Promise<RtorrentStatus> {
+    return this.rtorrentService.getTorrents();
+  }
 }

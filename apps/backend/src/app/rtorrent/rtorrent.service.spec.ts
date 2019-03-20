@@ -519,64 +519,79 @@ describe('RtorrentService', () => {
     expect(rtorrentService).toBeDefined();
   });
 
-  void it('getStatus return should cannot connect', done => {
-    rtorrentService.getStatus().catch(err => {
-      expect(err).not.toBeNull();
-      expect(err.code).toEqual('ECONNREFUSED');
-      done();
+  describe('getStatus', () => {
+    void it('getStatus return should cannot connect', done => {
+      rtorrentService.getStatus().catch(err => {
+        expect(err).not.toBeNull();
+        expect(err.code).toEqual('ECONNREFUSED');
+        done();
+      });
+    });
+
+    void it('getStatus return should be ok', done => {
+      rtorrentService.forceRtorrentForMocking(RtorrentServiceTestValues.MOCK_TORRENT);
+      rtorrentService.getStatus().then(data => {
+        expect(data).toEqual(RtorrentServiceTestValues.MOCK_ANSWER_STATUS);
+        done();
+      });
+    });
+    void it('getStatus return should be ko on error', done => {
+      rtorrentService.forceRtorrentForMocking(RtorrentServiceTestValues.MOCK_TORRENT_ERR);
+      rtorrentService.getStatus().catch(err => {
+        expect(err).not.toBeNull();
+        expect(err.faultCode).toEqual(-1);
+        done();
+      });
     });
   });
 
-  void it('getStatus return should be ok', done => {
-    rtorrentService.forceRtorrentForMocking(RtorrentServiceTestValues.MOCK_TORRENT);
-    rtorrentService.getStatus().then(data => {
-      expect(data).toEqual(RtorrentServiceTestValues.MOCK_ANSWER_STATUS);
-      done();
-    });
-  });
-  void it('getStatus return should be ko on error', done => {
-    rtorrentService.forceRtorrentForMocking(RtorrentServiceTestValues.MOCK_TORRENT_ERR);
-    rtorrentService.getStatus().catch(err => {
-      expect(err).not.toBeNull();
-      expect(err.faultCode).toEqual(-1);
-      done();
+  describe('getGlobals', () => {
+    void it('getGlobals return should be ok', done => {
+      rtorrentService.forceRtorrentForMocking(RtorrentServiceTestValues.MOCK_TORRENT);
+      rtorrentService.getGlobals((err, data) => {
+        expect(err).toBeNull();
+        expect(data).toEqual(RtorrentServiceTestValues.MOCK_ANSWER_GLOBAL);
+        done();
+      });
     });
   });
 
-  void it('getGlobals return should be ok', done => {
-    rtorrentService.forceRtorrentForMocking(RtorrentServiceTestValues.MOCK_TORRENT);
-    rtorrentService.getGlobals((err, data) => {
-      expect(err).toBeNull();
-      expect(data).toEqual(RtorrentServiceTestValues.MOCK_ANSWER_GLOBAL);
-      done();
+  describe('getTorrents', () => {
+    void it('getTorrents return should be ok', done => {
+      rtorrentService.forceRtorrentForMocking(RtorrentServiceTestValues.MOCK_TORRENT);
+      rtorrentService.getTorrents().then(data => {
+        expect(data).toEqual(RtorrentServiceTestValues.MOCK_ANSWER_TORRENTS);
+        done();
+      });
+    });
+    void it('getTorrents return should be ko on error', done => {
+      rtorrentService.forceRtorrentForMocking(RtorrentServiceTestValues.MOCK_TORRENT_ERR);
+      rtorrentService.getTorrents().catch(err => {
+        expect(err).not.toBeNull();
+        expect(err.faultCode).toEqual(-1);
+        done();
+      });
     });
   });
 
-  void it('getTorrents return should be ok', done => {
-    rtorrentService.forceRtorrentForMocking(RtorrentServiceTestValues.MOCK_TORRENT);
-    rtorrentService.getTorrents((err, data) => {
-      expect(err).toBeNull();
-      expect(data).toEqual(RtorrentServiceTestValues.MOCK_ANSWER_TORRENTS);
-      done();
+  describe('getTorrentFiles', () => {
+    void it('getTorrentFiles return should be ko on wrong hash', done => {
+      rtorrentService.forceRtorrentForMocking(RtorrentServiceTestValues.MOCK_TORRENT);
+      rtorrentService.getTorrentFiles('5A03DA39750C4BDD0FEBB66D8B138CEEA5993FAA', err => {
+        expect(err).not.toBeNull();
+        expect(err.faultCode).toEqual(-501);
+        expect(err.faultString).toEqual('Could not find info-hash.');
+        done();
+      });
     });
-  });
 
-  void it('getTorrentFiles return should be ko on wrong hash', done => {
-    rtorrentService.forceRtorrentForMocking(RtorrentServiceTestValues.MOCK_TORRENT);
-    rtorrentService.getTorrentFiles('5A03DA39750C4BDD0FEBB66D8B138CEEA5993FAA', err => {
-      expect(err).not.toBeNull();
-      expect(err.faultCode).toEqual(-501);
-      expect(err.faultString).toEqual('Could not find info-hash.');
-      done();
-    });
-  });
-
-  void it('getTorrentFiles return should be ok', done => {
-    rtorrentService.forceRtorrentForMocking(RtorrentServiceTestValues.MOCK_TORRENT);
-    rtorrentService.getTorrentFiles(RtorrentServiceTestValues.MOCK_ANSWER_HASH, (err, data) => {
-      expect(err).toBeNull();
-      expect(data).toEqual(RtorrentServiceTestValues.MOCK_ANSWER_FILES);
-      done();
+    void it('getTorrentFiles return should be ok', done => {
+      rtorrentService.forceRtorrentForMocking(RtorrentServiceTestValues.MOCK_TORRENT);
+      rtorrentService.getTorrentFiles(RtorrentServiceTestValues.MOCK_ANSWER_HASH, (err, data) => {
+        expect(err).toBeNull();
+        expect(data).toEqual(RtorrentServiceTestValues.MOCK_ANSWER_FILES);
+        done();
+      });
     });
   });
 });
