@@ -1,3 +1,4 @@
 export const environment = {
-  production: true
+  production: true,
+  serverUrl: 'https://www.bibulle.fr/SeedMeHome'
 };

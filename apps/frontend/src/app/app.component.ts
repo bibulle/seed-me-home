@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RtorrentStatus } from '@seed-me-home/models';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-root',
@@ -7,7 +7,7 @@ import { RtorrentStatus } from '@seed-me-home/models';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'frontend';
-
-  status: RtorrentStatus;
+  constructor(private _translate: TranslateService) {
+    this._translate.setDefaultLang('en');
+  }
 }

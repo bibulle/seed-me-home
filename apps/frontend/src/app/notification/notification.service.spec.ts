@@ -13,8 +13,8 @@ describe('NotificationService', () => {
     TestBed.configureTestingModule({
       imports: [MatSnackBarModule, BrowserAnimationsModule, NoopAnimationsModule]
     });
-    service = TestBed.get(NotificationService);
     aSnackBar = TestBed.get(MatSnackBar);
+    service = TestBed.get(NotificationService);
   });
 
   it('should be created', () => {

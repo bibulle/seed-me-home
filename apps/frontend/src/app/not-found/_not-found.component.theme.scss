@@ -1,0 +1,32 @@
+@import '~@angular/material/theming';
+
+// mixin name will be used in main style.scss
+@mixin not-found-component-theme($theme) {
+  // retrieve variables from theme
+  // (all possible variables, use only what you really need)
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $warn: map-get($theme, warn);
+  $foreground: map-get($theme, foreground);
+  $background: map-get($theme, background);
+
+  $red: red(mat-color($primary));
+  $green: green(mat-color($primary));
+  $blue: blue(mat-color($primary));
+  // all of these variables contain many additional variables
+
+  .not-found {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='70px' height='18px'><text fill='rgb("+$red+', '+$green+', '+$blue+")' x='50%' y='50%' font-size='14px' textLength='85%' text-anchor='middle'>Not found</text></svg>");
+    //background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='70px' height='18px'><text fill='rgb(67,160,71)' x='50%' y='50%' font-size='14px' textLength='85%' text-anchor='middle'>Not found</text></svg>");
+  }
+}
+
+// url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='70px' height='18px'><text fill='rgb(255,255,0)' x='50%' y='50%' font-size='14px' textLength='85%' text-anchor='middle'>Not found</text></svg>")
+// url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='70px' height='18px'><text fill='rgb(67,160,71)' x='50%' y='50%' font-size='14px' textLength='85%' text-anchor='middle'>Not found</text></svg>")
+// url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='70px' height='18px'><text fill='rgb(67,160,71)' x='50%' y='50%' font-size='14px' textLength='85%' text-anchor='middle'>Not found</text></svg>")
+// url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='70px' height='18px'><text x='50%' y='50%' font-size='14px' textLength='85%' text-anchor='middle'>Not found</text></svg>")
+// url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='70px' height='18px'><text fill='#43a047' x='50%' y='50%' font-size='14px' textLength='85%' text-anchor='middle'>Not found</text></svg>")
+// url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='30' height='30'><circle cx='15' cy='15' r='10' /></svg>")
+
+// url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='70px' height='18px'><text fill='rgb(255,0,0)
+// style='font-family: Times New Roman; font-size: 24; stroke: #00ff00; fill: #0000ff;'

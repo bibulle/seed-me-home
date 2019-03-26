@@ -16,7 +16,8 @@
     "baseUrl": ".",
     "paths": {
       "@seed-me-home/models": ["libs/models/src/index.ts"]
-    }
+    },
+    "types": ["node", "jest"]
   },
   "exclude": ["node_modules", "tmp"]
 }

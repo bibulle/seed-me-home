@@ -1,4 +1,12 @@
 {
+  "test": {
+    "seedbox_mode": "xmlrpc",
+    "seedbox_host": "localhost",
+    "seedbox_port": 80,
+    "seedbox_path": "/rutorrent/plugins/rpc/rpc.php",
+    "seedbox_user": "user",
+    "seedbox_pass": "password"
+  },
   "development": {
     "seedbox_mode": "xmlrpc",
     "seedbox_host": "localhost",

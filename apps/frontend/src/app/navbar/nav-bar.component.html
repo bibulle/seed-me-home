@@ -1,0 +1,45 @@
+<div class="nav-bar-header">
+  <div class="nav-bar-header-left">
+    <nav class="nav-bar-navbar-header">
+      <a mat-button class="nav-bar-button title" routerLink="/" attr.aria-label="{{'title' | translate}}">
+        <span>{{'title' | translate}}</span><span class="version">{{'version' | translate}} {{version}}</span>
+      </a>
+      <a mat-button class="nav-bar-hide-small app-button" color="{{ link.selected ? 'accent' : 'none'}}"
+         *ngFor="let link of linksLeft"
+         routerLink="{{link.path}}">
+        <!--suppress HtmlUnknownTarget -->
+        <img      *ngIf="link.iconType=='img'" class="nav-img" src="{{link.icon}}" alt="{{link.label | translate}}"
+             title="{{link.label | translate}}">
+        <i        *ngIf="link.iconType=='fas'" class="fas {{link.icon}}" title="{{link.label | translate}}"></i>
+        <mat-icon *ngIf="link.iconType=='svgIcon'" svgIcon="{{link.icon}}" title="{{link.label | translate}}"></mat-icon>
+        <mat-icon *ngIf="link.iconType=='icon'">{{link.icon}}</mat-icon>
+        <span class="link-text">{{link.label | translate}}</span>
+      </a>
+      <!--<div class="flex-spacer"></div>-->
+      <!--<a mat-button class="nav-bar-hide-small app-button" color="{{ link.selected ? 'primary' : 'none'}}"-->
+         <!--*ngFor="let link of linksRight"-->
+         <!--routerLink="{{link.path}}">-->
+        <!--<img class="nav-img" *ngIf="link.iconType=='img'" src="{{link.icon}}" alt="{{link.label | translate}}"-->
+             <!--title="{{link.label | translate}}">-->
+        <!--<i class="fas {{link.icon}}" *ngIf="link.iconType=='fas'"></i>-->
+        <!--<mat-icon svgIcon="{{link.icon}}" *ngIf="link.iconType=='svgIcon'"></mat-icon>-->
+        <!--<span class="link-text">{{link.label | translate}}</span>-->
+      <!--</a>-->
+    </nav>
+  </div>
+  <div class="nav-bar-header-right">
+    <!--<span class="version-small">{{version}}</span>-->
+    <!--<div class="user">-->
+      <!--<div class="nav-bar-hide-small not-reloading" *ngIf="!reloading"></div>-->
+      <!--<mat-spinner class="nav-bar-hide-small reloading" diameter="20" *ngIf="reloading"></mat-spinner>-->
+      <!--<div class="nav-bar-hide-small connected-user" *ngIf="user['bungieNetUser']">-->
+        <!--<img-->
+            <!--src="{{'https://www.bungie.net'+user['bungieNetUser'].profilePicturePath}}"-->
+            <!--alt="{{user['bungieNetUser'].displayName}}"> {{user['bungieNetUser'].displayName}}-->
+      <!--</div>-->
+      <!--<button mat-icon-button *ngIf="updateNeeded" (click)="update()" matTooltip="{{'update-needed' | tranlate}}" color="primary">-->
+        <!--<mat-icon>cloud_upload</mat-icon>-->
+      <!--</button>-->
+    <!--</div>-->
+  </div>
+</div>

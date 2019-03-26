@@ -1,0 +1,50 @@
+:host {
+  display: block;
+  min-height: 640px;
+  height: 640px;
+}
+
+.not-found {
+  height: 100%;
+  width: 100%;
+
+  mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 50' preserveAspectRatio='none' width='100%' height='100%'><text fill='black' x='50%' y='50%' text-anchor='middle' alignment-baseline='middle' textLength='80%' font-size='45px' style='font-weight: 900;font-family: Roboto, sans-serif, Verdana, Geneva, sans-serif, sans-serif'><animate attributeName='fill' values='rgb(34,153,238); rgb(68,238,68); rgb(255,68,0); rgb(34,153,238)' dur='6s' repeatCount='indefinite'/>404</text></svg>")
+    top left / cover;
+  -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 50' preserveAspectRatio='none' width='100%' height='100%'><text fill='black' x='50%' y='50%' text-anchor='middle' alignment-baseline='middle' textLength='80%' font-size='45px' style='font-weight: 900;font-family: Roboto, sans-serif, Verdana, Geneva, sans-serif, sans-serif'><animate attributeName='fill' values='rgb(34,153,238); rgb(68,238,68); rgb(255,68,0); rgb(34,153,238)' dur='6s' repeatCount='indefinite'/>404</text></svg>")
+    top left / cover;
+
+  animation: background 10s ease 0s infinite alternate;
+}
+
+@keyframes background {
+  0% {
+    -webkit-mask-position: 0 0;
+    mask-position: 0 0;
+    background-color: #f0f0f0;
+  }
+  10% {
+    -webkit-mask-position: -50px 50px;
+    mask-position: -100px 150px;
+    background-color: #f8f8f8;
+  }
+  25% {
+    -webkit-mask-position: -100px 150px;
+    mask-position: -100px 150px;
+    background-color: #f0f0f0;
+  }
+  35% {
+    -webkit-mask-position: -75px 0px;
+    mask-position: -100px 150px;
+    background-color: #f8f8f8;
+  }
+  50% {
+    -webkit-mask-position: 150px 50px;
+    mask-position: 150px 100px;
+    background-color: #ffffff;
+  }
+  100% {
+    -webkit-mask-position: 0 200px;
+    mask-position: 200px 200px;
+    background-color: #f8f8f8;
+  }
+}
