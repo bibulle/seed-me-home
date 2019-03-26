@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.3.0"></a>
+# [0.3.0](https://github.com/bibulle/seed-me-home/compare/v0.2.5...v0.3.0) (2019-03-26)
+
+
+### Features
+
+* add frontend design (nav-bar, pages, ...) ([8a81367](https://github.com/bibulle/seed-me-home/commit/8a81367))
+* add rtorrent status to backend ([63edd24](https://github.com/bibulle/seed-me-home/commit/63edd24))
+* add rtorrent status to frontend (no design) ([53580f4](https://github.com/bibulle/seed-me-home/commit/53580f4))
+
+
+
 <a name="0.2.5"></a>
 ## [0.2.5](https://github.com/bibulle/seed-me-home/compare/v0.2.4...v0.2.5) (2019-03-18)
 
