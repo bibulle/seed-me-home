@@ -32,7 +32,7 @@ describe('NotificationService', () => {
       return aSnackBar.open(message, actions, config);
     });
 
-    NotificationService.error('This is a test message');
+    service.error('This is a test message');
   });
 
   it('handleError should manage HttpErrorResponse containing ErrorEvent and error message', async () => {
@@ -43,13 +43,13 @@ describe('NotificationService', () => {
       })
     });
 
-    const notificationServiceErrorMock = jest.spyOn(NotificationService, 'error');
+    const notificationServiceErrorMock = jest.spyOn(service, 'error');
     notificationServiceErrorMock.mockImplementation(mess => {
       expect(mess).toEqual('Tested http error (ErrorEvent)');
     });
 
     try {
-      NotificationService.handleError(errorEvent);
+      service.handleError(errorEvent);
     } catch (e) {
       console.error(e);
     }
@@ -60,17 +60,15 @@ describe('NotificationService', () => {
   });
 
   it('handleError should manage HttpErrorResponse not containing ErrorEvent and error message', async () => {
-    const errorEvent = new HttpErrorResponse({
-      statusText: 'Tested http error'
-    });
+    const errorEvent = new HttpErrorResponse({ statusText: 'Tested http error' });
 
-    const notificationServiceErrorMock = jest.spyOn(NotificationService, 'error');
+    const notificationServiceErrorMock = jest.spyOn(service, 'error');
     notificationServiceErrorMock.mockImplementation(mess => {
       expect(mess).toEqual('Tested http error');
     });
 
     try {
-      NotificationService.handleError(errorEvent);
+      service.handleError(errorEvent);
     } catch (e) {
       console.error(e);
     }

@@ -21,6 +21,7 @@ import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import localeEn from '@angular/common/locales/en';
 import { FilesModule } from './files/files.component';
+import { NotificationService } from './notification/notification.service';
 
 export class MyMissingTranslationHandler implements MissingTranslationHandler {
   handle(params: MissingTranslationHandlerParams) {
@@ -53,7 +54,7 @@ registerLocaleData(localeEn, 'en');
       // useDefaultLang: false
     })
   ],
-  providers: [AuthGuard],
+  providers: [AuthGuard, NotificationService],
   bootstrap: [AppComponent],
   exports: []
 })

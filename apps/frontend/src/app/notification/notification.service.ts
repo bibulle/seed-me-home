@@ -1,33 +1,29 @@
-import { Injectable } from '@angular/core';
-import { MatSnackBar, MatSnackBarConfig } from '@angular/material';
-import { HttpErrorResponse } from '@angular/common/http';
+import { Injectable, NgModule } from '@angular/core';
+import { MatSnackBar, MatSnackBarConfig, MatSnackBarModule } from '@angular/material';
+import { HttpClientModule, HttpErrorResponse } from '@angular/common/http';
 import { throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NotificationService {
-  private static _snackBar = null;
+  constructor(private _snackBar: MatSnackBar) {}
 
-  constructor(private _aSnackBar: MatSnackBar) {
-    NotificationService._snackBar = _aSnackBar;
-  }
-
-  static error(err: string) {
+  error(err: string) {
     console.error(err);
     //console.error(message);
-    NotificationService._display(err, 5000, ['error']);
+    this._display(err, 5000, ['error']);
   }
 
-  private static _display(message: string, duration: number, extraClasses: [string]) {
+  private _display(message: string, duration: number, extraClasses: [string]) {
     const config = new MatSnackBarConfig();
     config.duration = duration;
     config.panelClass = extraClasses;
 
-    NotificationService._snackBar.open(message, null, config);
+    this._snackBar.open(message, null, config);
   }
 
-  static handleError(error: HttpErrorResponse) {
+  handleError(error: HttpErrorResponse) {
     let message = 'Unknown error';
     if (error.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.
@@ -40,8 +36,16 @@ export class NotificationService {
       message = error.statusText;
     }
 
-    NotificationService.error(message);
+    this.error(message);
     // return an observable with a user-facing error message
     return throwError(message);
   }
 }
+
+@NgModule({
+  imports: [HttpClientModule, MatSnackBarModule],
+  declarations: [],
+  exports: [],
+  providers: [NotificationService]
+})
+export class NotificationModule {}

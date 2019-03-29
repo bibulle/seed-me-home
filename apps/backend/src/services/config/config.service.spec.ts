@@ -32,6 +32,18 @@ describe('ConfigService', () => {
   it('Seedbox Pass should be password', () => {
     expect(service.getSeedboxPass()).toEqual('password');
   });
+  it('Authent Google ID Pass should be my-id', () => {
+    expect(service.getAuthentGoogleClientID()).toEqual('my-id');
+  });
+  it('Authent Google Secret Pass should be my-secret', () => {
+    expect(service.getAuthentGoogleClientSecret()).toEqual('my-secret');
+  });
+  it('Authent Google Callback Pass should be my-callback', () => {
+    expect(service.getAuthentGoogleCallbackURL()).toEqual('my-callback');
+  });
+  it('Authent JWT secret Pass should be authent_jwt_secret', () => {
+    expect(service.getAuthentJwtSecret()).toEqual('authent_jwt_secret');
+  });
   it('should exit process on wrong file', () => {
     //@ts-ignore
     const mockExit = jest.spyOn(process, 'exit').mockImplementation(() => {});

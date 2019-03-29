@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { NavBarComponent, NavBarModule } from './nav-bar.component';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -8,6 +8,8 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { DefaultLangChangeEvent, LangChangeEvent, TranslateService, TranslationChangeEvent } from '@ngx-translate/core';
 import { of } from 'rxjs';
 import { EventEmitter } from '@angular/core';
+import { UserModule } from '../authent/user.service';
+import { AuthGuard } from '../authent/auth.guard';
 
 export class TranslateServiceStub {
   //noinspection JSUnusedGlobalSymbols
@@ -27,25 +29,33 @@ export class TranslateServiceStub {
 describe('NavBarComponent', () => {
   let component: NavBarComponent;
   let fixture: ComponentFixture<NavBarComponent>;
+  let authGard: AuthGuard;
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule, NavBarModule, HttpClientModule, HttpClientTestingModule],
+      imports: [RouterTestingModule, NavBarModule, HttpClientModule, HttpClientTestingModule, UserModule],
       declarations: [],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },
-        { provide: TranslateService, useClass: TranslateServiceStub }
+        { provide: TranslateService, useClass: TranslateServiceStub },
+        AuthGuard
       ]
     }).compileComponents();
-  }));
 
-  beforeEach(() => {
+    authGard = TestBed.get(AuthGuard);
+
+    jest.spyOn(authGard, 'canActivate').mockImplementation(() => {
+      return new Promise<boolean>(resolve => {
+        resolve(true);
+      });
+    });
+
     fixture = TestBed.createComponent(NavBarComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should create', async () => {
     expect(component).toBeTruthy();
   });
 
@@ -69,7 +79,8 @@ describe('NavBarComponent', () => {
   it('navigate to a button and it become accent', () => {
     const compiled = fixture.debugElement.nativeElement;
 
-    //console.log(compiled.querySelectorAll('.nav-bar-header a')[1].classList);
+    // console.log(compiled.querySelectorAll('.nav-bar-header a')[0].classList);
+    // console.log(compiled.querySelectorAll('.nav-bar-header a')[1].classList);
 
     // for now, seeds shouldn't be selected
     expect(compiled.querySelectorAll('.nav-bar-header a')[1].classList).not.toContain('mat-accent');
@@ -78,7 +89,8 @@ describe('NavBarComponent', () => {
     compiled.querySelectorAll('.nav-bar-header a')[1].click();
     fixture.detectChanges();
 
-    //console.log(compiled.querySelectorAll('.nav-bar-header a')[1].classList);
+    // console.log(compiled.querySelectorAll('.nav-bar-header a')[0].classList);
+    // console.log(compiled.querySelectorAll('.nav-bar-header a')[1].classList);
 
     // now, seeds should be selected
     expect(compiled.querySelectorAll('.nav-bar-header a')[1].classList).toContain('mat-accent');

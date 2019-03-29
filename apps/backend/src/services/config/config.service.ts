@@ -1,9 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import * as fs from 'fs';
-
-//noinspection JSUnusedLocalSymbols
-const debug = require('debug')('server:debug:config:service');
-const error = require('debug')('server:error:config:service');
 
 class Config {
   public version = 'VERSION_PLACEHOLDER';
@@ -15,11 +11,19 @@ class Config {
   public seedbox_user = '';
   public seedbox_pass = '';
 
+  public authent_jwt_secret = '';
+
+  public authent_google_clientID = '';
+  public authent_google_clientSecret = '';
+  public authent_google_callbackURL = '';
+
   public node_env = process.env.NODE_ENV || 'development';
 }
 
 @Injectable()
 export class ConfigService {
+  private readonly logger = new Logger(ConfigService.name);
+
   private _config: Config;
 
   private _configFile = 'env-my-own.json';
@@ -31,8 +35,10 @@ export class ConfigService {
 
       // Check the user env
       if (!fs.existsSync(__dirname + '/' + this._configFile)) {
-        error("ERROR : Your environment is not set, create the '" + __dirname + '/' + this._configFile + "' file.");
-        error("          you can copy it from the 'config/env-model.json' file.");
+        this.logger.error(
+          "ERROR : Your environment is not set, create the '" + __dirname + '/' + this._configFile + "' file."
+        );
+        this.logger.error("          you can copy it from the 'config/env-model.json' file.");
         process.exit(1);
       } else {
         // read it
@@ -82,5 +88,25 @@ export class ConfigService {
   public getSeedboxPass() {
     this.initialize();
     return this._config.seedbox_pass;
+  }
+
+  public getAuthentGoogleClientID() {
+    this.initialize();
+    return this._config.authent_google_clientID;
+  }
+
+  public getAuthentGoogleClientSecret() {
+    this.initialize();
+    return this._config.authent_google_clientSecret;
+  }
+
+  public getAuthentGoogleCallbackURL() {
+    this.initialize();
+    return this._config.authent_google_callbackURL;
+  }
+
+  public getAuthentJwtSecret() {
+    this.initialize();
+    return this._config.authent_jwt_secret;
   }
 }

@@ -15,7 +15,7 @@ export class RtorrentStatusService {
 
   private readonly currentStatusSubject: Subject<RtorrentStatus>;
 
-  constructor(private httpClient: HttpClient) {
+  constructor(private readonly httpClient: HttpClient, private readonly _notificationService: NotificationService) {
     this.currentStatusSubject = new ReplaySubject<RtorrentStatus>();
   }
 
@@ -46,7 +46,7 @@ export class RtorrentStatusService {
         .get<RtorrentStatus>(this.API_URL)
         .toPromise()
         .catch(error => {
-          NotificationService.handleError(error);
+          this._notificationService.handleError(error);
           reject(error);
         })
         .then((data: RtorrentStatus) => {

@@ -3,8 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { RtorrentStatusService } from './rtorrent-status.service';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { NotificationService } from '../notification/notification.service';
-import { MatSnackBarModule } from '@angular/material';
+import { NotificationModule, NotificationService } from '../notification/notification.service';
 
 const flushPromises = () => {
   return new Promise(resolve => setImmediate(resolve));
@@ -17,7 +16,7 @@ describe('RtorrentStatusService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientModule, HttpClientTestingModule, MatSnackBarModule],
+      imports: [HttpClientModule, HttpClientTestingModule, NotificationModule],
       providers: [NotificationService]
     });
     service = TestBed.get(RtorrentStatusService);
@@ -95,7 +94,7 @@ describe('RtorrentStatusService', () => {
 
     it('it should manage error if http response is Ko (and update after a while)', async () => {
       // Just test the error content
-      jest.spyOn(NotificationService, 'error').mockImplementation(message => {
+      jest.spyOn(notificationService, 'error').mockImplementation(message => {
         expect(message).toBe('Tested http error');
       });
 
@@ -137,7 +136,7 @@ describe('RtorrentStatusService', () => {
 
       // Notification service should have been called twice
       await flushPromises();
-      expect(jest.spyOn(NotificationService, 'error')).toHaveBeenCalledTimes(2);
+      expect(jest.spyOn(notificationService, 'error')).toHaveBeenCalledTimes(2);
 
       jest.clearAllTimers();
     });

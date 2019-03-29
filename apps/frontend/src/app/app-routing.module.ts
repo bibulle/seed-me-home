@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { NotFoundComponent, NotFoundModule } from './not-found/not-found.component';
-//import { AuthGuard } from './components/authent/auth.guard';
 import { UserService } from './authent/user.service';
 import { FilesComponent, FilesModule } from './files/files.component';
 import { SeedsComponent, SeedsModule } from './seeds/seeds.component';
+import { AuthGuard } from './authent/auth.guard';
 
 const routes: Routes = [
   {
@@ -15,6 +15,7 @@ const routes: Routes = [
   {
     path: 'seeds',
     component: SeedsComponent,
+    canActivate: [AuthGuard],
     data: {
       label: 'label.seeds',
       menu: true,
@@ -25,6 +26,7 @@ const routes: Routes = [
   {
     path: 'files',
     component: FilesComponent,
+    canActivate: [AuthGuard],
     data: {
       label: 'label.files',
       menu: true,

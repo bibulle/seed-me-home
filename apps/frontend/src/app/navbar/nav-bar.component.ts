@@ -7,6 +7,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatButtonModule, MatIconModule, MatToolbarModule } from '@angular/material';
 import { CommonModule } from '@angular/common';
 import { AppRoutingModule } from '../app-routing.module';
+import { NotificationModule } from '../notification/notification.service';
 
 @Component({
   selector: 'app-nav-bar',
@@ -24,6 +25,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
 
   constructor(private _router: Router, private _userService: UserService) {
     this._router.events.subscribe(data => {
+      // console.log(data.constructor.name);
       if (data instanceof NavigationEnd) {
         this.linksLeft.forEach(link => {
           link.selected = '/' + link.path === data.urlAfterRedirects;
@@ -85,7 +87,8 @@ export class NavBarComponent implements OnInit, OnDestroy {
     MatButtonModule,
     MatIconModule,
     MatToolbarModule,
-    AppRoutingModule
+    AppRoutingModule,
+    NotificationModule
   ],
   declarations: [NavBarComponent],
   exports: [NavBarComponent]

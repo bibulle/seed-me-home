@@ -5,7 +5,11 @@
     "seedbox_port": 80,
     "seedbox_path": "/rutorrent/plugins/rpc/rpc.php",
     "seedbox_user": "user",
-    "seedbox_pass": "password"
+    "seedbox_pass": "password",
+    "authent_jwt_secret": "authent_jwt_secret",
+    "authent_google_clientID": "my-id",
+    "authent_google_clientSecret": "my-secret",
+    "authent_google_callbackURL": "my-callback"
   },
   "development": {
     "seedbox_mode": "xmlrpc",
@@ -13,7 +17,11 @@
     "seedbox_port": 80,
     "seedbox_path": "/rutorrent/plugins/rpc/rpc.php",
     "seedbox_user": "user",
-    "seedbox_pass": "password"
+    "seedbox_pass": "password",
+    "authent_jwt_secret": "authent_jwt_secret",
+    "authent_google_clientID": "my-id",
+    "authent_google_clientSecret": "my-secret",
+    "authent_google_callbackURL": "my-callback"
   },
   "production": {
     "seedbox_mode": "xmlrpc",
@@ -21,6 +29,10 @@
     "seedbox_port": 80,
     "seedbox_path": "/rutorrent/plugins/rpc/rpc.php",
     "seedbox_user": "user",
-    "seedbox_pass": "password"
+    "seedbox_pass": "password",
+    "authent_jwt_secret": "authent_jwt_secret",
+    "authent_google_clientID": "my-id",
+    "authent_google_clientSecret": "my-secret",
+    "authent_google_callbackURL": "my-callback"
   }
 }

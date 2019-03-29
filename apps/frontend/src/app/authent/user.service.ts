@@ -4,11 +4,9 @@ import { WindowService } from '../../utils/window.service';
 import { BehaviorSubject, Observable, timer } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
-import { NotificationService } from '../notification/notification.service';
+import { NotificationModule, NotificationService } from '../notification/notification.service';
 import { Injectable, NgModule } from '@angular/core';
 import { distinctUntilChanged } from 'rxjs/operators';
-//import { MatSnackBarModule } from '@angular/material';
-//import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 enum LoginProvider {
   GOOGLE
@@ -41,7 +39,11 @@ export class UserService {
   private windowHandle: any = null;
   private intervalId: any = null;
 
-  constructor(private _http: HttpClient, private _jwtHelperServiceService: JwtHelperServiceService) {
+  constructor(
+    private _http: HttpClient,
+    private _jwtHelperServiceService: JwtHelperServiceService,
+    private readonly _notificationService: NotificationService
+  ) {
     this.userSubject = new BehaviorSubject<User>(this.user);
 
     this.checkAuthentication();
@@ -96,6 +98,7 @@ export class UserService {
 
     const jwt = UserService.tokenGetter();
 
+    // console.log(jwt);
     //    const oldUser = this.user;
 
     if (!jwt || this._jwtHelperServiceService.getJwtHelper().isTokenExpired(jwt)) {
@@ -124,7 +127,7 @@ export class UserService {
 
     this.checkAuthentication();
 
-    return !!(this.user && this.user['googleUser']);
+    return !!(this.user && this.user.providerId);
   }
 
   /**
@@ -143,7 +146,7 @@ export class UserService {
    */
   loginGoogle(parsed): Promise<User | string> {
     // console.log("loginGoogle "+parsed);
-    return this._doGet(environment.serverUrl + 'authentication/google/login?code=' + parsed.code);
+    return this._doGet(environment.serverUrl + 'authentication/google/callback?code=' + parsed.code);
   }
 
   /**
@@ -263,18 +266,17 @@ export class UserService {
             UserService.tokenSetter(data[UserService.KEY_TOKEN_REQUEST]);
             this.checkAuthentication();
             resolve();
-          } else if (data['data']) {
-            resolve(data['data'] as User);
-          } else if (data['newPassword']) {
-            resolve(data['newPassword'] as string);
           } else {
             resolve();
           }
         })
         .catch(error => {
+          console.log('1');
           this.checkAuthentication();
 
-          NotificationService.handleError(error);
+          console.log('2');
+          this._notificationService.handleError(error);
+          console.log('3');
           reject();
         });
     });
@@ -326,7 +328,7 @@ export class UserService {
 }
 
 @NgModule({
-  imports: [HttpClientModule],
+  imports: [HttpClientModule, NotificationModule],
   declarations: [],
   exports: [],
   providers: [UserService, JwtHelperServiceService]
