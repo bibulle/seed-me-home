@@ -3,12 +3,14 @@ import { AppComponent } from './app.component';
 import { RtorrentStatusModule } from './rtorrent-status/rtorrent-status.component';
 import { NavBarModule } from './navbar/nav-bar.component';
 import { RouterTestingModule } from '@angular/router/testing';
+import { NGXLogger, NGXLoggerMock } from 'ngx-logger';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [NavBarModule, RtorrentStatusModule, RouterTestingModule],
-      declarations: [AppComponent]
+      declarations: [AppComponent],
+      providers: [{ provide: NGXLogger, useClass: NGXLoggerMock }]
     }).compileComponents();
   }));
 

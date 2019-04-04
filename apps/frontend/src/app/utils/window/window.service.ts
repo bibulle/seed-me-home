@@ -1,7 +1,11 @@
 import { Injectable } from '@angular/core';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class WindowService {
+  constructor() {}
+
   static createWindow(url: string, name = 'Window', width = 500, height = 600) {
     if (url == null) {
       return null;
@@ -14,6 +18,4 @@ export class WindowService {
 
     return window.open(url, name, options);
   }
-
-  constructor() {}
 }

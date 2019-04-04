@@ -1,19 +1,21 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SeedsComponent } from './seeds.component';
+import { FilesComponent } from './files.component';
+import { TranslateModule } from '@ngx-translate/core';
 
-describe('SeedsComponent', () => {
-  let component: SeedsComponent;
-  let fixture: ComponentFixture<SeedsComponent>;
+describe('FilesComponent', () => {
+  let component: FilesComponent;
+  let fixture: ComponentFixture<FilesComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [SeedsComponent]
+      imports: [TranslateModule.forRoot()],
+      declarations: [FilesComponent]
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SeedsComponent);
+    fixture = TestBed.createComponent(FilesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -5,6 +5,7 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { environment } from '../../environments/environment';
 import * as _Window from 'jsdom/lib/jsdom/browser/Window';
 import { NotificationModule, NotificationService } from '../notification/notification.service';
+import { NGXLogger, NGXLoggerMock } from 'ngx-logger';
 
 const flushPromises = () => {
   return new Promise(resolve => setImmediate(resolve));
@@ -21,7 +22,7 @@ describe('UserService', () => {
   beforeAll(async () => {
     TestBed.configureTestingModule({
       imports: [UserModule, HttpClientTestingModule, NotificationModule],
-      providers: [NotificationService]
+      providers: [NotificationService, { provide: NGXLogger, useClass: NGXLoggerMock }]
     });
     service = TestBed.get(UserService);
     jwtHelper = TestBed.get(JwtHelperServiceService).getJwtHelper();
@@ -43,8 +44,53 @@ describe('UserService', () => {
     });
   });
 
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
   it('should be defined', () => {
     expect(service).toBeDefined();
+  });
+
+  it('check authentication should change user', done => {
+    let user = null;
+    service.userObservable().subscribe(userReceived => {
+      // console.log(userReceived);
+      user = userReceived;
+    });
+
+    // for now, user should be empty
+    expect(user).toEqual({});
+
+    // change the local storage
+    localStorage.setItem('id_token', 'not-expired');
+
+    // call the checkAuthentication method, and it should change the user
+    expect(service.checkAuthentication()).toEqual(true);
+    expect(user).toEqual({ firstName: 'not', lastName: 'expired', providerId: 'foo bar' });
+
+    done();
+  });
+
+  it('check authentication should not change user with notEmit param', done => {
+    let user = null;
+    service.userObservable().subscribe(userReceived => {
+      // console.log(userReceived);
+      user = userReceived;
+    });
+
+    // for now, user should be empty
+    service.checkAuthentication();
+    expect(user).toEqual({});
+
+    // change the local storage
+    localStorage.setItem('id_token', 'not-expired');
+
+    // call the checkAuthentication method, and it should change the user
+    expect(service.checkAuthentication(false)).toEqual(true);
+    expect(user).toEqual({});
+
+    done();
   });
 
   it('Authentication should be tested every 3 second', done => {

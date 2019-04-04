@@ -17,7 +17,8 @@
     "paths": {
       "@seed-me-home/models": ["libs/models/src/index.ts"]
     },
-    "types": ["node", "jest"]
+    "types": ["node", "jest"],
+    "esModuleInterop": false
   },
   "exclude": ["node_modules", "tmp"]
 }

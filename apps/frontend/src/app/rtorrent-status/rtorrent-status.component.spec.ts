@@ -5,6 +5,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { MatSnackBarModule } from '@angular/material';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { RtorrentStatusService } from './rtorrent-status.service';
+import { NGXLogger, NGXLoggerMock } from 'ngx-logger';
 
 const flushPromises = () => {
   return new Promise(resolve => setImmediate(resolve));
@@ -20,7 +21,8 @@ describe('RtorrentStatusComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [RtorrentStatusComponent],
-      imports: [HttpClientModule, HttpClientTestingModule, MatSnackBarModule]
+      imports: [HttpClientModule, HttpClientTestingModule, MatSnackBarModule],
+      providers: [{ provide: NGXLogger, useClass: NGXLoggerMock }]
     }).compileComponents();
     fixture = TestBed.createComponent(RtorrentStatusComponent);
     component = fixture.componentInstance;

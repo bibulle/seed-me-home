@@ -10,6 +10,11 @@ import { of } from 'rxjs';
 import { EventEmitter } from '@angular/core';
 import { UserModule } from '../authent/user.service';
 import { AuthGuard } from '../authent/auth.guard';
+import { NGXLogger, NGXLoggerMock } from 'ngx-logger';
+
+const flushPromises = () => {
+  return new Promise(resolve => setImmediate(resolve));
+};
 
 export class TranslateServiceStub {
   //noinspection JSUnusedGlobalSymbols
@@ -38,6 +43,7 @@ describe('NavBarComponent', () => {
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },
         { provide: TranslateService, useClass: TranslateServiceStub },
+        { provide: NGXLogger, useClass: NGXLoggerMock },
         AuthGuard
       ]
     }).compileComponents();
@@ -87,6 +93,9 @@ describe('NavBarComponent', () => {
 
     // click on the seeds button
     compiled.querySelectorAll('.nav-bar-header a')[1].click();
+
+    flushPromises();
+
     fixture.detectChanges();
 
     // console.log(compiled.querySelectorAll('.nav-bar-header a')[0].classList);

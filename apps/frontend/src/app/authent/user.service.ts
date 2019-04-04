@@ -1,12 +1,13 @@
 import { User } from '@seed-me-home/models';
 import { environment } from '../../environments/environment';
-import { WindowService } from '../../utils/window.service';
 import { BehaviorSubject, Observable, timer } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
 import { NotificationModule, NotificationService } from '../notification/notification.service';
 import { Injectable, NgModule } from '@angular/core';
 import { distinctUntilChanged } from 'rxjs/operators';
+import { WindowService } from '../utils/window/window.service';
+import { NGXLogger } from 'ngx-logger';
 
 enum LoginProvider {
   GOOGLE
@@ -42,7 +43,8 @@ export class UserService {
   constructor(
     private _http: HttpClient,
     private _jwtHelperServiceService: JwtHelperServiceService,
-    private readonly _notificationService: NotificationService
+    private readonly _notificationService: NotificationService,
+    private logger: NGXLogger
   ) {
     this.userSubject = new BehaviorSubject<User>(this.user);
 
@@ -50,7 +52,7 @@ export class UserService {
 
     const timer1 = timer(3 * 1000, 3 * 1000);
     timer1.subscribe(() => {
-      // console.log("timer");
+      // this.logger.debug('timer');
       this.checkAuthentication();
     });
   }
@@ -60,7 +62,6 @@ export class UserService {
    * @returns {string | null}
    */
   private static tokenGetter() {
-    // console.log('tokenGetter');
     return localStorage.getItem(UserService.KEY_TOKEN_LOCAL_STORAGE);
   }
 
@@ -80,8 +81,8 @@ export class UserService {
     return this.userSubject.pipe(
       // .debounceTime(200)
       distinctUntilChanged((a, b) => {
-        // console.log(JSON.stringify(a.local));
-        // console.log(JSON.stringify(b.local));
+        // this.logger.debug(JSON.stringify(a));
+        // this.logger.debug(JSON.stringify(b));
         return JSON.stringify(a) === JSON.stringify(b);
       })
     );
@@ -93,24 +94,24 @@ export class UserService {
    * @returns {boolean} are we authenticate
    */
   checkAuthentication(emitEvent = true): boolean {
-    // console.log('checkAuthentication');
+    // this.logger.debug('checkAuthentication');
     let ret = false;
 
     const jwt = UserService.tokenGetter();
 
-    // console.log(jwt);
+    // this.logger.debug(jwt);
     //    const oldUser = this.user;
 
     if (!jwt || this._jwtHelperServiceService.getJwtHelper().isTokenExpired(jwt)) {
-      // console.log(jwt);
-      // console.log(this._jwtHelperServiceService.getJwtHelper().isTokenExpired(jwt));
+      // this.logger.debug(jwt);
+      // this.logger.debug('', this._jwtHelperServiceService.getJwtHelper().isTokenExpired(jwt));
       this.user = {} as User;
     } else {
       this.user = this._jwtHelperServiceService.getJwtHelper().decodeToken(jwt) as User;
       ret = true;
     }
 
-    // console.log(this.user);
+    // this.logger.debug('', this.user);
 
     if (emitEvent) {
       this.userSubject.next(this.user);
@@ -123,7 +124,7 @@ export class UserService {
    * Is logged ?
    */
   isAuthenticate(): Boolean {
-    // console.log('isAuthenticate');
+    // this.logger.debug('isAuthenticate');
 
     this.checkAuthentication();
 
@@ -134,7 +135,7 @@ export class UserService {
    * Start logging process with google
    */
   startLoginGoogle() {
-    // console.log('startLoginGoogle');
+    // this.logger.debug('startLoginGoogle');
     const oAuthURL = `${environment.serverUrl}authentication/google`;
     return this._startLoginOAuth(oAuthURL, LoginProvider.GOOGLE);
   }
@@ -145,7 +146,7 @@ export class UserService {
    * @returns {Promise<void>}
    */
   loginGoogle(parsed): Promise<User | string> {
-    // console.log("loginGoogle "+parsed);
+    // this.logger.debug('loginGoogle ' + parsed);
     return this._doGet(environment.serverUrl + 'authentication/google/callback?code=' + parsed.code);
   }
 
@@ -157,7 +158,7 @@ export class UserService {
    * @private
    */
   private _startLoginOAuth(oAuthURL: string, loginProvider: LoginProvider) {
-    // console.log("_startLoginOAuth "+oAuthURL);
+    // this.logger.debug('_startLoginOAuth ' + oAuthURL);
     const oAuthCallbackUrl = '/assets/logged.html';
 
     return new Promise<void>((resolve, reject) => {
@@ -166,42 +167,42 @@ export class UserService {
 
       this.intervalId = setInterval(() => {
         let parsed;
-        // console.log("intervale : "+loopCount);
+        // this.logger.debug('intervale : ' + loopCount);
         if (loopCount-- < 0) {
           // Too many try... stop it
           clearInterval(this.intervalId);
           this.windowHandle.close();
           this.checkAuthentication();
-          console.error('Time out : close logging window');
+          this.logger.error('Time out : close logging window');
           reject('Time out');
         } else {
           // Read th URL in the window
           let href: string;
           try {
-            // console.log(this.windowHandle.location.href);
+            // this.logger.debug(this.windowHandle.location.href);
             href = this.windowHandle.location.href;
           } catch (e) {
-            console.log('Error:', e);
+            this.logger.error('Error:', e);
           }
 
-          // console.log(href);
+          // this.logger.debug(href);
 
           if (href != null) {
             // We got an answer...
-            // console.log(href);
+            // this.logger.debug(href);
 
             // try to find the code
             const reSimple = /[?&](code|access_token)=(.*)/;
             const foundSimple = href.match(reSimple);
 
-            //console.log(href+' '+foundSimple+' '+href.indexOf(oAuthCallbackUrl));
+            // this.logger.debug(href + ' ' + foundSimple + ' ' + href.indexOf(oAuthCallbackUrl));
 
             if (foundSimple) {
               clearInterval(this.intervalId);
               this.windowHandle.close();
 
               parsed = this._parseQueryString(href.replace(new RegExp(`^.*${oAuthCallbackUrl}[?]`), ''));
-              // console.log(parsed);
+              // this.logger.debug(parsed);
 
               if (parsed.code) {
                 // we got the code... login
@@ -216,7 +217,7 @@ export class UserService {
                     });
                 }
               } else {
-                console.error('oAuth callback without and with code...?.. ' + href);
+                this.logger.error('oAuth callback without and with code...?.. ' + href);
                 this.checkAuthentication();
                 reject('login error');
               }
@@ -261,7 +262,7 @@ export class UserService {
         .toPromise()
         .then(data => {
           // const data = res.json();
-          // console.log(res.json());
+          // this.logger.debug('', data);
           if (data[UserService.KEY_TOKEN_REQUEST]) {
             UserService.tokenSetter(data[UserService.KEY_TOKEN_REQUEST]);
             this.checkAuthentication();
@@ -271,12 +272,9 @@ export class UserService {
           }
         })
         .catch(error => {
-          console.log('1');
           this.checkAuthentication();
 
-          console.log('2');
           this._notificationService.handleError(error);
-          console.log('3');
           reject();
         });
     });

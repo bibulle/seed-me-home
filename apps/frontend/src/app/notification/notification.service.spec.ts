@@ -4,6 +4,7 @@ import { NotificationService } from './notification.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material';
 import { HttpErrorResponse } from '@angular/common/http';
 import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { NGXLogger, NGXLoggerMock } from 'ngx-logger';
 
 describe('NotificationService', () => {
   let service: NotificationService;
@@ -11,7 +12,8 @@ describe('NotificationService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [MatSnackBarModule, BrowserAnimationsModule, NoopAnimationsModule]
+      imports: [MatSnackBarModule, BrowserAnimationsModule, NoopAnimationsModule],
+      providers: [{ provide: NGXLogger, useClass: NGXLoggerMock }]
     });
     aSnackBar = TestBed.get(MatSnackBar);
     service = TestBed.get(NotificationService);

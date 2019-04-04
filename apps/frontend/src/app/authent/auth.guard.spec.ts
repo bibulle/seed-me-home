@@ -1,6 +1,7 @@
 import { AuthGuard } from './auth.guard';
 import { UserModule, UserService } from './user.service';
 import { TestBed } from '@angular/core/testing';
+import { NGXLogger, NGXLoggerMock } from 'ngx-logger';
 
 describe('AuthGuard', () => {
   let service: AuthGuard;
@@ -9,7 +10,7 @@ describe('AuthGuard', () => {
   beforeAll(async () => {
     TestBed.configureTestingModule({
       imports: [UserModule],
-      providers: [AuthGuard]
+      providers: [AuthGuard, { provide: NGXLogger, useClass: NGXLoggerMock }]
     });
     service = TestBed.get(AuthGuard);
     userService = TestBed.get(UserService);

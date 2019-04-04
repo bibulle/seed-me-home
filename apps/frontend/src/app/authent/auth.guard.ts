@@ -1,28 +1,29 @@
 import { UserService } from './user.service';
 import { Injectable } from '@angular/core';
 import { CanActivate } from '@angular/router';
+import { NGXLogger } from 'ngx-logger';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private _userService: UserService) {}
+  constructor(private readonly _userService: UserService, private readonly logger: NGXLogger) {}
 
   canActivate(): Promise<boolean> {
-    // console.log('canActivate');
+    // this.logger.debug('canActivate');
 
     return new Promise<boolean>((resolve, reject) => {
       if (this._userService.isAuthenticate()) {
-        // console.log('canActivate true');
+        // this.logger.debug('canActivate true');
         resolve(true);
       } else {
         // not logged in so try to login
         this._userService
           .startLoginGoogle()
           .then(() => {
-            // console.log('then OK');
+            // this.logger.debug('then OK');
             resolve(true);
           })
           .catch(reason => {
-            console.log(reason);
+            this.logger.warn(reason);
             reject(reason);
           });
       }

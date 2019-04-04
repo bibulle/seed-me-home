@@ -3,6 +3,7 @@ import { Observable, ReplaySubject, Subject } from 'rxjs';
 import { RtorrentStatus } from '@seed-me-home/models';
 import { HttpClient } from '@angular/common/http';
 import { NotificationService } from '../notification/notification.service';
+import { NGXLogger } from 'ngx-logger';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,12 @@ export class RtorrentStatusService {
 
   private readonly currentStatusSubject: Subject<RtorrentStatus>;
 
-  constructor(private readonly httpClient: HttpClient, private readonly _notificationService: NotificationService) {
+  //noinspection JSUnusedLocalSymbols
+  constructor(
+    private readonly httpClient: HttpClient,
+    private readonly _notificationService: NotificationService,
+    private readonly logger: NGXLogger
+  ) {
     this.currentStatusSubject = new ReplaySubject<RtorrentStatus>();
   }
 
@@ -60,7 +66,7 @@ export class RtorrentStatusService {
    * @param forceRelaunch SHould force the restarting (should be only useful for tests)
    */
   startLoadingStats(forceRelaunch = false) {
-    // console.log('startLoadingStats ' + RtorrentStatusService._refreshIsRunning);
+    // this.logger.debug('startLoadingStats ' + RtorrentStatusService._refreshIsRunning);
 
     if (forceRelaunch) {
       RtorrentStatusService._refreshIsRunning = false;

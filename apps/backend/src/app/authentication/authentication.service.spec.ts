@@ -16,6 +16,8 @@ describe('AuthenticationService', () => {
 
     configService = module.get<ConfigService>(ConfigService);
     configService.forceConfigFile('env-model.json');
+
+    jest.spyOn(service.logger, 'debug').mockImplementation(() => {});
   });
 
   it('should be defined', () => {

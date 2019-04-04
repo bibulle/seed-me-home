@@ -10,6 +10,8 @@ describe('ConfigService', () => {
     }).compile();
     service = module.get<ConfigService>(ConfigService);
     service.forceConfigFile('env-model.json');
+
+    jest.spyOn(service.logger, 'error').mockImplementation(() => {});
   });
   it('should be defined', () => {
     expect(service).toBeDefined();

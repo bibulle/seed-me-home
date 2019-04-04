@@ -22,10 +22,14 @@ import localeFr from '@angular/common/locales/fr';
 import localeEn from '@angular/common/locales/en';
 import { FilesModule } from './files/files.component';
 import { NotificationService } from './notification/notification.service';
+import { LoggerModule, NGXLogger, NgxLoggerLevel } from 'ngx-logger';
+import { environment } from '../environments/environment';
 
 export class MyMissingTranslationHandler implements MissingTranslationHandler {
+  constructor(private readonly logger: NGXLogger) {}
+
   handle(params: MissingTranslationHandlerParams) {
-    console.log(params);
+    this.logger.warn('Missing translation', params.key);
     return '?' + params.key + '?';
   }
 }
@@ -50,8 +54,17 @@ registerLocaleData(localeEn, 'en');
         useFactory: HttpLoaderFactory,
         deps: [HttpClient]
       },
-      missingTranslationHandler: { provide: MissingTranslationHandler, useClass: MyMissingTranslationHandler }
+      missingTranslationHandler: {
+        provide: MissingTranslationHandler,
+        useClass: MyMissingTranslationHandler,
+        deps: [NGXLogger]
+      }
       // useDefaultLang: false
+    }),
+    LoggerModule.forRoot({
+      serverLoggingUrl: environment.serverUrl + 'api/logs',
+      level: NgxLoggerLevel.DEBUG,
+      serverLogLevel: NgxLoggerLevel.WARN
     })
   ],
   providers: [AuthGuard, NotificationService],

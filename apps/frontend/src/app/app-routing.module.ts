@@ -5,6 +5,7 @@ import { UserService } from './authent/user.service';
 import { FilesComponent, FilesModule } from './files/files.component';
 import { SeedsComponent, SeedsModule } from './seeds/seeds.component';
 import { AuthGuard } from './authent/auth.guard';
+import { WindowService } from './utils/window/window.service';
 
 const routes: Routes = [
   {
@@ -48,6 +49,6 @@ const routes: Routes = [
 @NgModule({
   imports: [RouterModule.forRoot(routes), SeedsModule, FilesModule, NotFoundModule],
   exports: [RouterModule],
-  providers: [UserService]
+  providers: [UserService, WindowService]
 })
 export class AppRoutingModule {}

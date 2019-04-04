@@ -22,7 +22,7 @@ class Config {
 
 @Injectable()
 export class ConfigService {
-  private readonly logger = new Logger(ConfigService.name);
+  readonly logger = new Logger(ConfigService.name);
 
   private _config: Config;
 
