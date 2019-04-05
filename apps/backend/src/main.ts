@@ -10,9 +10,13 @@ import * as cors from 'cors';
 
 import { AppModule } from './app/app.module';
 import { Logger } from '@nestjs/common';
+import { LoggingInterceptor } from './app/interceptors/logging.interceptor';
+import { VersionInterceptor } from './app/interceptors/version.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  app.useGlobalInterceptors(new LoggingInterceptor(), new VersionInterceptor());
 
   // Add cors
   app.use(cors());

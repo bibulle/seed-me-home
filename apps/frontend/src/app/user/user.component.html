@@ -1,0 +1,29 @@
+<div *ngIf="!user.name" class="login">
+  <a attr.aria-label="{{'label.login' | translate}}" class="nav-bar-button" color="accent" mat-button (click)="update()" >
+    <mat-icon>face</mat-icon>
+    <span>{{'label.login' | translate}}</span>
+  </a>
+</div>
+<div *ngIf="user.name" class="identity">
+  <!--suppress HtmlUnknownTarget -->
+  <img *ngIf="user.picture" src="{{user.picture}}" alt="user picture">
+  <span class="name">{{user.name}}</span>
+  <button mat-icon-button [matMenuTriggerFor]="menu">
+    <mat-icon>settings</mat-icon>
+  </button>
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item (click)="logout()">
+      <mat-icon>lock_open</mat-icon>
+      <span>{{'label.logout'|translate}}</span>
+    </button>
+    <button mat-menu-item *ngIf="config.language != 'fr'" (click)="toggleLang('fr')">
+      <mat-icon svgIcon="flag_fr"></mat-icon>
+      <span>{{'label.french' | translate}}</span>
+    </button>
+    <button mat-menu-item *ngIf="config.language != 'en'" (click)="toggleLang('en')">
+      <mat-icon svgIcon="flag_us"></mat-icon>
+      <span>{{'label.english' | translate}}</span>
+    </button>
+
+  </mat-menu>
+</div>

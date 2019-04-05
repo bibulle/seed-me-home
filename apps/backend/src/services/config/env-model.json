@@ -6,7 +6,12 @@
     "seedbox_path": "/rutorrent/plugins/rpc/rpc.php",
     "seedbox_user": "user",
     "seedbox_pass": "password",
+
+    "users_authorized": ["authorized user"],
+    "users_admin": ["administrator"],
+
     "authent_jwt_secret": "authent_jwt_secret",
+
     "authent_google_clientID": "my-id",
     "authent_google_clientSecret": "my-secret",
     "authent_google_callbackURL": "my-callback"
@@ -18,7 +23,12 @@
     "seedbox_path": "/rutorrent/plugins/rpc/rpc.php",
     "seedbox_user": "user",
     "seedbox_pass": "password",
+
+    "users_authorized": ["authorized user"],
+    "users_admin": ["administrator"],
+
     "authent_jwt_secret": "authent_jwt_secret",
+
     "authent_google_clientID": "my-id",
     "authent_google_clientSecret": "my-secret",
     "authent_google_callbackURL": "my-callback"
@@ -30,7 +40,12 @@
     "seedbox_path": "/rutorrent/plugins/rpc/rpc.php",
     "seedbox_user": "user",
     "seedbox_pass": "password",
+
+    "users_authorized": ["authorized user"],
+    "users_admin": ["administrator"],
+
     "authent_jwt_secret": "authent_jwt_secret",
+
     "authent_google_clientID": "my-id",
     "authent_google_clientSecret": "my-secret",
     "authent_google_callbackURL": "my-callback"

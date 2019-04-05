@@ -1,16 +1,20 @@
-import { User } from '@seed-me-home/models';
+import { ApiReturn, MyToken, User } from '@seed-me-home/models';
 import { environment } from '../../environments/environment';
 import { BehaviorSubject, Observable, timer } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
-import { NotificationModule, NotificationService } from '../notification/notification.service';
-import { Injectable, NgModule } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { NotificationService } from '../notification/notification.service';
+import { Injectable } from '@angular/core';
 import { distinctUntilChanged } from 'rxjs/operators';
 import { WindowService } from '../utils/window/window.service';
 import { NGXLogger } from 'ngx-logger';
+import { TranslateService } from '@ngx-translate/core';
 
 enum LoginProvider {
   GOOGLE
+}
+class Config {
+  language = 'en';
 }
 
 @Injectable({
@@ -27,12 +31,15 @@ export class JwtHelperServiceService {
 @Injectable()
 export class UserService {
   private static KEY_TOKEN_LOCAL_STORAGE = 'id_token';
-  private static KEY_TOKEN_REQUEST = 'id_token';
+
+  private static KEY_CONFIG_LOCAL_STORAGE = 'config';
 
   private userSubject: BehaviorSubject<User>;
 
   private user = {} as User;
-  //private jwtHelper: JwtHelperService = new JwtHelperService();
+
+  private readonly config: Config;
+  private configSubject: BehaviorSubject<Config>;
 
   private loopCount = 600;
   private intervalLength = 100;
@@ -41,10 +48,11 @@ export class UserService {
   private intervalId: any = null;
 
   constructor(
-    private _http: HttpClient,
-    private _jwtHelperServiceService: JwtHelperServiceService,
+    private readonly _http: HttpClient,
+    private readonly _jwtHelperServiceService: JwtHelperServiceService,
     private readonly _notificationService: NotificationService,
-    private logger: NGXLogger
+    private readonly logger: NGXLogger,
+    private readonly _translateService: TranslateService
   ) {
     this.userSubject = new BehaviorSubject<User>(this.user);
 
@@ -55,6 +63,16 @@ export class UserService {
       // this.logger.debug('timer');
       this.checkAuthentication();
     });
+
+    try {
+      this.config = JSON.parse(localStorage.getItem(UserService.KEY_CONFIG_LOCAL_STORAGE));
+      if (!this.config) {
+        this.config = new Config();
+      }
+    } catch {
+      this.config = new Config();
+    }
+    this.configSubject = new BehaviorSubject<Config>(this.config);
   }
 
   /**
@@ -71,6 +89,13 @@ export class UserService {
    */
   private static tokenSetter(token: string | null) {
     localStorage.setItem(UserService.KEY_TOKEN_LOCAL_STORAGE, token);
+  }
+
+  /**
+   * Remove token from local storage
+   */
+  public static tokenRemove() {
+    localStorage.removeItem(UserService.KEY_TOKEN_LOCAL_STORAGE);
   }
 
   /**
@@ -129,6 +154,18 @@ export class UserService {
     this.checkAuthentication();
 
     return !!(this.user && this.user.providerId);
+  }
+
+  isAdminAuthenticate() {
+    return this.isAuthenticate() && this.user.isAdmin;
+  }
+
+  /**
+   * Logout (just remove the JWT token)
+   */
+  logout() {
+    UserService.tokenRemove();
+    this.checkAuthentication();
   }
 
   /**
@@ -251,20 +288,21 @@ export class UserService {
    * @private
    */
   private _doGet(authentUrl: string) {
+    // this.logger.debug('_doGet '+authentUrl);
+
     return new Promise<User | string>((resolve, reject) => {
       this._http
-        .get(authentUrl, {
+        .get<ApiReturn>(authentUrl, {
           headers: new HttpHeaders({
             Accept: 'application/json'
           })
         })
         // .timeout(3000)
         .toPromise()
-        .then(data => {
-          // const data = res.json();
-          // this.logger.debug('', data);
-          if (data[UserService.KEY_TOKEN_REQUEST]) {
-            UserService.tokenSetter(data[UserService.KEY_TOKEN_REQUEST]);
+        .then((data: ApiReturn) => {
+          const value = data.data as MyToken;
+          if (value && value.id_token) {
+            UserService.tokenSetter(value.id_token);
             this.checkAuthentication();
             resolve();
           } else {
@@ -275,7 +313,7 @@ export class UserService {
           this.checkAuthentication();
 
           this._notificationService.handleError(error);
-          reject();
+          reject('login error');
         });
     });
   }
@@ -323,12 +361,21 @@ export class UserService {
       return ret;
     }, {});
   }
-}
 
-@NgModule({
-  imports: [HttpClientModule, NotificationModule],
-  declarations: [],
-  exports: [],
-  providers: [UserService, JwtHelperServiceService]
-})
-export class UserModule {}
+  // Configuration management
+  configObservable(): Observable<Config> {
+    return this.configSubject;
+  }
+
+  changeLanguage(language: string) {
+    // this.setSearch('');
+    this.config.language = language;
+
+    // console.log(this.config.language);
+    this._translateService.use(this.config.language);
+
+    localStorage.setItem(UserService.KEY_CONFIG_LOCAL_STORAGE, JSON.stringify(this.config));
+
+    this.configSubject.next(this.config);
+  }
+}

@@ -1,27 +1,28 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { NotFoundComponent, NotFoundModule } from './not-found/not-found.component';
-import { UserService } from './authent/user.service';
+import { UserService } from './user/user.service';
 import { FilesComponent, FilesModule } from './files/files.component';
 import { SeedsComponent, SeedsModule } from './seeds/seeds.component';
-import { AuthGuard } from './authent/auth.guard';
+import { AuthGuard, AuthGuardAdmin } from './authent/auth.guard';
 import { WindowService } from './utils/window/window.service';
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: '/seeds',
+    redirectTo: '/files',
     pathMatch: 'full'
   },
   {
     path: 'seeds',
     component: SeedsComponent,
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuardAdmin],
     data: {
       label: 'label.seeds',
       menu: true,
       iconType: 'icon',
-      icon: 'home'
+      icon: 'home',
+      onlyAdmin: true
     }
   },
   {

@@ -1,7 +1,8 @@
 import { AuthGuard } from './auth.guard';
-import { UserModule, UserService } from './user.service';
+import { UserService } from '../user/user.service';
 import { TestBed } from '@angular/core/testing';
 import { NGXLogger, NGXLoggerMock } from 'ngx-logger';
+import { UserModule } from '../user/user.module';
 
 describe('AuthGuard', () => {
   let service: AuthGuard;
@@ -54,8 +55,8 @@ describe('AuthGuard', () => {
     );
 
     expect.assertions(1);
-    service.canActivate().catch(error => {
-      expect(error).toEqual('login error');
+    service.canActivate().then(ret => {
+      expect(ret).toEqual(false);
     });
   });
 });

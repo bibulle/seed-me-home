@@ -1,9 +1,20 @@
 :host {
-  .nav-bar-header[_ngcontent-c1] {
+  .nav-bar-header {
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
     padding: 8px 16px;
+
+    .nav-bar-header-left {
+      flex: 1 1 100%;
+    }
+
+    .nav-bar-header-right {
+      flex: 1 0 auto;
+      display: flex;
+      align-items: center;
+      margin-right: 1em;
+      flex-direction: row;
+    }
   }
 
   .title {
@@ -21,5 +32,30 @@
   .link-text {
     margin: 0.3em;
     text-transform: uppercase;
+  }
+
+  .version-small {
+    font-size: 0.5em;
+    position: absolute;
+    top: 0.5em;
+    right: 0.1em;
+    line-height: 0.5em;
+    display: none;
+  }
+
+  @media (max-width: 720px) {
+    .nav-bar-header .title,
+    .link-text,
+    .flex-spacer {
+      display: none;
+    }
+
+    .nav-bar-header .nav-bar-header-right {
+      flex-direction: column;
+
+      .version-small {
+        display: block;
+      }
+    }
   }
 }

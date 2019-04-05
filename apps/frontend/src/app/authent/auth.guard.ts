@@ -1,16 +1,18 @@
-import { UserService } from './user.service';
+import { UserService } from '../user/user.service';
 import { Injectable } from '@angular/core';
 import { CanActivate } from '@angular/router';
 import { NGXLogger } from 'ngx-logger';
+import { NotificationService } from '../notification/notification.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
+  //noinspection JSUnusedLocalSymbols
   constructor(private readonly _userService: UserService, private readonly logger: NGXLogger) {}
 
   canActivate(): Promise<boolean> {
     // this.logger.debug('canActivate');
 
-    return new Promise<boolean>((resolve, reject) => {
+    return new Promise<boolean>(resolve => {
       if (this._userService.isAuthenticate()) {
         // this.logger.debug('canActivate true');
         resolve(true);
@@ -22,10 +24,29 @@ export class AuthGuard implements CanActivate {
             // this.logger.debug('then OK');
             resolve(true);
           })
-          .catch(reason => {
-            this.logger.warn(reason);
-            reject(reason);
+          .catch(() => {
+            // this.logger.warn(reason);
+            resolve(false);
           });
+      }
+    });
+  }
+}
+
+@Injectable()
+export class AuthGuardAdmin implements CanActivate {
+  constructor(private _userService: UserService, private readonly _notificationService: NotificationService) {}
+
+  canActivate(): Promise<boolean> {
+    // console.log('canActivate AuthGuardAdmin');
+
+    return new Promise<boolean>(resolve => {
+      if (this._userService.isAdminAuthenticate()) {
+        // console.log('canActivate true');
+        resolve(true);
+      } else {
+        this._notificationService.error('You are not an administrator');
+        resolve(false);
       }
     });
   }

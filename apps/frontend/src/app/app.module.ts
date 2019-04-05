@@ -2,11 +2,10 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
-import { RtorrentStatusComponent } from './rtorrent-status/rtorrent-status.component';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { MaterialModule } from './material.module';
 import { AppRoutingModule } from './app-routing.module';
-import { AuthGuard } from './authent/auth.guard';
+import { AuthGuard, AuthGuardAdmin } from './authent/auth.guard';
 import { SeedsModule } from './seeds/seeds.component';
 import { NotFoundModule } from './not-found/not-found.component';
 import { NavBarModule } from './navbar/nav-bar.component';
@@ -38,7 +37,7 @@ registerLocaleData(localeFr, 'fr');
 registerLocaleData(localeEn, 'en');
 
 @NgModule({
-  declarations: [AppComponent, RtorrentStatusComponent],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     HttpClientModule,
@@ -67,7 +66,7 @@ registerLocaleData(localeEn, 'en');
       serverLogLevel: NgxLoggerLevel.WARN
     })
   ],
-  providers: [AuthGuard, NotificationService],
+  providers: [AuthGuard, AuthGuardAdmin, NotificationService],
   bootstrap: [AppComponent],
   exports: []
 })

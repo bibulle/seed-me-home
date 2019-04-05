@@ -6,11 +6,13 @@ import { APP_BASE_HREF } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { DefaultLangChangeEvent, LangChangeEvent, TranslateService, TranslationChangeEvent } from '@ngx-translate/core';
-import { of } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { EventEmitter } from '@angular/core';
-import { UserModule } from '../authent/user.service';
 import { AuthGuard } from '../authent/auth.guard';
 import { NGXLogger, NGXLoggerMock } from 'ngx-logger';
+import { UserModule } from '../user/user.module';
+import { UserService } from '../user/user.service';
+import { User } from '@seed-me-home/models';
 
 const flushPromises = () => {
   return new Promise(resolve => setImmediate(resolve));
@@ -35,6 +37,7 @@ describe('NavBarComponent', () => {
   let component: NavBarComponent;
   let fixture: ComponentFixture<NavBarComponent>;
   let authGard: AuthGuard;
+  let userService: UserService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -44,20 +47,35 @@ describe('NavBarComponent', () => {
         { provide: APP_BASE_HREF, useValue: '/' },
         { provide: TranslateService, useClass: TranslateServiceStub },
         { provide: NGXLogger, useClass: NGXLoggerMock },
-        AuthGuard
+        AuthGuard,
+        UserService
       ]
     }).compileComponents();
 
     authGard = TestBed.get(AuthGuard);
+    userService = TestBed.get(UserService);
 
     jest.spyOn(authGard, 'canActivate').mockImplementation(() => {
       return new Promise<boolean>(resolve => {
         resolve(true);
       });
     });
+    jest.spyOn(userService, 'userObservable').mockImplementation(() => {
+      return new BehaviorSubject<User>({
+        name: 'name',
+        family_name: 'family_name',
+        given_name: 'given_name',
+        locale: 'en',
+        picture: 'picture_url',
+        provider: 'google',
+        providerId: '12345678',
+        isAdmin: true
+      });
+    });
 
     fixture = TestBed.createComponent(NavBarComponent);
     component = fixture.componentInstance;
+
     fixture.detectChanges();
   });
 
@@ -82,26 +100,27 @@ describe('NavBarComponent', () => {
     expect(compiled.querySelectorAll('.nav-bar-header a')[2].textContent).toContain('folder[label.files]');
   });
 
-  it('navigate to a button and it become accent', () => {
+  it('navigate to a button and it become accent', async () => {
     const compiled = fixture.debugElement.nativeElement;
 
     // console.log(compiled.querySelectorAll('.nav-bar-header a')[0].classList);
     // console.log(compiled.querySelectorAll('.nav-bar-header a')[1].classList);
+    // console.log(compiled.querySelectorAll('.nav-bar-header a')[2].classList);
 
     // for now, seeds shouldn't be selected
     expect(compiled.querySelectorAll('.nav-bar-header a')[1].classList).not.toContain('mat-accent');
 
     // click on the seeds button
-    compiled.querySelectorAll('.nav-bar-header a')[1].click();
+    compiled.querySelectorAll('.nav-bar-header a')[2].click();
 
-    flushPromises();
-
+    await flushPromises();
     fixture.detectChanges();
 
     // console.log(compiled.querySelectorAll('.nav-bar-header a')[0].classList);
     // console.log(compiled.querySelectorAll('.nav-bar-header a')[1].classList);
+    // console.log(compiled.querySelectorAll('.nav-bar-header a')[2].classList);
 
     // now, seeds should be selected
-    expect(compiled.querySelectorAll('.nav-bar-header a')[1].classList).toContain('mat-accent');
+    expect(compiled.querySelectorAll('.nav-bar-header a')[2].classList).toContain('mat-accent');
   });
 });

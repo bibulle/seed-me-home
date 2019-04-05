@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable, ReplaySubject, Subject } from 'rxjs';
-import { RtorrentStatus } from '@seed-me-home/models';
+import { ApiReturn, RtorrentStatus } from '@seed-me-home/models';
 import { HttpClient } from '@angular/common/http';
 import { NotificationService } from '../notification/notification.service';
 import { NGXLogger } from 'ngx-logger';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class RtorrentStatusService {
   private static REFRESH_EVERY = 10 * 1000;
   private static _refreshIsRunning = false;
 
-  API_URL = '/api/rtorrent/status';
+  API_URL = environment.serverUrl + 'rtorrent/status';
 
   private readonly currentStatusSubject: Subject<RtorrentStatus>;
 
@@ -49,14 +50,15 @@ export class RtorrentStatusService {
   private _loadStatus(): Promise<RtorrentStatus> {
     return new Promise<RtorrentStatus>((resolve, reject) => {
       this.httpClient
-        .get<RtorrentStatus>(this.API_URL)
+        .get<ApiReturn>(this.API_URL)
         .toPromise()
         .catch(error => {
           this._notificationService.handleError(error);
           reject(error);
         })
-        .then((data: RtorrentStatus) => {
-          resolve(data);
+        .then((data: ApiReturn) => {
+          const value = data.data as RtorrentStatus;
+          resolve(value);
         });
     });
   }

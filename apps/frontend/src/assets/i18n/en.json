@@ -1,6 +1,16 @@
 {
   "title": "SeedMeHome",
   "version": "version",
+  "label.login": "login",
   "label.seeds": "seeds",
-  "label.files": "files"
+  "label.files": "files",
+  "label.english": "Switch to english",
+  "label.french": "Changer pour le français",
+  "label.logout": "Logout",
+
+  "Unauthorized": "Your are not authorized to use this application.",
+  "Internal Server Error": "Internal server error.",
+  "Not Found": "Internal API page not found",
+  "Gateway Timeout": "Internal API timeout",
+  "not_administrator": "You are not an administrator"
 }

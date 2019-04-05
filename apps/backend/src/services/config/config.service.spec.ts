@@ -46,6 +46,12 @@ describe('ConfigService', () => {
   it('Authent JWT secret Pass should be authent_jwt_secret', () => {
     expect(service.getAuthentJwtSecret()).toEqual('authent_jwt_secret');
   });
+  it('User authorized should be ["authorized user"]', () => {
+    expect(service.getUsersAuthorized()).toEqual(['authorized user']);
+  });
+  it('User admin should be ["administrator"]', () => {
+    expect(service.getUsersAdmin()).toEqual(['administrator']);
+  });
   it('should exit process on wrong file', () => {
     //@ts-ignore
     const mockExit = jest.spyOn(process, 'exit').mockImplementation(() => {});

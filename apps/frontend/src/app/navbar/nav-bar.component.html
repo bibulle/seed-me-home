@@ -28,18 +28,14 @@
     </nav>
   </div>
   <div class="nav-bar-header-right">
-    <!--<span class="version-small">{{version}}</span>-->
-    <!--<div class="user">-->
+    <span class="version-small">{{version}}</span>
+    <div class="user">
+      <app-user [user]="user"></app-user>
       <!--<div class="nav-bar-hide-small not-reloading" *ngIf="!reloading"></div>-->
       <!--<mat-spinner class="nav-bar-hide-small reloading" diameter="20" *ngIf="reloading"></mat-spinner>-->
-      <!--<div class="nav-bar-hide-small connected-user" *ngIf="user['bungieNetUser']">-->
-        <!--<img-->
-            <!--src="{{'https://www.bungie.net'+user['bungieNetUser'].profilePicturePath}}"-->
-            <!--alt="{{user['bungieNetUser'].displayName}}"> {{user['bungieNetUser'].displayName}}-->
-      <!--</div>-->
-      <!--<button mat-icon-button *ngIf="updateNeeded" (click)="update()" matTooltip="{{'update-needed' | tranlate}}" color="primary">-->
-        <!--<mat-icon>cloud_upload</mat-icon>-->
-      <!--</button>-->
-    <!--</div>-->
+      <button mat-icon-button *ngIf="updateNeeded" (click)="update()" matTooltip="{{'update-needed' | translate}}" color="primary">
+        <mat-icon>cloud_upload</mat-icon>
+      </button>
+    </div>
   </div>
 </div>

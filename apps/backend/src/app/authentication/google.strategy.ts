@@ -13,21 +13,25 @@ class RealGoogleStrategy extends PassportStrategy(Strategy, 'google') {
       clientSecret: clientSecret,
       callbackURL: callbackURL,
       passReqToCallback: true,
-      scope: ['profile']
+      scope: ['profile'],
+      accessType: 'offline',
+      approval_prompt: 'force'
     });
   }
 
   async validate(request: any, accessToken: string, refreshToken: string, profile, done: any) {
     try {
-      // this.logger.debug(JSON.stringify(profile), 'validate');
+      //this.logger.debug(accessToken);
+      if (refreshToken) {
+        this.logger.warn(`refresh token found for ${profile.displayName}`);
+      }
       const jwt: string = await this.authenticationService.validateOAuthLogin(profile, Provider.GOOGLE);
       const user = {
         jwt
       };
       done(null, user);
     } catch (err) {
-      this.logger.error('validate');
-      this.logger.error(err);
+      this.logger.error('Status : ' + err.status + ' (' + err.message + ')');
       done(err, false);
     }
   }

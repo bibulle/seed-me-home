@@ -1,13 +1,14 @@
 import { Component, NgModule, OnDestroy, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { UserService } from '../authent/user.service';
+import { UserService } from '../user/user.service';
 import { User, Version } from '@seed-me-home/models';
 import { Subscription } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatButtonModule, MatIconModule, MatToolbarModule } from '@angular/material';
+import { MatButtonModule, MatIconModule, MatToolbarModule, MatTooltipModule } from '@angular/material';
 import { CommonModule } from '@angular/common';
 import { AppRoutingModule } from '../app-routing.module';
 import { NotificationModule } from '../notification/notification.service';
+import { UserModule } from '../user/user.module';
 
 @Component({
   selector: 'app-nav-bar',
@@ -22,10 +23,11 @@ export class NavBarComponent implements OnInit, OnDestroy {
   private _currentUserSubscription: Subscription;
 
   version = new Version().version;
+  updateNeeded = false;
 
   constructor(private _router: Router, private _userService: UserService) {
     this._router.events.subscribe(data => {
-      // console.log(data.constructor.name);
+      //console.log(data.constructor.name);
       if (data instanceof NavigationEnd) {
         this.linksLeft.forEach(link => {
           link.selected = '/' + link.path === data.urlAfterRedirects;
@@ -39,6 +41,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this._currentUserSubscription = this._userService.userObservable().subscribe(user => {
+      //console.log(this.user);
       this.user = user;
       this.calculateMenus();
     });
@@ -54,8 +57,8 @@ export class NavBarComponent implements OnInit, OnDestroy {
     const newLinksLeft: { path: string; label: string; icon: string; iconType: string; selected: boolean }[] = [];
     const newLinksRight: { path: string; label: string; icon: string; iconType: string; selected: boolean }[] = [];
     this._router.config.forEach(obj => {
-      // console.log(obj);
-      if (!obj.redirectTo && obj.data && obj.data['menu']) {
+      //console.log(this.user);
+      if (!obj.redirectTo && obj.data && obj.data['menu'] && (!obj.data['onlyAdmin'] || this.user.isAdmin)) {
         if (obj.data['right']) {
           newLinksRight.push({
             path: obj.path,
@@ -78,6 +81,10 @@ export class NavBarComponent implements OnInit, OnDestroy {
     this.linksLeft = newLinksLeft;
     this.linksRight = newLinksRight;
   }
+
+  update() {
+    location.reload();
+  }
 }
 
 @NgModule({
@@ -87,8 +94,10 @@ export class NavBarComponent implements OnInit, OnDestroy {
     MatButtonModule,
     MatIconModule,
     MatToolbarModule,
+    MatTooltipModule,
     AppRoutingModule,
-    NotificationModule
+    NotificationModule,
+    UserModule
   ],
   declarations: [NavBarComponent],
   exports: [NavBarComponent]

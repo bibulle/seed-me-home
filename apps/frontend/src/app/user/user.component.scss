@@ -1,0 +1,19 @@
+:host {
+  .identity {
+    display: flex;
+    align-items: center;
+
+    img {
+      height: 2em;
+    }
+
+    .name {
+      padding-left: 0.5em;
+    }
+  }
+
+  .login span {
+    margin: 0.3em;
+    text-transform: uppercase;
+  }
+}

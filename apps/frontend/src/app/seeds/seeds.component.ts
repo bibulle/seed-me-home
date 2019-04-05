@@ -1,5 +1,6 @@
 import { Component, NgModule, OnInit } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
+import { RtorrentStatusModule } from '../rtorrent-status/rtorrent-status.component';
 
 @Component({
   selector: 'app-seeds',
@@ -13,7 +14,7 @@ export class SeedsComponent implements OnInit {
 }
 
 @NgModule({
-  imports: [TranslateModule.forChild()],
+  imports: [TranslateModule.forChild(), RtorrentStatusModule],
   declarations: [SeedsComponent],
   exports: [SeedsComponent]
 })

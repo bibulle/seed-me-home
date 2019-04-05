@@ -25,7 +25,7 @@ describe('AuthenticationService', () => {
   });
   it('validateOAuthLogin should return a jwt token', async () => {
     const thirdPartyUser = {
-      displayName: 'A test user',
+      displayName: 'authorized user',
       _json: {
         family_name: 'family_name',
         given_name: 'given_name',
@@ -63,7 +63,7 @@ describe('AuthenticationService', () => {
           family_name: 'family_name',
           given_name: 'given_name',
           locale: 'locale',
-          name: 'A test user',
+          name: 'authorized user',
           picture: 'pictureURL',
           provider: 'google',
           providerId: '123456',
@@ -73,12 +73,28 @@ describe('AuthenticationService', () => {
       })
       .catch(() => {});
   });
-  it('validateOAuthLogin should return an error on wrong thirdPartyUser', async () => {
-    const thirdPartyUser = {};
 
+  it('validateOAuthLogin should return an error on wrong thirdPartyUser', async () => {
+    const thirdPartyUser = {
+      displayName: 'authorized user'
+    };
+
+    expect.assertions(2);
     service.validateOAuthLogin(thirdPartyUser, Provider.GOOGLE).catch(err => {
       expect(err).toBeDefined();
       expect(err.response.statusCode).toEqual(500);
+    });
+  });
+
+  it('validateOAuthLogin should return not authorized on thirdPartyUser not known', async () => {
+    const thirdPartyUser = {
+      displayName: 'not authorized user'
+    };
+
+    expect.assertions(2);
+    service.validateOAuthLogin(thirdPartyUser, Provider.GOOGLE).catch(err => {
+      expect(err).toBeDefined();
+      expect(err.response.statusCode).toEqual(401);
     });
   });
 });

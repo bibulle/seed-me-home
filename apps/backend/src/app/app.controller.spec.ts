@@ -45,7 +45,7 @@ describe('AppController', () => {
       };
       expect(appController.createLog(message)).toEqual(message);
 
-      expect(consoleDebug).toEqual('a message {"un":"1"}');
+      expect(consoleDebug).toEqual('a message {"un":"1"} (filename.ts?123)');
       expect(consoleWarn).toEqual('');
       expect(consoleError).toEqual('');
     });
@@ -60,7 +60,7 @@ describe('AppController', () => {
       };
       expect(appController.createLog(message)).toEqual(message);
 
-      expect(consoleDebug).toEqual('a message');
+      expect(consoleDebug).toEqual('a message (filename.ts?123)');
       expect(consoleWarn).toEqual('');
       expect(consoleError).toEqual('');
     });
@@ -75,7 +75,7 @@ describe('AppController', () => {
       };
       expect(appController.createLog(message)).toEqual(message);
 
-      expect(consoleDebug).toEqual('a message');
+      expect(consoleDebug).toEqual('a message (filename.ts?123)');
       expect(consoleWarn).toEqual('');
       expect(consoleError).toEqual('');
     });
@@ -91,7 +91,7 @@ describe('AppController', () => {
       expect(appController.createLog(message)).toEqual(message);
 
       expect(consoleDebug).toEqual('');
-      expect(consoleWarn).toEqual('a message');
+      expect(consoleWarn).toEqual('a message (filename.ts?123)');
       expect(consoleError).toEqual('');
     });
     it('a received ERROR log should create the correct error log', () => {
@@ -107,7 +107,7 @@ describe('AppController', () => {
 
       expect(consoleDebug).toEqual('');
       expect(consoleWarn).toEqual('');
-      expect(consoleError).toEqual('a message');
+      expect(consoleError).toEqual('a message (filename.ts?123)');
     });
     it('a received FATAL log should create the correct error log', () => {
       const message: MessageLog = {
@@ -122,7 +122,7 @@ describe('AppController', () => {
 
       expect(consoleDebug).toEqual('');
       expect(consoleWarn).toEqual('');
-      expect(consoleError).toEqual('a message');
+      expect(consoleError).toEqual('a message (filename.ts?123)');
     });
   });
 });

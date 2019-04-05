@@ -1,4 +1,4 @@
-import { JwtHelperServiceService, UserModule, UserService } from './user.service';
+import { JwtHelperServiceService, UserService } from './user.service';
 import { TestBed } from '@angular/core/testing';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
@@ -6,6 +6,7 @@ import { environment } from '../../environments/environment';
 import * as _Window from 'jsdom/lib/jsdom/browser/Window';
 import { NotificationModule, NotificationService } from '../notification/notification.service';
 import { NGXLogger, NGXLoggerMock } from 'ngx-logger';
+import { UserModule } from './user.module';
 
 const flushPromises = () => {
   return new Promise(resolve => setImmediate(resolve));
@@ -171,7 +172,7 @@ describe('UserService', () => {
 
     const req = httpMock.expectOne(environment.serverUrl + 'authentication/google/callback?code=google-token');
     expect(req.request.method).toBe('GET');
-    req.flush({ id_token: 'not-expired' });
+    req.flush({ data: { id_token: 'not-expired' } });
 
     await flushPromises();
 

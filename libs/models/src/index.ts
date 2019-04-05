@@ -1,3 +1,4 @@
+export * from './lib/api-return';
 export * from './lib/rtorrent-status';
 export * from './lib/version';
 export * from './lib/user';

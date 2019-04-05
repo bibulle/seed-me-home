@@ -11,6 +11,9 @@ class Config {
   public seedbox_user = '';
   public seedbox_pass = '';
 
+  public users_authorized = [];
+  public users_admin = [];
+
   public authent_jwt_secret = '';
 
   public authent_google_clientID = '';
@@ -108,5 +111,15 @@ export class ConfigService {
   public getAuthentJwtSecret() {
     this.initialize();
     return this._config.authent_jwt_secret;
+  }
+
+  public getUsersAuthorized() {
+    this.initialize();
+    return this._config.users_authorized;
+  }
+
+  public getUsersAdmin() {
+    this.initialize();
+    return this._config.users_admin;
   }
 }

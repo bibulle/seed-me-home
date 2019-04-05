@@ -5,6 +5,8 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material';
 import { HttpErrorResponse } from '@angular/common/http';
 import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { NGXLogger, NGXLoggerMock } from 'ngx-logger';
+import { TranslateService } from '@ngx-translate/core';
+import { TranslateServiceStub } from '../navbar/nav-bar.component.spec';
 
 describe('NotificationService', () => {
   let service: NotificationService;
@@ -13,7 +15,10 @@ describe('NotificationService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [MatSnackBarModule, BrowserAnimationsModule, NoopAnimationsModule],
-      providers: [{ provide: NGXLogger, useClass: NGXLoggerMock }]
+      providers: [
+        { provide: NGXLogger, useClass: NGXLoggerMock },
+        { provide: TranslateService, useClass: TranslateServiceStub }
+      ]
     });
     aSnackBar = TestBed.get(MatSnackBar);
     service = TestBed.get(NotificationService);
@@ -66,7 +71,7 @@ describe('NotificationService', () => {
 
     const notificationServiceErrorMock = jest.spyOn(service, 'error');
     notificationServiceErrorMock.mockImplementation(mess => {
-      expect(mess).toEqual('Tested http error');
+      expect(mess).toEqual('Tested http error | translate');
     });
 
     try {
