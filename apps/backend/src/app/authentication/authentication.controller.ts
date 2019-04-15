@@ -22,9 +22,9 @@ export class AuthenticationController {
     }
   }
 
-  @Get('protected')
-  @UseGuards(AuthGuard('jwt'))
-  protectedResource() {
-    return 'JWT is working!';
-  }
+  //  @Get('protected')
+  //  @UseGuards(AuthGuard('jwt'))
+  //  protectedResource() {
+  //    return 'JWT is working!';
+  //  }
 }

@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { User } from '@seed-me-home/models';
-import { UserService } from './user.service';
+import { Config, UserService } from './user.service';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
@@ -13,7 +13,7 @@ export class UserComponent implements OnInit {
   @Input() user: User;
 
   private _currentConfigSubscription: Subscription;
-  private config: any;
+  private config: Config = new Config();
 
   constructor(private _router: Router, private readonly _userService: UserService) {}
 

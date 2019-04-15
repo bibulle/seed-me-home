@@ -83,8 +83,7 @@
           "builder": "@nrwl/builders:jest",
           "options": {
             "jestConfig": "apps/frontend/jest.config.js",
-            "tsConfig": "apps/frontend/tsconfig.spec.json",
-            "setupFile": "apps/frontend/src/test-setup.ts"
+            "tsConfig": "apps/frontend/tsconfig.spec.json"
           },
           "configurations": {
             "ci": {

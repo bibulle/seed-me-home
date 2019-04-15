@@ -18,7 +18,7 @@
       "@seed-me-home/models": ["libs/models/src/index.ts"]
     },
     "types": ["node", "jest"],
-    "esModuleInterop": false
+    "esModuleInterop": true
   },
   "exclude": ["node_modules", "tmp"]
 }

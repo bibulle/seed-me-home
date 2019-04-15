@@ -5,9 +5,10 @@ import { AuthenticationService, Provider } from './authentication.service';
 import { ConfigService } from '../../services/config/config.service';
 
 class RealGoogleStrategy extends PassportStrategy(Strategy, 'google') {
-  private readonly logger = new Logger(RealGoogleStrategy.name);
+  readonly logger = new Logger(RealGoogleStrategy.name);
 
   constructor(private readonly authenticationService: AuthenticationService, _clientID, clientSecret, callbackURL) {
+    //noinspection JSUnusedGlobalSymbols
     super({
       clientID: _clientID,
       clientSecret: clientSecret,
@@ -51,5 +52,5 @@ export class GoogleStrategy {
     );
   }
 
-  private strategy: RealGoogleStrategy;
+  strategy: RealGoogleStrategy;
 }

@@ -15,6 +15,7 @@ describe('AuthenticationService', () => {
     service = module.get<AuthenticationService>(AuthenticationService);
 
     configService = module.get<ConfigService>(ConfigService);
+    jest.spyOn(configService.logger, 'error').mockImplementation(() => {});
     configService.forceConfigFile('env-model.json');
 
     jest.spyOn(service.logger, 'debug').mockImplementation(() => {});

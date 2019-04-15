@@ -27,16 +27,20 @@ export class RtorrentStatusService {
   }
 
   private _refreshStatus() {
+    this.logger.debug('_refreshStatus');
+    this.logger.debug(this.currentStatusSubject.observers.length);
     if (this.currentStatusSubject.observers.length > 0) {
       RtorrentStatusService._refreshIsRunning = true;
       this._loadStatus()
         .then(status => {
+          RtorrentStatusService._refreshIsRunning = false;
           this.currentStatusSubject.next(status);
           setTimeout(() => {
             this._refreshStatus();
           }, RtorrentStatusService.REFRESH_EVERY);
         })
         .catch(() => {
+          RtorrentStatusService._refreshIsRunning = false;
           setTimeout(() => {
             this._refreshStatus();
           }, RtorrentStatusService.REFRESH_EVERY);
@@ -52,20 +56,20 @@ export class RtorrentStatusService {
       this.httpClient
         .get<ApiReturn>(this.API_URL)
         .toPromise()
-        .catch(error => {
-          this._notificationService.handleError(error);
-          reject(error);
-        })
         .then((data: ApiReturn) => {
           const value = data.data as RtorrentStatus;
           resolve(value);
+        })
+        .catch(error => {
+          this._notificationService.handleError(error);
+          reject(error);
         });
     });
   }
 
   /**
    * Initialize the loading of stats
-   * @param forceRelaunch SHould force the restarting (should be only useful for tests)
+   * @param forceRelaunch Should force the restarting (should be only useful for tests)
    */
   startLoadingStats(forceRelaunch = false) {
     // this.logger.debug('startLoadingStats ' + RtorrentStatusService._refreshIsRunning);

@@ -1,10 +1,10 @@
-<div *ngIf="!user.name" class="login">
+<div *ngIf="!user || !user.name" class="login">
   <a attr.aria-label="{{'label.login' | translate}}" class="nav-bar-button" color="accent" mat-button (click)="update()" >
     <mat-icon>face</mat-icon>
     <span>{{'label.login' | translate}}</span>
   </a>
 </div>
-<div *ngIf="user.name" class="identity">
+<div *ngIf="user && user.name" class="identity">
   <!--suppress HtmlUnknownTarget -->
   <img *ngIf="user.picture" src="{{user.picture}}" alt="user picture">
   <span class="name">{{user.name}}</span>

@@ -1,4 +1,4 @@
-import { Component, NgModule, OnInit } from '@angular/core';
+import { Component, NgModule, OnDestroy, OnInit } from '@angular/core';
 import { RtorrentStatusService } from './rtorrent-status.service';
 import { RtorrentStatus } from '@seed-me-home/models';
 import { Subscription } from 'rxjs';
@@ -9,8 +9,9 @@ import { MatSnackBarModule } from '@angular/material';
   selector: 'app-rtorrent-status',
   templateUrl: './rtorrent-status.component.html',
   styleUrls: ['./rtorrent-status.component.scss']
+  //template: `<a [hidden]="needsLogin()">Login</a>`
 })
-export class RtorrentStatusComponent implements OnInit {
+export class RtorrentStatusComponent implements OnInit, OnDestroy {
   rtorrentStatus: RtorrentStatus;
   private _currentRtorrentStatusSubscription: Subscription;
 
@@ -24,6 +25,12 @@ export class RtorrentStatusComponent implements OnInit {
       });
 
     this._rtorrentStatusService.startLoadingStats();
+  }
+
+  ngOnDestroy() {
+    if (this._currentRtorrentStatusSubscription) {
+      this._currentRtorrentStatusSubscription.unsubscribe();
+    }
   }
 }
 

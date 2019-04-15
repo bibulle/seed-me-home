@@ -13,7 +13,8 @@ import { TranslateService } from '@ngx-translate/core';
 enum LoginProvider {
   GOOGLE
 }
-class Config {
+
+export class Config {
   language = 'en';
 }
 
@@ -39,13 +40,15 @@ export class UserService {
   private user = {} as User;
 
   private readonly config: Config;
-  private configSubject: BehaviorSubject<Config>;
+  private readonly configSubject: BehaviorSubject<Config>;
 
   private loopCount = 600;
   private intervalLength = 100;
 
   private windowHandle: any = null;
   private intervalId: any = null;
+
+  timer1;
 
   constructor(
     private readonly _http: HttpClient,
@@ -58,9 +61,8 @@ export class UserService {
 
     this.checkAuthentication();
 
-    const timer1 = timer(3 * 1000, 3 * 1000);
-    timer1.subscribe(() => {
-      // this.logger.debug('timer');
+    this.timer1 = timer(3 * 1000, 3 * 1000);
+    this.timer1.subscribe(() => {
       this.checkAuthentication();
     });
 
@@ -72,6 +74,7 @@ export class UserService {
     } catch {
       this.config = new Config();
     }
+    this._translateService.use(this.config.language);
     this.configSubject = new BehaviorSubject<Config>(this.config);
   }
 
@@ -157,7 +160,7 @@ export class UserService {
   }
 
   isAdminAuthenticate() {
-    return this.isAuthenticate() && this.user.isAdmin;
+    return this.isAuthenticate() && this.user.isAdmin === true;
   }
 
   /**
@@ -204,7 +207,7 @@ export class UserService {
 
       this.intervalId = setInterval(() => {
         let parsed;
-        // this.logger.debug('intervale : ' + loopCount);
+        // this.logger.debug('interval : ' + loopCount);
         if (loopCount-- < 0) {
           // Too many try... stop it
           clearInterval(this.intervalId);

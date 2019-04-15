@@ -27,5 +27,5 @@ export class JwtStrategy {
     this.strategy = new RealJwtStrategy(this._configService.getAuthentJwtSecret());
   }
 
-  private strategy: RealJwtStrategy;
+  strategy: RealJwtStrategy;
 }

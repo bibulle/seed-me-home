@@ -5,8 +5,9 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material';
 import { HttpErrorResponse } from '@angular/common/http';
 import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { NGXLogger, NGXLoggerMock } from 'ngx-logger';
-import { TranslateService } from '@ngx-translate/core';
-import { TranslateServiceStub } from '../navbar/nav-bar.component.spec';
+import { DefaultLangChangeEvent, LangChangeEvent, TranslateService, TranslationChangeEvent } from '@ngx-translate/core';
+import { EventEmitter } from '@angular/core';
+import { of } from 'rxjs';
 
 describe('NotificationService', () => {
   let service: NotificationService;
@@ -40,6 +41,34 @@ describe('NotificationService', () => {
     });
 
     service.error('This is a test message');
+  });
+
+  it('error method should translate if needed', async () => {
+    const _aSnackBarOpen = jest.spyOn(aSnackBar, 'open');
+    _aSnackBarOpen.mockImplementationOnce((message, actions, config) => {
+      expect(_aSnackBarOpen).toBeCalledTimes(1);
+      expect(message).toEqual('[this is a fake translation of This is a test message]');
+      expect(config).toBeDefined();
+      expect(config.panelClass).toEqual(['error']);
+
+      return aSnackBar.open(message, actions, config);
+    });
+
+    service.error('This is a test message | translate');
+  });
+
+  it('error method should add args if needed', async () => {
+    const _aSnackBarOpen = jest.spyOn(aSnackBar, 'open');
+    _aSnackBarOpen.mockImplementationOnce((message, actions, config) => {
+      expect(_aSnackBarOpen).toBeCalledTimes(1);
+      expect(message).toEqual('This is a test message - {"1":1} - ["two","three"]');
+      expect(config).toBeDefined();
+      expect(config.panelClass).toEqual(['error']);
+
+      return aSnackBar.open(message, actions, config);
+    });
+
+    service.error('This is a test message', { 1: 1 }, ['two', 'three']);
   });
 
   it('handleError should manage HttpErrorResponse containing ErrorEvent and error message', async () => {
@@ -85,3 +114,16 @@ describe('NotificationService', () => {
     notificationServiceErrorMock.mockClear();
   });
 });
+class TranslateServiceStub {
+  //noinspection JSUnusedGlobalSymbols
+  public onTranslationChange: EventEmitter<TranslationChangeEvent> = new EventEmitter();
+  //noinspection JSUnusedGlobalSymbols
+  public onLangChange: EventEmitter<LangChangeEvent> = new EventEmitter();
+  //noinspection JSUnusedGlobalSymbols
+  public onDefaultLangChange: EventEmitter<DefaultLangChangeEvent> = new EventEmitter();
+  public use() {}
+  //noinspection JSMethodCanBeStatic
+  public get(key: any): any {
+    return of('[this is a fake translation of ' + key + ']');
+  }
+}

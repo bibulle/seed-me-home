@@ -96,55 +96,54 @@ describe('RtorrentStatusService', () => {
       jest.clearAllTimers();
     });
 
-    //    it('it should manage error if http response is Ko (and update after a while)', async () => {
-    //      // Just test the error content
-    //      jest.spyOn(notificationService, 'error').mockImplementation(message => {
-    //        expect(message).toBe('Tested http error');
-    //      });
-    //
-    //      // Just do nothing but subscribe
-    //      service.currentStatusObservable().subscribe(() => {
-    //      });
-    //
-    //      // start the service
-    //      service.startLoadingStats(true);
-    //
-    //      // immediately get url called (and answer error)
-    //      let req = httpMock.expectOne(`${service.API_URL}`);
-    //      expect(req.request.method).toBe('GET');
-    //      req.error(
-    //        new ErrorEvent('HTTP_ERROR', {
-    //          error: new Error('Http error'),
-    //          message: 'Tested http error'
-    //        })
-    //      );
-    //
-    //      // timeout has been called
-    //      await flushPromises();
-    //      expect(setTimeout).toHaveBeenCalledTimes(1);
-    //
-    //      // No new request (because we wait 10 seconds)
-    //      httpMock.expectNone(`${service.API_URL}`);
-    //
-    //      // Activate the timeout
-    //      jest.runOnlyPendingTimers();
-    //
-    //      // immediately get url called
-    //      req = httpMock.expectOne(`${service.API_URL}`);
-    //      expect(req.request.method).toBe('GET');
-    //      req.error(
-    //        new ErrorEvent('HTTP_ERROR', {
-    //          error: new Error('Http error'),
-    //          message: 'Tested http error'
-    //        })
-    //      );
-    //
-    //      // Notification service should have been called twice
-    //      await flushPromises();
-    //      expect(jest.spyOn(notificationService, 'error')).toHaveBeenCalledTimes(2);
-    //
-    //      jest.clearAllTimers();
-    //    });
+    it('it should manage error if http response is Ko (and update after a while)', async () => {
+      // Just test the error content
+      jest.spyOn(notificationService, 'error').mockImplementation(message => {
+        expect(message).toBe('Tested http error');
+      });
+
+      // Just do nothing but subscribe
+      service.currentStatusObservable().subscribe(() => {});
+
+      // start the service
+      service.startLoadingStats(true);
+
+      // immediately get url called (and answer error)
+      let req = httpMock.expectOne(`${service.API_URL}`);
+      expect(req.request.method).toBe('GET');
+      req.error(
+        new ErrorEvent('HTTP_ERROR', {
+          error: new Error('Http error'),
+          message: 'Tested http error'
+        })
+      );
+
+      // timeout has been called
+      await flushPromises();
+      expect(setTimeout).toHaveBeenCalledTimes(1);
+
+      // No new request (because we wait 10 seconds)
+      httpMock.expectNone(`${service.API_URL}`);
+
+      // Activate the timeout
+      jest.runOnlyPendingTimers();
+
+      // immediately get url called
+      req = httpMock.expectOne(`${service.API_URL}`);
+      expect(req.request.method).toBe('GET');
+      req.error(
+        new ErrorEvent('HTTP_ERROR', {
+          error: new Error('Http error'),
+          message: 'Tested http error'
+        })
+      );
+
+      // Notification service should have been called twice
+      await flushPromises();
+      expect(jest.spyOn(notificationService, 'error')).toHaveBeenCalledTimes(2);
+
+      jest.clearAllTimers();
+    });
   });
 
   afterEach(() => {

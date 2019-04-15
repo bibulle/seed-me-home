@@ -4,6 +4,7 @@ import { ConfigService } from '../../services/config/config.service';
 import * as _ from 'lodash';
 
 export class RtorrentServiceTestValues {
+  //noinspection SpellCheckingInspection
   static readonly FAKE_RTORRENT_RETURN = {
     up_rate: '191',
     down_rate: '28',
@@ -402,6 +403,7 @@ export class RtorrentServiceTestValues {
     up_rate: '191',
     up_total: '1293694778894'
   };
+  //noinspection SpellCheckingInspection
   static readonly MOCK_ANSWER_TORRENTS = [
     {
       hash: '5A8CE26E8A19A877D8CCC927FCC18E34E1F5FF67',
@@ -478,7 +480,9 @@ export class RtorrentServiceTestValues {
       ]
     }
   ];
+  //noinspection SpellCheckingInspection
   static readonly MOCK_ANSWER_HASH = '4A03DA39750C4BDD0FEBB66D8B138CEEA5993FAA';
+  //noinspection SpellCheckingInspection
   static readonly MOCK_ANSWER_FILES = [
     {
       range_first: '0',
@@ -512,6 +516,7 @@ describe('RtorrentService', () => {
     rtorrentService = module.get<RtorrentService>(RtorrentService);
 
     configService = module.get<ConfigService>(ConfigService);
+    jest.spyOn(configService.logger, 'error').mockImplementation(() => {});
     configService.forceConfigFile('env-model.json');
   });
 
@@ -577,6 +582,7 @@ describe('RtorrentService', () => {
   describe('getTorrentFiles', () => {
     void it('getTorrentFiles return should be ko on wrong hash', done => {
       rtorrentService.forceRtorrentForMocking(RtorrentServiceTestValues.MOCK_TORRENT);
+      //noinspection SpellCheckingInspection
       rtorrentService.getTorrentFiles('5A03DA39750C4BDD0FEBB66D8B138CEEA5993FAA', err => {
         expect(err).not.toBeNull();
         expect(err.faultCode).toEqual(-501);
