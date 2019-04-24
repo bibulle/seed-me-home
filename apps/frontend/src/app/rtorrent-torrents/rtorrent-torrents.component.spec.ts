@@ -127,44 +127,44 @@ describe('RtorrentTorrentsComponent', () => {
     // after a click on another button, order should be different
     component.toggleSort('ratio');
     expect(component.sortItem).toBe('ratio');
-    expect(component.sortDirection).toBe('asc');
-    expect(component.rtorrentTorrents[0].ratio).toBe(0);
-    component.toggleSort('ratio');
-    expect(component.sortItem).toBe('ratio');
     expect(component.sortDirection).toBe('desc');
     expect(component.rtorrentTorrents[0].ratio).toBe(0.1);
+    component.toggleSort('ratio');
+    expect(component.sortItem).toBe('ratio');
+    expect(component.sortDirection).toBe('asc');
+    expect(component.rtorrentTorrents[0].ratio).toBe(0);
 
     // after a click on another button, order should be different (equality, should be by date then)
-    component.toggleSort('up');
-    expect(component.sortItem).toBe('up');
-    expect(component.sortDirection).toBe('asc');
-    expect(component.rtorrentTorrents[0].up_rate).toBe(0);
-    expect(component.rtorrentTorrents[0].addtime).toBe(1552911761);
     component.toggleSort('up');
     expect(component.sortItem).toBe('up');
     expect(component.sortDirection).toBe('desc');
     expect(component.rtorrentTorrents[0].up_rate).toBe(0);
     expect(component.rtorrentTorrents[0].addtime).toBe(1552911800);
+    component.toggleSort('up');
+    expect(component.sortItem).toBe('up');
+    expect(component.sortDirection).toBe('asc');
+    expect(component.rtorrentTorrents[0].up_rate).toBe(0);
+    expect(component.rtorrentTorrents[0].addtime).toBe(1552911761);
 
     // after a click on another button, order should be different
-    component.toggleSort('down');
-    expect(component.sortItem).toBe('down');
-    expect(component.sortDirection).toBe('asc');
-    expect(component.rtorrentTorrents[0].down_rate).toBe(9475376);
     component.toggleSort('down');
     expect(component.sortItem).toBe('down');
     expect(component.sortDirection).toBe('desc');
     expect(component.rtorrentTorrents[0].down_rate).toBe(19944210);
+    component.toggleSort('down');
+    expect(component.sortItem).toBe('down');
+    expect(component.sortDirection).toBe('asc');
+    expect(component.rtorrentTorrents[0].down_rate).toBe(9475376);
 
     // after a click on another button, order should be different
     component.toggleSort('size');
     expect(component.sortItem).toBe('size');
-    expect(component.sortDirection).toBe('asc');
-    expect(component.rtorrentTorrents[0].size).toBe(1157627904);
-    component.toggleSort('size');
-    expect(component.sortItem).toBe('size');
     expect(component.sortDirection).toBe('desc');
     expect(component.rtorrentTorrents[0].size).toBe(1999503360);
+    component.toggleSort('size');
+    expect(component.sortItem).toBe('size');
+    expect(component.sortDirection).toBe('asc');
+    expect(component.rtorrentTorrents[0].size).toBe(1157627904);
   });
 });
 

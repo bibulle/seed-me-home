@@ -44,7 +44,7 @@ export class RtorrentTorrentsComponent implements OnInit, OnDestroy {
       this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
     } else {
       this.sortItem = sort;
-      this.sortDirection = 'asc';
+      this.sortDirection = 'desc';
     }
     this._doSort();
   }
