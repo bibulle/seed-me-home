@@ -7,10 +7,21 @@
   "label.english": "Switch to english",
   "label.french": "Changer pour le français",
   "label.logout": "Déconnexion",
+  "label.down_rate": "Download vitesse",
+  "label.down_total": "Download total",
+  "label.up_rate": "Upload vitesse",
+  "label.up_total": "Upload total",
+  "label.free_disk_space": "Espace disque libre",
+  "size": "Taille",
+  "down": "Down",
+  "up": "Up",
+  "ratio": "Ratio",
+  "added": "Ajouté",
 
   "Unauthorized": "Vous n'êtes pas autorisé à utiliser cette application.",
   "Internal Server Error": "Erreur interne.",
   "Not Found": "API interne non trouvée",
   "Gateway Timeout": "API interne ne répond pas",
+  "Unknown Error": "Erreur inconnue",
   "not_administrator": "Vous n'êtes pas administrateur."
 }

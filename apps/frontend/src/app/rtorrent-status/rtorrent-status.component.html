@@ -1,5 +1,24 @@
-<p>{{rtorrentStatus?.down_rate}}</p>
-<p>{{rtorrentStatus?.down_total}}</p>
-<p>{{rtorrentStatus?.up_rate}}</p>
-<p>{{rtorrentStatus?.up_total}}</p>
-<p>{{rtorrentStatus?.free_disk_space}}</p>
+<mat-card>
+  <mat-card-content>
+    <div>
+      <span class="label"><mat-icon>cloud_download</mat-icon><span>{{'label.down_rate' | translate}}</span></span>
+      <span class="value">{{rtorrentStatus?.down_rate | bytesSize}}/s</span>
+    </div>
+    <div>
+      <span class="label"><mat-icon></mat-icon><span>{{'label.down_total' | translate}}</span></span>
+      <span class="value">{{rtorrentStatus?.down_total | bytesSize}}</span>
+    </div>
+    <div>
+      <span class="label"><mat-icon>cloud_upload</mat-icon><span>{{'label.up_rate' | translate}}</span></span>
+      <span class="value">{{rtorrentStatus?.up_rate | bytesSize}}/s</span>
+    </div>
+    <div>
+      <span class="label"><mat-icon></mat-icon><span>{{'label.up_total' | translate}}</span></span>
+      <span class="value">{{rtorrentStatus?.up_total | bytesSize}}</span>
+    </div>
+    <div>
+      <span class="label"><mat-icon>storage</mat-icon><span>{{'label.free_disk_space' | translate}}</span></span>
+      <span class="value">{{rtorrentStatus?.free_disk_space | bytesSize}}</span>
+    </div>
+  </mat-card-content>
+</mat-card>

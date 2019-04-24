@@ -1,7 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 
 import { RtorrentService } from './rtorrent.service';
-import { RtorrentStatus } from '@seed-me-home/models';
+import { RtorrentStatus, RtorrentTorrent } from '@seed-me-home/models';
 
 @Controller('rtorrent')
 export class RtorrentController {
@@ -13,7 +13,7 @@ export class RtorrentController {
   }
 
   @Get('torrents')
-  async getTorrents(): Promise<RtorrentStatus> {
+  async getTorrents(): Promise<RtorrentTorrent> {
     return this.rtorrentService.getTorrents();
   }
 }

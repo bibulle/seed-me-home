@@ -1,0 +1,43 @@
+<div *ngIf="index==0" class="header">
+  <span class="done">&nbsp;</span>
+  <span class="size"  (click)="toggleSort('size')" [class.unselected]="(sortItem!=='size')">
+    <mat-icon *ngIf="(sortItem!=='size') || (sortDirection!=='asc')">keyboard_arrow_down</mat-icon>
+    <mat-icon *ngIf="(sortItem==='size') && (sortDirection==='asc')">keyboard_arrow_up</mat-icon>
+    {{'size' | translate}}
+  </span>
+  <span class="down" (click)="toggleSort('down')" [class.unselected]="(sortItem!=='down')">
+    <mat-icon *ngIf="(sortItem!=='down') || (sortDirection!=='asc')">keyboard_arrow_down</mat-icon>
+    <mat-icon *ngIf="(sortItem==='down') && (sortDirection==='asc')">keyboard_arrow_up</mat-icon>
+    {{'down' | translate}}
+  </span>
+  <span class="up" (click)="toggleSort('up')" [class.unselected]="(sortItem!=='up')">
+    <mat-icon *ngIf="(sortItem!=='up') || (sortDirection!=='asc')">keyboard_arrow_down</mat-icon>
+    <mat-icon *ngIf="(sortItem==='up') && (sortDirection==='asc')">keyboard_arrow_up</mat-icon>
+    {{'up' | translate}}
+  </span>
+  <span class="ratio" (click)="toggleSort('ratio')" [class.unselected]="(sortItem!=='ratio')">
+    <mat-icon *ngIf="(sortItem!=='ratio') || (sortDirection!=='asc')">keyboard_arrow_down</mat-icon>
+    <mat-icon *ngIf="(sortItem==='ratio') && (sortDirection==='asc')">keyboard_arrow_up</mat-icon>
+    {{'ratio' | translate}}
+  </span>
+  <span class="date" (click)="toggleSort('date')" [class.unselected]="(sortItem!=='date')">
+    <mat-icon *ngIf="(sortItem!=='date') || (sortDirection!=='asc')">keyboard_arrow_down</mat-icon>
+    <mat-icon *ngIf="(sortItem==='date') && (sortDirection==='asc')">keyboard_arrow_up</mat-icon>
+    {{'added' | translate}}
+  </span>
+</div>
+<div class="title">{{torrent?.name}}</div>
+<div class="info">
+  <span class="done">&nbsp;</span>
+  <span class="size">{{torrent?.size | bytesSize}}</span>
+  <span class="down" [class.highlight]="torrent?.down_rate > 0">
+    <mat-icon>cloud_download</mat-icon>{{torrent?.down_rate | bytesSize}}/s
+  </span>
+  <span class="up" [class.highlight]="torrent?.up_rate > 0">
+    <mat-icon>cloud_upload</mat-icon>{{torrent?.up_rate | bytesSize}}/s
+  </span>
+  <span class="ratio" [class.very-bad]="torrent?.ratio < 0.1" [class.good]="torrent?.ratio > 1" [class.very-good]="torrent?.ratio > 2">
+    <mat-icon>compare_arrows</mat-icon>{{torrent?.ratio.toFixed(2)}}
+  </span>
+  <span class="date">{{formatDate(torrent?.addtime * 1000)}}</span>
+</div>

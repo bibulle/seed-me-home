@@ -10,7 +10,7 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class RtorrentStatusService {
-  private static REFRESH_EVERY = 10 * 1000;
+  private static REFRESH_EVERY = 60 * 1000;
   private static _refreshIsRunning = false;
 
   API_URL = environment.serverUrl + 'rtorrent/status';
@@ -27,8 +27,6 @@ export class RtorrentStatusService {
   }
 
   private _refreshStatus() {
-    this.logger.debug('_refreshStatus');
-    this.logger.debug(this.currentStatusSubject.observers.length);
     if (this.currentStatusSubject.observers.length > 0) {
       RtorrentStatusService._refreshIsRunning = true;
       this._loadStatus()
@@ -72,7 +70,7 @@ export class RtorrentStatusService {
    * @param forceRelaunch Should force the restarting (should be only useful for tests)
    */
   startLoadingStats(forceRelaunch = false) {
-    // this.logger.debug('startLoadingStats ' + RtorrentStatusService._refreshIsRunning);
+    // this.logger.debug('startLoadingStats ' + RtorrentTorrentsService._refreshIsRunning);
 
     if (forceRelaunch) {
       RtorrentStatusService._refreshIsRunning = false;

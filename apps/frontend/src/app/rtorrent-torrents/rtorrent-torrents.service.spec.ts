@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { RtorrentStatusService } from './rtorrent-status.service';
+import { RtorrentTorrentsService } from './rtorrent-torrents.service';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { NotificationModule, NotificationService } from '../notification/notification.service';
@@ -11,7 +11,7 @@ const flushPromises = () => {
 };
 
 describe('RtorrentTorrentsService', () => {
-  let service: RtorrentStatusService;
+  let service: RtorrentTorrentsService;
   let notificationService: NotificationService;
   let httpMock: HttpTestingController;
 
@@ -20,7 +20,7 @@ describe('RtorrentTorrentsService', () => {
       imports: [HttpClientModule, HttpClientTestingModule, NotificationModule],
       providers: [NotificationService, { provide: NGXLogger, useClass: NGXLoggerMock }]
     });
-    service = TestBed.get(RtorrentStatusService);
+    service = TestBed.get(RtorrentTorrentsService);
     notificationService = TestBed.get(NotificationService);
     httpMock = TestBed.get(HttpTestingController);
 
@@ -34,25 +34,57 @@ describe('RtorrentTorrentsService', () => {
   describe('getStatus', () => {
     const goodAnswer1 = {
       data: {
-        down_rate: '28',
-        down_total: '463360286085',
-        up_rate: '191',
-        up_total: '1293694778894',
-        free_disk_space: 24319991808
+        hash: '5A8CE26E8A19A877D8CCC927FCC18E34E1F5FF67',
+        path: '/home/14user/rutorrent/torrents/ubuntu-18.10-desktop-amd64.iso',
+        name: 'ubuntu-18.10-desktop-amd64.iso',
+        size: 1999503360,
+        completed: 1155399680,
+        down_rate: 19944210,
+        down_total: 1196652654,
+        up_rate: 0,
+        up_total: 0,
+        createdAt: 1539860537,
+        addtime: 1552911761,
+        complete: false,
+        leechers: 1,
+        seeders: 99,
+        ratio: 0,
+        files: [
+          {
+            size: '1999503360',
+            fullpath: '/home/14user/rutorrent/torrents/ubuntu-18.10-desktop-amd64.iso'
+          }
+        ]
       }
     };
     const goodAnswer2 = {
       data: {
-        down_rate: '29',
-        down_total: '463360286085',
-        up_rate: '191',
-        up_total: '1293694778894',
-        free_disk_space: 24319991808
+        hash: '5A8CE26E8A19A877D8CCC927FCC18E34E1F5FF67',
+        path: '/home/14user/rutorrent/torrents/ubuntu-18.10-desktop-amd64.iso',
+        name: 'ubuntu-18.10-desktop-amd64.iso',
+        size: 1999503360,
+        completed: 1999503360,
+        down_rate: 0,
+        down_total: 1196652654,
+        up_rate: 123,
+        up_total: 1234,
+        createdAt: 1539860537,
+        addtime: 1552911761,
+        complete: true,
+        leechers: 5,
+        seeders: 80,
+        ratio: 0.1,
+        files: [
+          {
+            size: '1999503360',
+            fullpath: '/home/14user/rutorrent/torrents/ubuntu-18.10-desktop-amd64.iso'
+          }
+        ]
       }
     };
 
     it('it should do nothing if none has subscribed to the event', () => {
-      service.startLoadingStats(true);
+      service.startLoadingTorrents(true);
 
       httpMock.expectNone(`${service.API_URL}`);
 
@@ -62,7 +94,7 @@ describe('RtorrentTorrentsService', () => {
     it('it should return a value if someone subscribe the event and refresh 10 second later', async () => {
       // This should test the content of the service return
       let callCpt = 0;
-      service.currentStatusObservable().subscribe(status => {
+      service.currentTorrentsObservable().subscribe(status => {
         if (callCpt % 2 === 0) {
           expect(status).toEqual(goodAnswer1.data);
         } else {
@@ -72,7 +104,7 @@ describe('RtorrentTorrentsService', () => {
       });
 
       // start
-      service.startLoadingStats(true);
+      service.startLoadingTorrents(true);
 
       // immediately get url called
       let req = httpMock.expectOne(`${service.API_URL}`);
@@ -103,10 +135,10 @@ describe('RtorrentTorrentsService', () => {
       });
 
       // Just do nothing but subscribe
-      service.currentStatusObservable().subscribe(() => {});
+      service.currentTorrentsObservable().subscribe(() => {});
 
       // start the service
-      service.startLoadingStats(true);
+      service.startLoadingTorrents(true);
 
       // immediately get url called (and answer error)
       let req = httpMock.expectOne(`${service.API_URL}`);

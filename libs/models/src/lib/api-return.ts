@@ -1,8 +1,8 @@
-import { RtorrentStatus, Version } from '@seed-me-home/models';
+import { RtorrentStatus, RtorrentTorrent, Version } from '@seed-me-home/models';
 
 export interface ApiReturn {
   version: Version;
-  data: RtorrentStatus | MyToken;
+  data: RtorrentStatus | RtorrentTorrent[] | MyToken;
 }
 
 export interface MyToken {

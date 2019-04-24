@@ -1,0 +1,10 @@
+<mat-card>
+  <mat-card-content>
+    <app-rtorrent-torrent-item *ngFor="let torrent of rtorrentTorrents; let i = index"
+                               [index]="i"
+                               [torrent]="torrent"
+                               [sortItem]="sortItem"
+                               [sortDirection]="sortDirection"
+                               (toggleSortEvent)="toggleSort($event)"></app-rtorrent-torrent-item>
+  </mat-card-content>
+</mat-card>

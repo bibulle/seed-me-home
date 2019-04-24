@@ -7,10 +7,21 @@
   "label.english": "Switch to english",
   "label.french": "Changer pour le français",
   "label.logout": "Logout",
+  "label.down_rate": "Download speed",
+  "label.down_total": "Download total",
+  "label.up_rate": "Upload speed",
+  "label.up_total": "Upload total",
+  "label.free_disk_space": "Free disk space",
+  "size": "Size",
+  "down": "Down",
+  "up": "Up",
+  "ratio": "Ratio",
+  "added": "Added",
 
   "Unauthorized": "Your are not authorized to use this application.",
   "Internal Server Error": "Internal server error.",
   "Not Found": "Internal API page not found",
   "Gateway Timeout": "Internal API timeout",
+  "Unknown Error": "Unknown Error",
   "not_administrator": "You are not an administrator"
 }

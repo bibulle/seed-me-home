@@ -2,17 +2,19 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SeedsComponent } from './seeds.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { RtorrentStatusComponent } from '../rtorrent-status/rtorrent-status.component';
+import { RtorrentStatusModule } from '../rtorrent-status/rtorrent-status.component';
 import { NotificationModule } from '../notification/notification.service';
+import { RtorrentTorrentsModule } from '../rtorrent-torrents/rtorrent-torrents.component';
 
 describe('SeedsComponent', () => {
   let component: SeedsComponent;
   let fixture: ComponentFixture<SeedsComponent>;
 
   beforeEach(async(() => {
+    //noinspection JSIgnoredPromiseFromCall
     TestBed.configureTestingModule({
-      imports: [TranslateModule.forRoot(), NotificationModule],
-      declarations: [SeedsComponent, RtorrentStatusComponent]
+      imports: [TranslateModule.forRoot(), NotificationModule, RtorrentStatusModule, RtorrentTorrentsModule],
+      declarations: [SeedsComponent]
     }).compileComponents();
   }));
 

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '../../services/config/config.service';
 import * as _ from 'lodash';
-import { RtorrentStatus } from '@seed-me-home/models';
+import { RtorrentStatus, RtorrentTorrent } from '@seed-me-home/models';
 
 const Rtorrent = require('@electorrent/node-rtorrent');
 
@@ -35,6 +35,10 @@ export class RtorrentService {
         status = _.pick(status, ['down_rate', 'down_total', 'up_rate', 'up_total']);
       }
 
+      //if (err) {
+      //  console.log(err);
+      //}
+
       callback(err, status);
     });
   }
@@ -55,9 +59,9 @@ export class RtorrentService {
     });
   }
 
-  getTorrents(): Promise<RtorrentStatus> {
+  getTorrents(): Promise<RtorrentTorrent> {
     this._initialize();
-    return new Promise<RtorrentStatus>((resolve, reject) => {
+    return new Promise<RtorrentTorrent>((resolve, reject) => {
       this._getAll((err, status) => {
         if (err) {
           reject(err);

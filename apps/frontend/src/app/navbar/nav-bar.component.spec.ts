@@ -1,4 +1,4 @@
-import { ComponentFixture, inject, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing';
 
 import { NavBarComponent, NavBarModule } from './nav-bar.component';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -111,7 +111,7 @@ describe('NavBarComponent', () => {
     );
   });
 
-  it('navigate to a button and it become accent', () => {
+  it('navigate to a button and it become accent', async(() => {
     const compiled = fixture.debugElement.nativeElement;
 
     userService.user$.next({
@@ -125,18 +125,20 @@ describe('NavBarComponent', () => {
       isAdmin: true
     });
 
-    fixture.detectChanges();
+    fixture.ngZone.run(() => {
+      fixture.detectChanges();
 
-    // for now, seeds shouldn't be selected
-    expect(compiled.querySelectorAll('.nav-bar-header a')[1].classList).not.toContain('mat-accent');
+      // for now, seeds shouldn't be selected
+      expect(compiled.querySelectorAll('.nav-bar-header a')[1].classList).not.toContain('mat-accent');
 
-    // click on the seeds button
-    compiled.querySelectorAll('.nav-bar-header a')[2].click();
-    fixture.detectChanges();
+      // click on the seeds button
+      compiled.querySelectorAll('.nav-bar-header a')[2].click();
+      fixture.detectChanges();
 
-    // now, seeds should be selected
-    expect(compiled.querySelectorAll('.nav-bar-header a')[2].classList).toContain('mat-accent');
-  });
+      // now, seeds should be selected
+      expect(compiled.querySelectorAll('.nav-bar-header a')[2].classList).toContain('mat-accent');
+    });
+  }));
 
   it('button update should appear if necessary and click should reload', () => {
     const compiled = fixture.debugElement.nativeElement;

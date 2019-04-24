@@ -16,7 +16,7 @@ import {
   TranslateLoader,
   TranslateModule
 } from '@ngx-translate/core';
-import { registerLocaleData } from '@angular/common';
+import { CommonModule, registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import localeEn from '@angular/common/locales/en';
 import { FilesModule } from './files/files.component';
@@ -40,6 +40,7 @@ registerLocaleData(localeEn, 'en');
   declarations: [AppComponent],
   imports: [
     BrowserModule,
+    CommonModule,
     HttpClientModule,
     MaterialModule,
     AppRoutingModule,
