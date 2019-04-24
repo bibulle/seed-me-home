@@ -4,5 +4,10 @@
 
   app-rtorrent-status {
     padding: 0.5em;
+    min-width: 0;
+  }
+
+  app-rtorrent-torrents {
+    min-width: 0;
   }
 }
