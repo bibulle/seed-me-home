@@ -32,7 +32,7 @@ class RealGoogleStrategy extends PassportStrategy(Strategy, 'google') {
       };
       done(null, user);
     } catch (err) {
-      this.logger.error('Status : ' + err.status + ' (' + err.message + ')');
+      this.logger.error('Status : ' + err.status + ' (' + err.message.message + ')');
       done(err, false);
     }
   }

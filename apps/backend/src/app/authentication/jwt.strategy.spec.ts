@@ -38,7 +38,7 @@ describe('GoogleStrategy', () => {
   });
 
   it('validate should be ko and call done if profile ko', async () => {
-    expect.assertions(2);
+    expect.assertions(3);
 
     const validateDone = jest.fn().mockImplementation(() => {
       throw new UnauthorizedException('unauthorized');
@@ -47,8 +47,10 @@ describe('GoogleStrategy', () => {
     try {
       await service.strategy.validate('a payload', validateDone);
     } catch (err) {
-      expect(err).toBeDefined();
-      expect(err.toString()).toMatch('unauthorized');
+      expect(err.message).toBeDefined();
+      expect(err.message.message).toBeDefined();
+      //console.log(JSON.stringify(err, null, 2));
+      expect(err.message.message).toBe('unauthorized');
     }
   });
 });

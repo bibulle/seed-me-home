@@ -55,7 +55,7 @@ describe('GoogleStrategy', () => {
   });
 
   it('validate should be ko and call done if profile ko', done => {
-    expect.assertions(6);
+    expect.assertions(8);
 
     jest.spyOn(authenticationService, 'validateOAuthLogin').mockImplementation((profile, provider) => {
       expect(provider).toEqual(Provider.GOOGLE);
@@ -71,7 +71,9 @@ describe('GoogleStrategy', () => {
 
     const validateDone = jest.fn().mockImplementation((err, user) => {
       expect(err).toBeDefined();
-      expect(err.toString()).toBe('Error: Not authorized');
+      expect(err.message).toBeDefined();
+      expect(err.message.message).toBeDefined();
+      expect(err.message.message).toBe('Not authorized');
       expect(user).toEqual(false);
       done();
     });
