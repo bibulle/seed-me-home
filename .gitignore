@@ -37,4 +37,10 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+# Specific to project
 env-my-own.json
+downloaded
+downloaded_test
+progress
+progress_test

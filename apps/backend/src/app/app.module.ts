@@ -4,10 +4,11 @@ import { AppService } from './app.service';
 import { RtorrentModule } from './rtorrent/rtorrent.module';
 import { ConfigService } from '../services/config/config.service';
 import { AuthenticationModule } from './authentication/authentication.module';
+import { FtpSeedService } from './ftp-seed/ftp-seed.service';
 
 @Module({
   imports: [RtorrentModule, AuthenticationModule],
   controllers: [AppController],
-  providers: [AppService, ConfigService]
+  providers: [AppService, ConfigService, FtpSeedService]
 })
 export class AppModule {}

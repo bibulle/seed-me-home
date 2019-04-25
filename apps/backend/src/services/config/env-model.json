@@ -7,6 +7,15 @@
     "seedbox_user": "user",
     "seedbox_pass": "password",
 
+    "seedbox_ftp_host": "localhost",
+    "seedbox_ftp_port": 22,
+    "seedbox_ftp_user": "user",
+    "seedbox_ftp_pass": "password",
+    "seedbox_ftp_path": "/torrents",
+
+    "path_download": "downloaded_test",
+    "path_progress": "progress_test",
+
     "users_authorized": ["authorized user"],
     "users_admin": ["administrator"],
 
@@ -24,6 +33,12 @@
     "seedbox_user": "user",
     "seedbox_pass": "password",
 
+    "seedbox_ftp_host": "localhost",
+    "seedbox_ftp_port": 22,
+    "seedbox_ftp_user": "user",
+    "seedbox_ftp_pass": "password",
+    "seedbox_ftp_path": "/torrents",
+
     "users_authorized": ["authorized user"],
     "users_admin": ["administrator"],
 
@@ -40,6 +55,12 @@
     "seedbox_path": "/rutorrent/plugins/rpc/rpc.php",
     "seedbox_user": "user",
     "seedbox_pass": "password",
+
+    "seedbox_ftp_host": "localhost",
+    "seedbox_ftp_port": 22,
+    "seedbox_ftp_user": "user",
+    "seedbox_ftp_pass": "password",
+    "seedbox_ftp_path": "/torrents",
 
     "users_authorized": ["authorized user"],
     "users_admin": ["administrator"],

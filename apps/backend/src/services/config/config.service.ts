@@ -6,10 +6,19 @@ class Config {
 
   public seedbox_mode = '';
   public seedbox_host = '';
-  public seedbox_port = '';
+  public seedbox_port = 0;
   public seedbox_path = '';
   public seedbox_user = '';
   public seedbox_pass = '';
+
+  public seedbox_ftp_host = '';
+  public seedbox_ftp_port = 0;
+  public seedbox_ftp_user = '';
+  public seedbox_ftp_pass = '';
+  public seedbox_ftp_path = '';
+
+  public path_download = 'downloaded';
+  public path_progress = 'progress';
 
   public users_authorized = [];
   public users_admin = [];
@@ -91,6 +100,41 @@ export class ConfigService {
   public getSeedboxPass() {
     this.initialize();
     return this._config.seedbox_pass;
+  }
+
+  public getSeedboxFtpHost() {
+    this.initialize();
+    return this._config.seedbox_ftp_host;
+  }
+
+  public getSeedboxFtpPort() {
+    this.initialize();
+    return this._config.seedbox_ftp_port;
+  }
+
+  public getSeedboxFtpUser() {
+    this.initialize();
+    return this._config.seedbox_ftp_user;
+  }
+
+  public getSeedboxFtpPass() {
+    this.initialize();
+    return this._config.seedbox_ftp_pass;
+  }
+
+  public getSeedboxFtpPath() {
+    this.initialize();
+    return this._config.seedbox_ftp_path;
+  }
+
+  public getPathDownload() {
+    this.initialize();
+    return this._config.path_download;
+  }
+
+  public getPathProgress() {
+    this.initialize();
+    return this._config.path_progress;
   }
 
   public getAuthentGoogleClientID() {
