@@ -39,6 +39,9 @@
     "seedbox_ftp_pass": "password",
     "seedbox_ftp_path": "/torrents",
 
+    "path_download": "downloaded_test",
+    "path_progress": "progress_test",
+
     "users_authorized": ["authorized user"],
     "users_admin": ["administrator"],
 
