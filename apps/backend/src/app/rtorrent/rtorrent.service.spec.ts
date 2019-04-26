@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { RtorrentService } from './rtorrent.service';
 import { ConfigService } from '../../services/config/config.service';
 import * as _ from 'lodash';
+import { FtpSeedService, Progression } from '../ftp-seed/ftp-seed.service';
 
 export class RtorrentServiceTestValues {
   //noinspection SpellCheckingInspection
@@ -97,6 +98,24 @@ export class RtorrentServiceTestValues {
             completed_chunks: '2257',
             fullpath: '/home/14user/rutorrent/torrents/ubuntu-18.10-desktop-amd64.iso',
             path: 'ubuntu-18.10-desktop-amd64.iso',
+            priority: '1',
+            is_created: '1',
+            is_open: '1',
+            last_touched: '1552911778926106',
+            match_depth_next: '0',
+            match_depth_prev: '0',
+            offset: '0',
+            path_components: ['ubuntu-18.10-desktop-amd64.iso'],
+            path_depth: '1'
+          },
+          {
+            range_first: '0',
+            range_second: '3814',
+            size: '1999503360',
+            chunks: '3814',
+            completed_chunks: '2257',
+            fullpath: '/home/14user/rutorrent/torrents/ubuntu-18.10-desktop-amd64.iso',
+            path: 'ubuntu-18.10-desktop-amd64.iso2',
             priority: '1',
             is_created: '1',
             is_open: '1',
@@ -413,6 +432,7 @@ export class RtorrentServiceTestValues {
       completed: 1155399680,
       down_rate: 19944210,
       down_total: 1196652654,
+      downloaded: 399900672,
       up_rate: 0,
       up_total: 0,
       createdAt: 1539860537,
@@ -421,6 +441,8 @@ export class RtorrentServiceTestValues {
       leechers: 1,
       seeders: 99,
       ratio: 0,
+      active: true,
+      open: true,
       files: [
         {
           range_first: '0',
@@ -428,8 +450,28 @@ export class RtorrentServiceTestValues {
           size: '1999503360',
           chunks: '3814',
           completed_chunks: '2257',
+          downloaded: 199950336,
           fullpath: '/home/14user/rutorrent/torrents/ubuntu-18.10-desktop-amd64.iso',
           path: 'ubuntu-18.10-desktop-amd64.iso',
+          priority: '1',
+          is_created: '1',
+          is_open: '1',
+          last_touched: '1552911778926106',
+          match_depth_next: '0',
+          match_depth_prev: '0',
+          offset: '0',
+          path_components: ['ubuntu-18.10-desktop-amd64.iso'],
+          path_depth: '1'
+        },
+        {
+          range_first: '0',
+          range_second: '3814',
+          size: '1999503360',
+          chunks: '3814',
+          completed_chunks: '2257',
+          downloaded: 199950336,
+          fullpath: '/home/14user/rutorrent/torrents/ubuntu-18.10-desktop-amd64.iso',
+          path: 'ubuntu-18.10-desktop-amd64.iso2',
           priority: '1',
           is_created: '1',
           is_open: '1',
@@ -450,6 +492,7 @@ export class RtorrentServiceTestValues {
       completed: 541589504,
       down_rate: 9475376,
       down_total: 568522562,
+      downloaded: 0,
       up_rate: 0,
       up_total: 0,
       createdAt: 1551970024,
@@ -458,6 +501,8 @@ export class RtorrentServiceTestValues {
       leechers: 0,
       seeders: 36,
       ratio: 0,
+      active: true,
+      open: true,
       files: [
         {
           range_first: '0',
@@ -465,6 +510,7 @@ export class RtorrentServiceTestValues {
           size: '1157627904',
           chunks: '2208',
           completed_chunks: '1058',
+          downloaded: 0,
           fullpath: '/home/14user/rutorrent/torrents/ubuntu-14.04.6-desktop-amd64.iso',
           path: 'ubuntu-14.04.6-desktop-amd64.iso',
           priority: '1',
@@ -490,6 +536,7 @@ export class RtorrentServiceTestValues {
       size: '1157627904',
       chunks: '2208',
       completed_chunks: '1058',
+      downloaded: 0,
       fullpath: '/home/14user/rutorrent/torrents/ubuntu-14.04.6-desktop-amd64.iso',
       path: 'ubuntu-14.04.6-desktop-amd64.iso',
       priority: '1',
@@ -511,7 +558,7 @@ describe('RtorrentService', () => {
 
   void beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [RtorrentService, ConfigService]
+      providers: [RtorrentService, ConfigService, { provide: FtpSeedService, useClass: FtpSeedServiceMock }]
     }).compile();
     rtorrentService = module.get<RtorrentService>(RtorrentService);
 
@@ -601,3 +648,20 @@ describe('RtorrentService', () => {
     });
   });
 });
+
+export class FtpSeedServiceMock {
+  //noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
+  getProgression(filePath: string): Progression {
+    switch (filePath) {
+      case 'ubuntu-18.10-desktop-amd64.iso':
+      case 'ubuntu-18.10-desktop-amd64.iso2':
+        return {
+          progress: 11,
+          size: 1999503360,
+          value: 199950336
+        };
+      default:
+        return null;
+    }
+  }
+}

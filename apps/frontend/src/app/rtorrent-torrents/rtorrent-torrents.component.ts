@@ -50,7 +50,7 @@ export class RtorrentTorrentsComponent implements OnInit, OnDestroy {
   }
 
   _doSort() {
-    this.rtorrentTorrents.sort((r1, r2) => {
+    this.rtorrentTorrents.sort((r1: RtorrentTorrent, r2: RtorrentTorrent) => {
       let ret = 0;
       switch (this.sortItem) {
         case 'date':
@@ -67,6 +67,11 @@ export class RtorrentTorrentsComponent implements OnInit, OnDestroy {
           break;
         case 'size':
           ret = r1.size - r2.size;
+          break;
+        case 'progress':
+          ret =
+            (r1.completed + r1.downloaded) / Math.max(1, r1.size) -
+            (r2.completed + r2.downloaded) / Math.max(1, r2.size);
           break;
       }
 

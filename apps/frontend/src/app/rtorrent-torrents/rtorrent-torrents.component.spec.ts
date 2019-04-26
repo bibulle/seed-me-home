@@ -7,7 +7,7 @@ import { Observable, Subject } from 'rxjs';
 import { RtorrentTorrent } from '@seed-me-home/models';
 import { RtorrentTorrentItemComponent } from './rtorrent-torrent-item/rtorrent-torrent-item.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatCardModule, MatIconModule } from '@angular/material';
+import { MatCardModule, MatIconModule, MatProgressBarModule } from '@angular/material';
 import { BytesSizePipe } from '../utils/pipes/bytes-size.pipe';
 
 //noinspection SpellCheckingInspection
@@ -28,10 +28,15 @@ const goodAnswer: RtorrentTorrent[] = [
     leechers: 1,
     seeders: 99,
     ratio: 0,
+    downloaded: 0,
+    active: true,
+    open: true,
     files: [
       {
         size: '1999503360',
-        fullpath: '/home/14user/rutorrent/torrents/ubuntu-18.10-desktop-amd64.iso'
+        fullpath: '/home/14user/rutorrent/torrents/ubuntu-18.10-desktop-amd64.iso',
+        path: 'ubuntu-18.10-desktop-amd64.iso',
+        downloaded: 0
       }
     ]
   },
@@ -51,10 +56,15 @@ const goodAnswer: RtorrentTorrent[] = [
     leechers: 0,
     seeders: 36,
     ratio: 0.1,
+    downloaded: 0,
+    active: true,
+    open: true,
     files: [
       {
         size: '1157627904',
-        fullpath: '/home/14user/rutorrent/torrents/ubuntu-14.04.6-desktop-amd64.iso'
+        fullpath: '/home/14user/rutorrent/torrents/ubuntu-14.04.6-desktop-amd64.iso',
+        path: 'ubuntu-14.04.6-desktop-amd64.iso',
+        downloaded: 0
       }
     ]
   }
@@ -69,7 +79,7 @@ describe('RtorrentTorrentsComponent', () => {
   beforeEach(() => {
     //noinspection JSIgnoredPromiseFromCall
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, TranslateModule.forRoot(), MatCardModule, MatIconModule],
+      imports: [HttpClientTestingModule, TranslateModule.forRoot(), MatCardModule, MatIconModule, MatProgressBarModule],
       declarations: [RtorrentTorrentsComponent, RtorrentTorrentItemComponent, BytesSizePipe],
       providers: [{ provide: RtorrentTorrentsService, useClass: RtorrentTorrentsServiceMock }]
     }).compileComponents();
@@ -165,6 +175,16 @@ describe('RtorrentTorrentsComponent', () => {
     expect(component.sortItem).toBe('size');
     expect(component.sortDirection).toBe('asc');
     expect(component.rtorrentTorrents[0].size).toBe(1157627904);
+
+    // after a click on another button, order should be different
+    component.toggleSort('progress');
+    expect(component.sortItem).toBe('progress');
+    expect(component.sortDirection).toBe('desc');
+    expect(component.rtorrentTorrents[0].completed).toBe(1155399680);
+    component.toggleSort('progress');
+    expect(component.sortItem).toBe('progress');
+    expect(component.sortDirection).toBe('asc');
+    expect(component.rtorrentTorrents[0].completed).toBe(541589504);
   });
 });
 

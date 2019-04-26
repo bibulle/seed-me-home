@@ -14,8 +14,13 @@ export interface RtorrentTorrent {
   ratio: number;
   leechers: number;
   seeders: number;
+  downloaded: number;
+  active: boolean;
+  open: boolean;
   files: {
     fullpath: string;
+    path: string;
     size: string;
+    downloaded: number;
   }[];
 }

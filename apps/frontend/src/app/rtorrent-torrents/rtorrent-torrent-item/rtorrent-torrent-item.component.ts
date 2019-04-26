@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, NgModule, OnInit, Output } from '@angular/core';
 import { RtorrentTorrent } from '@seed-me-home/models';
-import { MatIconModule } from '@angular/material';
+import { MatIconModule, MatProgressBarModule } from '@angular/material';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { BytesSizeModule } from '../../utils/pipes/bytes-size.pipe';
 import { CommonModule } from '@angular/common';
@@ -43,7 +43,7 @@ export class RtorrentTorrentItemComponent implements OnInit {
 }
 
 @NgModule({
-  imports: [CommonModule, TranslateModule, BytesSizeModule, MatIconModule],
+  imports: [CommonModule, TranslateModule, BytesSizeModule, MatIconModule, MatProgressBarModule],
   declarations: [RtorrentTorrentItemComponent],
   providers: [],
   exports: [RtorrentTorrentItemComponent]

@@ -184,7 +184,7 @@ describe('FtpSeedService', () => {
     service.Client.errorToSendOnFastGet = null;
     service.Client.stopFastGetAfterPercent = 100;
 
-    expect.assertions(8);
+    expect.assertions(11);
     Promise.all([
       service.downloadFile('toto/titi/tutu\\testFile1.txt'),
       service.downloadFile('toto/titi/tutu\\testFile2.txt')
@@ -198,8 +198,15 @@ describe('FtpSeedService', () => {
       expect(service.getProgression('toto/titi/tutu\\testFile1.txt')).toBeTruthy();
       expect(service.getProgression('toto/titi/tutu\\testFile2.txt')).toBeTruthy();
 
-      const after = new Date();
-      service.clearOldDoneFiles(after);
+      const after1 = new Date();
+      service.tellProgressionUseful('toto/titi/tutu\\testFile1.txt');
+      service.clearOldDoneFiles(after1);
+      expect(service.getProgression('toto/titi/tutu\\testFile1.txt')).toBeTruthy();
+      expect(service.getProgression('toto/titi/tutu\\testFile1.txt').progress).toBe(100);
+      expect(service.getProgression('toto/titi/tutu\\testFile2.txt')).toBeNull();
+
+      const after2 = new Date();
+      service.clearOldDoneFiles(after2);
       expect(service.getProgression('toto/titi/tutu\\testFile1.txt')).toBeNull();
       expect(service.getProgression('toto/titi/tutu\\testFile2.txt')).toBeNull();
 

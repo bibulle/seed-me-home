@@ -1,15 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '../../services/config/config.service';
 import * as _ from 'lodash';
 import { RtorrentStatus, RtorrentTorrent } from '@seed-me-home/models';
+import { FtpSeedService } from '../ftp-seed/ftp-seed.service';
 
 const Rtorrent = require('@electorrent/node-rtorrent');
 
 @Injectable()
 export class RtorrentService {
+  readonly logger = new Logger(RtorrentService.name);
+
   private _rtorrent;
 
-  constructor(private _configService: ConfigService) {}
+  constructor(private _configService: ConfigService, private _ftpSeedService: FtpSeedService) {}
 
   private _initialize() {
     if (!this._rtorrent) {
@@ -59,16 +62,18 @@ export class RtorrentService {
     });
   }
 
-  getTorrents(): Promise<RtorrentTorrent> {
+  getTorrents(): Promise<RtorrentTorrent[]> {
     this._initialize();
-    return new Promise<RtorrentTorrent>((resolve, reject) => {
-      this._getAll((err, status) => {
+    return new Promise<RtorrentTorrent[]>((resolve, reject) => {
+      this._getAll((err, all) => {
         if (err) {
           reject(err);
         } else {
-          if (status) {
-            status = _.map(
-              status.torrents,
+          let torrents: RtorrentTorrent[];
+          if (all) {
+            //this.logger.debug(all);
+            torrents = _.map(
+              all.torrents,
               _.partialRight(_.pick, [
                 'hash',
                 'path',
@@ -85,12 +90,33 @@ export class RtorrentService {
                 'files',
                 'ratio',
                 'leechers',
-                'seeders'
+                'seeders',
+                'active',
+                'open'
               ])
             );
+
+            // add download progression to files
+            torrents.forEach(torrent => {
+              //this.logger.debug(torrent.active+' '+torrent.complete+' '+torrent.open+' '+torrent.name);
+              let total_downloaded = 0;
+              torrent.files.forEach(file => {
+                const progress = this._ftpSeedService.getProgression(file.path);
+                if (progress && progress.value) {
+                  file.downloaded = progress.value;
+                  total_downloaded += progress.value;
+                } else {
+                  file.downloaded = 0;
+                }
+              });
+              torrent.downloaded = total_downloaded;
+              // if (torrent.name.startsWith('La Symphonie')) {
+              //   this.logger.debug(torrent);
+              // }
+            });
           }
 
-          resolve(status);
+          resolve(torrents);
         }
       });
     });

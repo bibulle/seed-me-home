@@ -13,7 +13,7 @@ export class RtorrentController {
   }
 
   @Get('torrents')
-  async getTorrents(): Promise<RtorrentTorrent> {
+  async getTorrents(): Promise<RtorrentTorrent[]> {
     return this.rtorrentService.getTorrents();
   }
 }

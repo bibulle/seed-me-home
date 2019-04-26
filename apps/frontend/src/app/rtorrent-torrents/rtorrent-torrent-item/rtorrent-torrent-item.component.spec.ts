@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { RtorrentTorrentItemComponent } from './rtorrent-torrent-item.component';
-import { MatIconModule } from '@angular/material';
+import { MatIconModule, MatProgressBarModule } from '@angular/material';
 import { TranslateModule } from '@ngx-translate/core';
 import { BytesSizeModule } from '../../utils/pipes/bytes-size.pipe';
 import { By } from '@angular/platform-browser';
@@ -10,6 +10,8 @@ import * as moment from 'moment';
 import { DebugElement } from '@angular/core';
 
 const torrent1: RtorrentTorrent = {
+  active: false,
+  open: false,
   hash: '5A8CE26E8A19A877D8CCC927FCC18E34E1F5FF67',
   path: '/home/14user/rutorrent/torrents/ubuntu-18.10-desktop-amd64.iso',
   name: 'ubuntu-18.10-desktop-amd64.iso',
@@ -17,6 +19,7 @@ const torrent1: RtorrentTorrent = {
   completed: 1155399680,
   down_rate: 19944210,
   down_total: 1196652654,
+  downloaded: 399900672,
   up_rate: 0,
   up_total: 0,
   createdAt: 1539860537,
@@ -28,7 +31,15 @@ const torrent1: RtorrentTorrent = {
   files: [
     {
       size: '1999503360',
-      fullpath: '/home/14user/rutorrent/torrents/ubuntu-18.10-desktop-amd64.iso'
+      downloaded: 199950336,
+      fullpath: '/home/14user/rutorrent/torrents/ubuntu-18.10-desktop-amd64.iso',
+      path: 'ubuntu-18.10-desktop-amd64.iso'
+    },
+    {
+      size: '1999503360',
+      downloaded: 199950336,
+      fullpath: '/home/14user/rutorrent/torrents/ubuntu-18.10-desktop-amd64.iso',
+      path: 'ubuntu-18.10-desktop-amd64.iso2'
     }
   ]
 };
@@ -40,7 +51,7 @@ describe('RtorrentTorrentItemComponent', () => {
   beforeEach(async(() => {
     //noinspection JSIgnoredPromiseFromCall
     TestBed.configureTestingModule({
-      imports: [MatIconModule, TranslateModule.forRoot(), BytesSizeModule],
+      imports: [MatIconModule, MatProgressBarModule, TranslateModule.forRoot(), BytesSizeModule],
       declarations: [RtorrentTorrentItemComponent]
     }).compileComponents();
   }));
@@ -61,7 +72,7 @@ describe('RtorrentTorrentItemComponent', () => {
     fixture.detectChanges();
 
     expect(fixture.debugElement.queryAll(By.css('.title')).length).toBe(1);
-    expect(fixture.debugElement.query(By.css('.title')).nativeElement.textContent).toBe(torrent1.name);
+    expect(fixture.debugElement.query(By.css('.title span')).nativeElement.textContent).toBe(torrent1.name);
 
     expect(fixture.debugElement.queryAll(By.css('.size')).length).toBe(1);
     expect(fixture.debugElement.query(By.css('.size')).nativeElement.textContent).toBe(
@@ -86,6 +97,77 @@ describe('RtorrentTorrentItemComponent', () => {
     expect(fixture.debugElement.queryAll(By.css('.date')).length).toBe(1);
     expect(fixture.debugElement.query(By.css('.date')).nativeElement.textContent).toBe(
       moment.utc(torrent1.addtime * 1000).format('lll')
+    );
+  });
+
+  it('icon before name should be the right one', () => {
+    component.torrent = torrent1;
+
+    // torrent active is false => pause
+    component.torrent.completed = component.torrent.size / 4;
+    component.torrent.downloaded = 0;
+    fixture.detectChanges();
+    expect(fixture.debugElement.queryAll(By.css('.title mat-icon')).length).toBe(1);
+    expect(fixture.debugElement.query(By.css('.title mat-icon')).nativeElement.textContent).toBe('pause');
+    expect(fixture.debugElement.queryAll(By.css('.progress mat-progress-bar')).length).toBe(2);
+    expect(fixture.debugElement.queryAll(By.css('.progress mat-progress-bar'))[0].attributes['ng-reflect-value']).toBe(
+      '25'
+    );
+    expect(fixture.debugElement.queryAll(By.css('.progress mat-progress-bar'))[1].attributes['ng-reflect-value']).toBe(
+      '0'
+    );
+
+    // torrent active is true and complete is false => cloud_download
+    component.torrent.active = true;
+    component.torrent.complete = false;
+    fixture.detectChanges();
+    expect(fixture.debugElement.queryAll(By.css('.title mat-icon')).length).toBe(1);
+    expect(fixture.debugElement.query(By.css('.title mat-icon')).nativeElement.textContent).toBe('cloud_download');
+    expect(fixture.debugElement.queryAll(By.css('.progress mat-progress-bar'))[0].attributes['ng-reflect-value']).toBe(
+      '25'
+    );
+    expect(fixture.debugElement.queryAll(By.css('.progress mat-progress-bar'))[1].attributes['ng-reflect-value']).toBe(
+      '0'
+    );
+
+    // torrent active is true and complete is true and downloaded is zero => save_alt (red)
+    component.torrent.complete = true;
+    component.torrent.completed = component.torrent.size;
+    fixture.detectChanges();
+    expect(fixture.debugElement.queryAll(By.css('.title mat-icon')).length).toBe(1);
+    expect(fixture.debugElement.query(By.css('.title mat-icon')).nativeElement.textContent).toBe('save_alt');
+    expect(fixture.debugElement.query(By.css('.title mat-icon')).attributes['color']).toBe('warn');
+    expect(fixture.debugElement.queryAll(By.css('.progress mat-progress-bar'))[0].attributes['ng-reflect-value']).toBe(
+      '100'
+    );
+    expect(fixture.debugElement.queryAll(By.css('.progress mat-progress-bar'))[1].attributes['ng-reflect-value']).toBe(
+      '0'
+    );
+
+    // torrent active is true and complete is true and downloaded is not zero => save_alt (not red)
+    component.torrent.downloaded = component.torrent.size / 2;
+    fixture.detectChanges();
+    expect(fixture.debugElement.queryAll(By.css('.title mat-icon')).length).toBe(1);
+    expect(fixture.debugElement.query(By.css('.title mat-icon')).nativeElement.textContent).toBe('save_alt');
+    expect(fixture.debugElement.query(By.css('.title mat-icon')).attributes['color']).toBe('primary');
+    expect(fixture.debugElement.queryAll(By.css('.progress mat-progress-bar')).length).toBe(2);
+    expect(fixture.debugElement.queryAll(By.css('.progress mat-progress-bar'))[0].attributes['ng-reflect-value']).toBe(
+      '100'
+    );
+    expect(fixture.debugElement.queryAll(By.css('.progress mat-progress-bar'))[1].attributes['ng-reflect-value']).toBe(
+      '50'
+    );
+
+    // torrent active is true and complete is true and downloaded is size => done
+    component.torrent.downloaded = component.torrent.size;
+    fixture.detectChanges();
+    expect(fixture.debugElement.queryAll(By.css('.title mat-icon')).length).toBe(1);
+    expect(fixture.debugElement.query(By.css('.title mat-icon')).nativeElement.textContent).toBe('done');
+    expect(fixture.debugElement.queryAll(By.css('.progress mat-progress-bar'))[0].attributes['ng-reflect-value']).toBe(
+      '100'
+    );
+    expect(fixture.debugElement.queryAll(By.css('.progress mat-progress-bar'))[1].attributes['ng-reflect-value']).toBe(
+      '100'
     );
   });
 

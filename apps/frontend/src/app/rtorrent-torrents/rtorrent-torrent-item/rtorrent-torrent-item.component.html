@@ -1,5 +1,9 @@
 <div *ngIf="index==0" class="header">
-  <span class="done">&nbsp;</span>
+  <span class="done" (click)="toggleSort('progress')" [class.unselected]="(sortItem!=='progress')">
+    <mat-icon *ngIf="(sortItem!=='progress') || (sortDirection!=='asc')">keyboard_arrow_down</mat-icon>
+    <mat-icon *ngIf="(sortItem==='progress') && (sortDirection==='asc')">keyboard_arrow_up</mat-icon>
+    {{'progress' | translate}}
+  </span>
   <span class="size"  (click)="toggleSort('size')" [class.unselected]="(sortItem!=='size')">
     <mat-icon *ngIf="(sortItem!=='size') || (sortDirection!=='asc')">keyboard_arrow_down</mat-icon>
     <mat-icon *ngIf="(sortItem==='size') && (sortDirection==='asc')">keyboard_arrow_up</mat-icon>
@@ -26,7 +30,18 @@
     {{'added' | translate}}
   </span>
 </div>
-<div class="title" title="{{torrent?.name}}">{{torrent?.name}}</div>
+<div class="title" title="{{torrent?.name}}">
+  <mat-icon *ngIf="torrent && !torrent.active" color="warn">pause</mat-icon>
+  <mat-icon *ngIf="torrent && torrent.active && !torrent.complete" color="primary">cloud_download</mat-icon>
+  <mat-icon *ngIf="torrent && torrent.active && torrent.complete && (torrent.downloaded === 0)" color="warn">save_alt</mat-icon>
+  <mat-icon *ngIf="torrent && torrent.active && torrent.complete && (torrent.downloaded !== 0) && (torrent.downloaded !== torrent.size)" color="primary">save_alt</mat-icon>
+  <mat-icon *ngIf="torrent && torrent.active && torrent.complete && (torrent.downloaded !== 0) && (torrent.downloaded === torrent.size)" color="primary">done</mat-icon>
+  <span>{{torrent?.name}}</span>
+</div>
+<div class="progress">
+  <mat-progress-bar mode="determinate" value="{{100 * torrent?.completed/torrent?.size}}" color="{{torrent?.completed === torrent?.size ? 'primary' : 'warn'}}"></mat-progress-bar>
+  <mat-progress-bar mode="determinate" value="{{100 * torrent?.downloaded/torrent?.size}}" color="{{torrent?.downloaded === torrent?.size ? 'primary' : 'warn'}}"></mat-progress-bar>
+</div>
 <div class="info">
   <span class="done">&nbsp;</span>
   <span class="size">{{torrent?.size | bytesSize}}</span>

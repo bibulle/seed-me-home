@@ -112,9 +112,11 @@ export class FtpSeedService {
     });
   }
 
-  getProgression(filePath: string) {
+  getProgression(filePath: string): Progression {
     this._initialize();
     const fileTrg = this._getProgressionFileName(filePath);
+    //FtpSeedService.logger.debug(path.resolve(fileTrg));
+
     try {
       const data = fs.readFileSync(fileTrg, { encoding: 'utf8' });
       return JSON.parse(data);
@@ -134,6 +136,15 @@ export class FtpSeedService {
     };
 
     fs.writeFileSync(fileTrg, JSON.stringify(obj), { flag: 'w', encoding: 'utf8' });
+  }
+
+  tellProgressionUseful(filePath: string) {
+    this._initialize();
+    const fileTrg = this._getProgressionFileName(filePath);
+
+    if (fs.existsSync(fileTrg)) {
+      fs.writeFileSync(fileTrg, ' ', { flag: 'a', encoding: 'utf8' });
+    }
   }
 
   clearOldDoneFiles(olderThan: Date) {
@@ -157,4 +168,10 @@ export class FtpSeedService {
   private _getProgressionFileName(filePath: string) {
     return path.join(this._pathProgress, filePath.replace(/[\\\/]/g, '_') + '.progress');
   }
+}
+
+export class Progression {
+  value: number;
+  size: number;
+  progress: number;
 }

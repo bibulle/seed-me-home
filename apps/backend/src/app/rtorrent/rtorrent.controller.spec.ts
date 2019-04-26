@@ -3,7 +3,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { RtorrentController } from './rtorrent.controller';
 import { RtorrentService } from './rtorrent.service';
 import { ConfigService } from '../../services/config/config.service';
-import { RtorrentServiceTestValues } from './rtorrent.service.spec';
+import { FtpSeedServiceMock, RtorrentServiceTestValues } from './rtorrent.service.spec';
+import { FtpSeedService } from '../ftp-seed/ftp-seed.service';
 
 describe('Rtorrent Controller', () => {
   let module: TestingModule;
@@ -13,7 +14,7 @@ describe('Rtorrent Controller', () => {
   beforeAll(async () => {
     module = await Test.createTestingModule({
       controllers: [RtorrentController],
-      providers: [RtorrentService, ConfigService]
+      providers: [RtorrentService, ConfigService, { provide: FtpSeedService, useClass: FtpSeedServiceMock }]
     }).compile();
     controller = module.get<RtorrentController>(RtorrentController);
     service = module.get<RtorrentService>(RtorrentService);

@@ -12,6 +12,7 @@
   "label.up_rate": "Upload speed",
   "label.up_total": "Upload total",
   "label.free_disk_space": "Free disk space",
+  "progress": "Progress",
   "size": "Size",
   "down": "Down",
   "up": "Up",
