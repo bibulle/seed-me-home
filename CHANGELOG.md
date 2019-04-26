@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.4.0"></a>
+# [0.4.0](https://github.com/bibulle/seed-me-home/compare/v0.3.0...v0.4.0) (2019-04-26)
+
+
+### Bug Fixes
+
+* change torrents sort default direction ([94da029](https://github.com/bibulle/seed-me-home/commit/94da029))
+* on upgrade, passport add changed error management ([db52b2e](https://github.com/bibulle/seed-me-home/commit/db52b2e))
+
+
+### Features
+
+* add download files from seeds service ([da0a87c](https://github.com/bibulle/seed-me-home/commit/da0a87c))
+* add google authentication ([0868868](https://github.com/bibulle/seed-me-home/commit/0868868))
+* add progress to seeds ([68ff427](https://github.com/bibulle/seed-me-home/commit/68ff427))
+* add torrents list ([3461fe7](https://github.com/bibulle/seed-me-home/commit/3461fe7))
+* add user component ([0b3ed76](https://github.com/bibulle/seed-me-home/commit/0b3ed76))
+* be more responsive (first step) ([f1751dd](https://github.com/bibulle/seed-me-home/commit/f1751dd))
+* change logging system ([47d5074](https://github.com/bibulle/seed-me-home/commit/47d5074))
+
+
+
 <a name="0.3.0"></a>
 # [0.3.0](https://github.com/bibulle/seed-me-home/compare/v0.2.5...v0.3.0) (2019-03-26)
 
