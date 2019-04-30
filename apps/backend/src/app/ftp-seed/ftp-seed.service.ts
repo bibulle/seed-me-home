@@ -2,12 +2,17 @@ import { Injectable, Logger } from '@nestjs/common';
 import * as path from 'path';
 import { ConfigService } from '../../services/config/config.service';
 import * as fs from 'fs';
+import { Interval, NestSchedule } from 'nest-schedule';
 
 @Injectable()
-export class FtpSeedService {
+export class FtpSeedService extends NestSchedule {
   static readonly logger = new Logger(FtpSeedService.name);
 
   static readonly SIZE_LIMIT_DOWNLOAD = 5 * 1024 * 1024 * 1024;
+
+  private static downloadWaitingList: Progression[] = [];
+  private static downloadCurrentList: string[] = [];
+  private static readonly PARALLELED_DOWNLOAD_MAX = 4;
 
   Client = require('ssh2');
 
@@ -23,7 +28,9 @@ export class FtpSeedService {
   private _pathDownload: string;
   private _pathProgress: string;
 
-  constructor(private _configService: ConfigService) {}
+  constructor(private _configService: ConfigService) {
+    super();
+  }
 
   private _initialize() {
     //FtpSeedService.logger.debug('_initialize');
@@ -45,76 +52,6 @@ export class FtpSeedService {
     }
   }
 
-  downloadFile(fullPath: string): Promise<void> {
-    fullPath = this._cleanFullFileName(fullPath);
-    return new Promise<void>((collect, reject) => {
-      this._initialize();
-
-      const that = this;
-
-      const conn = new this.Client();
-
-      conn.on('ready', () => {
-        //FtpSeedService.logger.debug('Client : ready');
-        conn.sftp((err1, sftp) => {
-          if (err1) {
-            FtpSeedService.logger.error(err1);
-            return reject(err1);
-          }
-
-          const fileSrc = path.join(that._pathFtp, fullPath);
-          const fileTrg = path.join(that._pathDownload, fullPath);
-
-          const paths = [path.dirname(fileTrg)];
-          while (paths[0] !== '.') {
-            paths.unshift(path.dirname(paths[0]));
-          }
-          paths.forEach(p => {
-            if (!fs.existsSync(p)) {
-              fs.mkdirSync(p);
-            }
-          });
-
-          sftp.fastGet(
-            fileSrc,
-            fileTrg,
-            {
-              step: (total_transferred: number, chunk: number, total: number) => {
-                //FtpSeedService.logger.debug(fullPath+' '+total_transferred + ' ' + chunk + ' ' + total);
-                that._setProgression(fullPath, total_transferred, total);
-                //FtpSeedService.logger.debug(that.getProgression(fullPath));
-              }
-            },
-            (err2: Error) => {
-              if (err2) {
-                if (err2.message === 'No such file') {
-                  err2.message = 'No such file : ' + fileSrc;
-                }
-                FtpSeedService.logger.error(err2.stack);
-                return reject(err2);
-              }
-              conn.end();
-            }
-          );
-        });
-      });
-      //      conn.on('close', (hadErr) => {
-      //        //FtpSeedService.logger.debug('close (' + hadErr + ')');
-      //      });
-      conn.on('error', (err: Error) => {
-        FtpSeedService.logger.error(err.stack);
-        reject(err);
-      });
-      conn.on('end', () => {
-        //FtpSeedService.logger.debug('end');
-        collect();
-      });
-
-      // connect
-      conn.connect(this._ftpConfig);
-    });
-  }
-
   getProgression(fullPath: string): Progression {
     this._initialize();
     fullPath = this._cleanFullFileName(fullPath);
@@ -130,12 +67,12 @@ export class FtpSeedService {
     }
   }
 
-  shouldDownload(fullPath: string, size: number, should: boolean) {
+  switchShouldDownload(fullPath: string, size: number, should: boolean) {
     fullPath = this._cleanFullFileName(fullPath);
 
     let data = this.getProgression(fullPath);
     if (!data) {
-      this._setProgression(fullPath, 0, size);
+      this.setProgression(fullPath, 0, size);
       data = this.getProgression(fullPath);
     }
 
@@ -143,15 +80,17 @@ export class FtpSeedService {
     this._saveProgression(fullPath, data);
   }
 
-  private _setProgression(fullPath: string, value: number, size: number) {
+  setProgression(fullPath: string, value: number, size: number) {
     this._initialize();
-    fullPath = this._cleanFullFileName(fullPath);
+
+    const previous = this.getProgression(fullPath);
 
     const obj: Progression = {
       value: value,
       size: size,
       progress: Math.round((100 * value) / Math.max(1, size)),
-      shouldDownload: size < FtpSeedService.SIZE_LIMIT_DOWNLOAD
+      shouldDownload: previous ? previous.shouldDownload : size < FtpSeedService.SIZE_LIMIT_DOWNLOAD,
+      fullPath: fullPath
     };
 
     this._saveProgression(fullPath, obj);
@@ -198,6 +137,9 @@ export class FtpSeedService {
   private _getProgressionFileName(fullPath: string): string {
     fullPath = this._cleanFullFileName(fullPath);
 
+    // remove the .progress if needed
+    fullPath = fullPath.replace(/[.]progress$/, '');
+
     return path.join(this._pathProgress, fullPath.replace(/[\\\/]/g, '_') + '.progress');
   }
 
@@ -208,6 +150,146 @@ export class FtpSeedService {
 
     return fullPath.replace(regexp, '');
   }
+
+  @Interval(10 * 1000)
+  intervalJob() {
+    //FtpSeedService.logger.debug('intervalJob');
+
+    const shouldDownload: Progression[] = [];
+
+    // read all files
+    this._initialize();
+
+    const files = fs.readdirSync(this._pathProgress);
+    files.forEach(file => {
+      const progress = this.getProgression(file);
+      if (!progress) {
+        FtpSeedService.logger.warn('Cannot read progression for file : ' + file);
+      } else {
+        if (progress.shouldDownload && progress.progress !== 100) {
+          shouldDownload.push(progress);
+        }
+      }
+    });
+
+    // sort by progress (already started first) and then by path
+    shouldDownload.sort((a, b) => {
+      const ret = b.progress - a.progress;
+      if (ret !== 0) {
+        return ret;
+      } else {
+        return a.fullPath.localeCompare(b.fullPath);
+      }
+    });
+
+    FtpSeedService.downloadWaitingList = shouldDownload;
+
+    [...Array(FtpSeedService.PARALLELED_DOWNLOAD_MAX)].map(() => {
+      this._startADownload();
+    });
+
+    return true;
+  }
+
+  private _startADownload() {
+    if (
+      FtpSeedService.downloadCurrentList.length < FtpSeedService.PARALLELED_DOWNLOAD_MAX &&
+      FtpSeedService.downloadWaitingList.length !== 0
+    ) {
+      const fullpath = FtpSeedService.downloadWaitingList[0].fullPath;
+
+      FtpSeedService.downloadCurrentList.push(fullpath);
+      FtpSeedService.downloadWaitingList.shift();
+
+      this._downloadFile(fullpath)
+        .then(() => {
+          for (let i = 0; i < FtpSeedService.downloadCurrentList.length; i++) {
+            if (FtpSeedService.downloadCurrentList[i] === fullpath) {
+              FtpSeedService.downloadCurrentList.splice(i, 1);
+            }
+          }
+        })
+        .catch(() => {
+          for (let i = 0; i < FtpSeedService.downloadCurrentList.length; i++) {
+            if (FtpSeedService.downloadCurrentList[i] === fullpath) {
+              FtpSeedService.downloadCurrentList.splice(i, 1);
+            }
+          }
+        });
+    }
+  }
+
+  _downloadFile(fullPath: string): Promise<void> {
+    fullPath = this._cleanFullFileName(fullPath);
+    return new Promise<void>((collect, reject) => {
+      this._initialize();
+
+      const that = this;
+
+      FtpSeedService.logger.log('Downloading : ' + fullPath);
+
+      const conn = new this.Client();
+
+      conn.on('ready', () => {
+        //FtpSeedService.logger.debug('Client : ready');
+        conn.sftp((err1, sftp) => {
+          if (err1) {
+            FtpSeedService.logger.error(err1);
+            return reject(err1);
+          }
+
+          const fileSrc = path.join(that._pathFtp, fullPath);
+          const fileTrg = path.join(that._pathDownload, fullPath);
+
+          const paths = [path.dirname(fileTrg)];
+          while (paths[0] !== '.') {
+            paths.unshift(path.dirname(paths[0]));
+          }
+          paths.forEach(p => {
+            if (!fs.existsSync(p)) {
+              fs.mkdirSync(p);
+            }
+          });
+
+          sftp.fastGet(
+            fileSrc,
+            fileTrg,
+            {
+              step: (total_transferred: number, chunk: number, total: number) => {
+                //FtpSeedService.logger.debug(fullPath+' '+total_transferred + ' ' + chunk + ' ' + total);
+                that.setProgression(fullPath, total_transferred, total);
+                //FtpSeedService.logger.debug(that.getProgression(fullPath));
+              }
+            },
+            (err2: Error) => {
+              if (err2) {
+                if (err2.message === 'No such file') {
+                  err2.message = 'No such file : ' + fileSrc;
+                }
+                FtpSeedService.logger.error(err2.stack);
+                return reject(err2);
+              }
+              conn.end();
+            }
+          );
+        });
+      });
+      //      conn.on('close', (hadErr) => {
+      //        //FtpSeedService.logger.debug('close (' + hadErr + ')');
+      //      });
+      conn.on('error', (err: Error) => {
+        FtpSeedService.logger.error(err.stack);
+        reject(err);
+      });
+      conn.on('end', () => {
+        //FtpSeedService.logger.debug('end');
+        collect();
+      });
+
+      // connect
+      conn.connect(this._ftpConfig);
+    });
+  }
 }
 
 export class Progression {
@@ -215,4 +297,5 @@ export class Progression {
   size: number;
   progress: number;
   shouldDownload: boolean;
+  fullPath: string;
 }

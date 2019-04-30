@@ -89,8 +89,8 @@ describe('Rtorrent Controller', () => {
         });
       }
     });
-    expect(await controller.shouldDownload(RtorrentServiceTestValues.MOCK_ANSWER_TORRENTS[0].hash, 'true')).toEqual(
-      result3
-    );
+    expect(
+      await controller.switchShouldDownload(RtorrentServiceTestValues.MOCK_ANSWER_TORRENTS[0].hash, 'true')
+    ).toEqual(result3);
   });
 });

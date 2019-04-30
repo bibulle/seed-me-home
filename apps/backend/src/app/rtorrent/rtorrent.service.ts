@@ -3,16 +3,19 @@ import { ConfigService } from '../../services/config/config.service';
 import * as _ from 'lodash';
 import { RTorrentFile, RtorrentStatus, RtorrentTorrent } from '@seed-me-home/models';
 import { FtpSeedService } from '../ftp-seed/ftp-seed.service';
+import { Interval, NestSchedule } from 'nest-schedule';
 
 const Rtorrent = require('@electorrent/node-rtorrent');
 
 @Injectable()
-export class RtorrentService {
+export class RtorrentService extends NestSchedule {
   readonly logger = new Logger(RtorrentService.name);
 
   private _rtorrent;
 
-  constructor(private _configService: ConfigService, private _ftpSeedService: FtpSeedService) {}
+  constructor(private _configService: ConfigService, private _ftpSeedService: FtpSeedService) {
+    super();
+  }
 
   private _initialize() {
     if (!this._rtorrent) {
@@ -110,7 +113,11 @@ export class RtorrentService {
                   total_shouldDownload = total_shouldDownload || progress.shouldDownload;
                 } else {
                   file.downloaded = 0;
+                  if (file['completed_chunks'] === file['chunks']) {
+                    this._ftpSeedService.setProgression(file.fullpath, 0, file.size);
+                  }
                 }
+                this._ftpSeedService.tellProgressionUseful(file.fullpath);
               });
 
               torrent.downloaded = total_downloaded;
@@ -206,7 +213,7 @@ export class RtorrentService {
     });
   }
 
-  shouldDownload(hash: string, should: boolean) {
+  switchShouldDownload(hash: string, should: boolean) {
     //this.logger.debug('shouldDownload ' + hash+' '+should);
     this._initialize();
 
@@ -217,7 +224,7 @@ export class RtorrentService {
         }
 
         files.forEach(f => {
-          this._ftpSeedService.shouldDownload(f.fullpath, f.size, should);
+          this._ftpSeedService.switchShouldDownload(f.fullpath, f.size, should);
         });
         //this.logger.debug(files);
         this.getTorrents()
@@ -250,4 +257,15 @@ export class RtorrentService {
   //    this._initialize();
   //    this._rtorrent.getTorrentPeers(callback);
   //  }
+
+  @Interval(60 * 1000)
+  intervalJob() {
+    this.logger.debug('intervalJob');
+
+    this.getTorrents().catch(err => {
+      this.logger.error(err);
+    });
+
+    return false;
+  }
 }

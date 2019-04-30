@@ -703,7 +703,7 @@ describe('RtorrentService', () => {
       expect.assertions(2);
 
       rtorrentService.forceRtorrentForMocking(new RtorrentMock());
-      rtorrentService.shouldDownload(RtorrentServiceTestValues.MOCK_ANSWER_HASH, true).then(data1 => {
+      rtorrentService.switchShouldDownload(RtorrentServiceTestValues.MOCK_ANSWER_HASH, true).then(data1 => {
         const result = [];
         RtorrentServiceTestValues.MOCK_ANSWER_TORRENTS.forEach(t => {
           const t1 = { ...t };
@@ -722,7 +722,7 @@ describe('RtorrentService', () => {
 
         expect(data1).toEqual(result);
 
-        rtorrentService.shouldDownload(RtorrentServiceTestValues.MOCK_ANSWER_HASH, false).then(data2 => {
+        rtorrentService.switchShouldDownload(RtorrentServiceTestValues.MOCK_ANSWER_HASH, false).then(data2 => {
           expect(data2).toEqual(RtorrentServiceTestValues.MOCK_ANSWER_TORRENTS);
 
           done();
@@ -737,14 +737,14 @@ describe('RtorrentService', () => {
       const rtorrentMock = new RtorrentMock();
       rtorrentMock.getTorrentFilesError = true;
       rtorrentService.forceRtorrentForMocking(rtorrentMock);
-      rtorrentService.shouldDownload(RtorrentServiceTestValues.MOCK_ANSWER_HASH, false).catch(err => {
+      rtorrentService.switchShouldDownload(RtorrentServiceTestValues.MOCK_ANSWER_HASH, false).catch(err => {
         expect(err).not.toBeNull();
         expect(err.faultCode).toEqual(-1);
       });
 
       rtorrentMock.getTorrentFilesError = false;
       rtorrentMock.getAllError = true;
-      rtorrentService.shouldDownload(RtorrentServiceTestValues.MOCK_ANSWER_HASH, true).catch(err => {
+      rtorrentService.switchShouldDownload(RtorrentServiceTestValues.MOCK_ANSWER_HASH, true).catch(err => {
         expect(err).not.toBeNull();
         expect(err.faultCode).toEqual(-1);
       });
@@ -799,9 +799,15 @@ export class FtpSeedServiceMock {
     }
   }
 
-  shouldDownload(fullPath: string, size: number, should: boolean) {
+  //noinspection JSUnusedGlobalSymbols
+  switchShouldDownload(fullPath: string, size: number, should: boolean) {
     this.shouldDownloaded[fullPath] = should;
   }
+
+  //noinspection JSUnusedGlobalSymbols
+  setProgression() {}
+  //noinspection JSUnusedGlobalSymbols
+  tellProgressionUseful() {}
 }
 
 export class RtorrentMock {

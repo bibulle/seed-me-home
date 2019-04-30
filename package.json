@@ -85,6 +85,7 @@
     "core-js": "^2.5.4",
     "express-session": "^1.16.1",
     "moment": "^2.24.0",
+    "nest-schedule": "^0.5.0",
     "ngx-logger": "^3.3.12",
     "passport": "^0.4.0",
     "passport-google-oauth": "^2.0.0",

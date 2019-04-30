@@ -28,13 +28,13 @@ export class RtorrentController {
   }
 
   @Put('torrents/:hash/shouldDownload/:should')
-  async shouldDownload(@Param('hash') hash: string, @Param('should') should: string): Promise<RtorrentTorrent[]> {
+  async switchShouldDownload(@Param('hash') hash: string, @Param('should') should: string): Promise<RtorrentTorrent[]> {
     let shouldBool = false;
     try {
       shouldBool = JSON.parse(should);
     } catch (e) {}
 
-    return this.rtorrentService.shouldDownload(hash, shouldBool);
+    return this.rtorrentService.switchShouldDownload(hash, shouldBool);
   }
 
   @Delete('torrents/:hash')
