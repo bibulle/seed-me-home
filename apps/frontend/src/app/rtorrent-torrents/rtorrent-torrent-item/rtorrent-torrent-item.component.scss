@@ -1,4 +1,7 @@
 :host {
+  .torrent-name {
+    color: red;
+  }
   padding-bottom: 0.5em;
   //padding-top: 0.5em;
   display: flex;
@@ -16,6 +19,8 @@
     //padding-bottom: 0.2em;
     flex: 1 1 100%;
     display: flex;
+    position: relative;
+    padding-right: 28px;
 
     span {
       line-height: 24px;
@@ -23,6 +28,14 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+    }
+
+    button.mat-icon-button {
+      width: 24px;
+      height: 24px;
+      line-height: 24px;
+      position: absolute;
+      right: 0;
     }
   }
 

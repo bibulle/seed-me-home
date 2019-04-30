@@ -134,6 +134,7 @@ describe('NavBarComponent', () => {
       // click on the seeds button
       compiled.querySelectorAll('.nav-bar-header a')[2].click();
       fixture.detectChanges();
+      fixture.detectChanges();
 
       // now, seeds should be selected
       expect(compiled.querySelectorAll('.nav-bar-header a')[2].classList).toContain('mat-accent');

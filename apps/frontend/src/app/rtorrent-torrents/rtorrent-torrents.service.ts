@@ -10,7 +10,7 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class RtorrentTorrentsService {
-  private static REFRESH_EVERY = 20 * 1000;
+  private static REFRESH_EVERY = 60 * 1000;
   private static _refreshIsRunning = false;
 
   API_URL = environment.serverUrl + 'rtorrent/torrents';
@@ -86,5 +86,71 @@ export class RtorrentTorrentsService {
    */
   currentTorrentsObservable(): Observable<RtorrentTorrent[]> {
     return this.currentTorrentsSubject;
+  }
+
+  /**
+   * Pause a torrent in backend
+   */
+  pauseTorrent(hash: string) {
+    this.httpClient
+      .put<ApiReturn>(`${this.API_URL}/${hash}/pause`, {})
+      .toPromise()
+      .then((data: ApiReturn) => {
+        const torrents = data.data as RtorrentTorrent[];
+        this.currentTorrentsSubject.next(torrents);
+      })
+      .catch(error => {
+        this._notificationService.handleError(error);
+      });
+  }
+
+  /**
+   * Start a torrent in backend
+   */
+  startTorrent(hash: string) {
+    this.httpClient
+      .put<ApiReturn>(`${this.API_URL}/${hash}/start`, {})
+      .toPromise()
+      .then((data: ApiReturn) => {
+        const torrents = data.data as RtorrentTorrent[];
+        this.currentTorrentsSubject.next(torrents);
+      })
+      .catch(error => {
+        this._notificationService.handleError(error);
+      });
+  }
+
+  /**
+   * Remove a torrent in backend
+   */
+  removeTorrent(hash: string) {
+    this.httpClient
+      .delete<ApiReturn>(`${this.API_URL}/${hash}`, {})
+      .toPromise()
+      .then((data: ApiReturn) => {
+        const torrents = data.data as RtorrentTorrent[];
+        this.currentTorrentsSubject.next(torrents);
+      })
+      .catch(error => {
+        this._notificationService.handleError(error);
+      });
+  }
+
+  /**
+   * Add info to backend to download locally or not the torrent
+   * @param hash
+   * @param should
+   */
+  shouldGetFromSeeBox(hash: string, should: boolean) {
+    this.httpClient
+      .put<ApiReturn>(`${this.API_URL}/${hash}/shouldDownload/${should}`, {})
+      .toPromise()
+      .then((data: ApiReturn) => {
+        const torrents = data.data as RtorrentTorrent[];
+        this.currentTorrentsSubject.next(torrents);
+      })
+      .catch(error => {
+        this._notificationService.handleError(error);
+      });
   }
 }

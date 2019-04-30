@@ -37,6 +37,14 @@
   <mat-icon *ngIf="torrent && torrent.active && torrent.complete && (torrent.downloaded !== 0) && (torrent.downloaded !== torrent.size)" color="primary">save_alt</mat-icon>
   <mat-icon *ngIf="torrent && torrent.active && torrent.complete && (torrent.downloaded !== 0) && (torrent.downloaded === torrent.size)" color="primary">done</mat-icon>
   <span>{{torrent?.name}}</span>
+  <button mat-icon-button [matMenuTriggerFor]="moreActionMenu" #menuTrigger='matMenuTrigger'><mat-icon>more_horiz</mat-icon></button>
+  <mat-menu #moreActionMenu="matMenu" xPosition="before">
+    <button mat-menu-item (click)="pause()" *ngIf="torrent && torrent.active"><mat-icon>pause</mat-icon>{{ 'seed.pause' | translate}}</button>
+    <button mat-menu-item (click)="start()" *ngIf="torrent && !torrent.active"><mat-icon>play_arrow</mat-icon>{{ 'seed.start' | translate}}</button>
+    <button mat-menu-item (click)="remove()"><mat-icon>delete_forever</mat-icon>{{ 'seed.erase' | translate}}</button>
+    <button mat-menu-item (click)="shouldGetFromSeeBox(true)" *ngIf="torrent && !torrent.shouldDownload"><mat-icon>save_alt</mat-icon>{{ 'seed.save_here' | translate}}</button>
+    <button mat-menu-item (click)="shouldGetFromSeeBox(false)" *ngIf="torrent && torrent.shouldDownload"><mat-icon>block</mat-icon>{{ 'seed.not_save_here' | translate}}</button>
+  </mat-menu>
 </div>
 <div class="progress">
   <mat-progress-bar mode="determinate" value="{{100 * torrent?.completed/torrent?.size}}" color="{{torrent?.completed === torrent?.size ? 'primary' : 'warn'}}"></mat-progress-bar>

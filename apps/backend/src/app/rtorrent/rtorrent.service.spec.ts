@@ -114,7 +114,7 @@ export class RtorrentServiceTestValues {
             size: '1999503360',
             chunks: '3814',
             completed_chunks: '2257',
-            fullpath: '/home/14user/rutorrent/torrents/ubuntu-18.10-desktop-amd64.iso',
+            fullpath: '/home/14user/rutorrent/torrents/ubuntu-18.10-desktop-amd64.iso2',
             path: 'ubuntu-18.10-desktop-amd64.iso2',
             priority: '1',
             is_created: '1',
@@ -351,64 +351,6 @@ export class RtorrentServiceTestValues {
     ]
   };
 
-  static readonly MOCK_TORRENT = {
-    getGlobals: callback => {
-      callback(
-        null,
-        _.pick(RtorrentServiceTestValues.FAKE_RTORRENT_RETURN, ['down_rate', 'down_total', 'up_rate', 'up_total'])
-      );
-    },
-    getAll: callback => {
-      callback(null, RtorrentServiceTestValues.FAKE_RTORRENT_RETURN);
-    },
-    getTorrentFiles: (hash, callback) => {
-      if (hash === RtorrentServiceTestValues.MOCK_ANSWER_HASH) {
-        callback(null, RtorrentServiceTestValues.FAKE_RTORRENT_RETURN.torrents[1].files);
-      } else {
-        callback(
-          {
-            code: -501,
-            faultCode: -501,
-            faultString: 'Could not find info-hash.'
-          },
-          null
-        );
-      }
-    }
-  };
-  static readonly MOCK_TORRENT_ERR = {
-    getGlobals: callback => {
-      callback(
-        {
-          code: -1,
-          faultCode: -1,
-          faultString: 'Error found.'
-        },
-        null
-      );
-    },
-    getAll: callback => {
-      callback(
-        {
-          code: -1,
-          faultCode: -1,
-          faultString: 'Error found.'
-        },
-        null
-      );
-    },
-    getTorrentFiles: (hash, callback) => {
-      callback(
-        {
-          code: -1,
-          faultCode: -1,
-          faultString: 'Error found.'
-        },
-        null
-      );
-    }
-  };
-
   static readonly MOCK_ANSWER_STATUS = {
     down_rate: '28',
     down_total: '463360286085',
@@ -443,6 +385,7 @@ export class RtorrentServiceTestValues {
       ratio: 0,
       active: true,
       open: true,
+      shouldDownload: false,
       files: [
         {
           range_first: '0',
@@ -461,7 +404,8 @@ export class RtorrentServiceTestValues {
           match_depth_prev: '0',
           offset: '0',
           path_components: ['ubuntu-18.10-desktop-amd64.iso'],
-          path_depth: '1'
+          path_depth: '1',
+          shouldDownload: false
         },
         {
           range_first: '0',
@@ -470,7 +414,7 @@ export class RtorrentServiceTestValues {
           chunks: '3814',
           completed_chunks: '2257',
           downloaded: 199950336,
-          fullpath: '/home/14user/rutorrent/torrents/ubuntu-18.10-desktop-amd64.iso',
+          fullpath: '/home/14user/rutorrent/torrents/ubuntu-18.10-desktop-amd64.iso2',
           path: 'ubuntu-18.10-desktop-amd64.iso2',
           priority: '1',
           is_created: '1',
@@ -480,7 +424,8 @@ export class RtorrentServiceTestValues {
           match_depth_prev: '0',
           offset: '0',
           path_components: ['ubuntu-18.10-desktop-amd64.iso'],
-          path_depth: '1'
+          path_depth: '1',
+          shouldDownload: false
         }
       ]
     },
@@ -503,6 +448,7 @@ export class RtorrentServiceTestValues {
       ratio: 0,
       active: true,
       open: true,
+      shouldDownload: false,
       files: [
         {
           range_first: '0',
@@ -527,27 +473,48 @@ export class RtorrentServiceTestValues {
     }
   ];
   //noinspection SpellCheckingInspection
-  static readonly MOCK_ANSWER_HASH = '4A03DA39750C4BDD0FEBB66D8B138CEEA5993FAA';
+  static readonly MOCK_ANSWER_HASH = '5A8CE26E8A19A877D8CCC927FCC18E34E1F5FF67';
   //noinspection SpellCheckingInspection
   static readonly MOCK_ANSWER_FILES = [
     {
       range_first: '0',
-      range_second: '2208',
-      size: '1157627904',
-      chunks: '2208',
-      completed_chunks: '1058',
-      downloaded: 0,
-      fullpath: '/home/14user/rutorrent/torrents/ubuntu-14.04.6-desktop-amd64.iso',
-      path: 'ubuntu-14.04.6-desktop-amd64.iso',
+      range_second: '3814',
+      size: '1999503360',
+      chunks: '3814',
+      completed_chunks: '2257',
+      downloaded: 199950336,
+      fullpath: '/home/14user/rutorrent/torrents/ubuntu-18.10-desktop-amd64.iso',
+      path: 'ubuntu-18.10-desktop-amd64.iso',
       priority: '1',
       is_created: '1',
       is_open: '1',
-      last_touched: '1552911778934093',
+      last_touched: '1552911778926106',
       match_depth_next: '0',
       match_depth_prev: '0',
       offset: '0',
-      path_components: ['ubuntu-14.04.6-desktop-amd64.iso'],
-      path_depth: '1'
+      path_components: ['ubuntu-18.10-desktop-amd64.iso'],
+      path_depth: '1',
+      shouldDownload: false
+    },
+    {
+      range_first: '0',
+      range_second: '3814',
+      size: '1999503360',
+      chunks: '3814',
+      completed_chunks: '2257',
+      downloaded: 199950336,
+      fullpath: '/home/14user/rutorrent/torrents/ubuntu-18.10-desktop-amd64.iso2',
+      path: 'ubuntu-18.10-desktop-amd64.iso2',
+      priority: '1',
+      is_created: '1',
+      is_open: '1',
+      last_touched: '1552911778926106',
+      match_depth_next: '0',
+      match_depth_prev: '0',
+      offset: '0',
+      path_components: ['ubuntu-18.10-desktop-amd64.iso'],
+      path_depth: '1',
+      shouldDownload: false
     }
   ];
 }
@@ -581,14 +548,17 @@ describe('RtorrentService', () => {
     });
 
     void it('getStatus return should be ok', done => {
-      rtorrentService.forceRtorrentForMocking(RtorrentServiceTestValues.MOCK_TORRENT);
+      rtorrentService.forceRtorrentForMocking(new RtorrentMock());
       rtorrentService.getStatus().then(data => {
         expect(data).toEqual(RtorrentServiceTestValues.MOCK_ANSWER_STATUS);
         done();
       });
     });
     void it('getStatus return should be ko on error', done => {
-      rtorrentService.forceRtorrentForMocking(RtorrentServiceTestValues.MOCK_TORRENT_ERR);
+      const rtorrentMock = new RtorrentMock();
+      rtorrentMock.getAllError = true;
+      rtorrentService.forceRtorrentForMocking(rtorrentMock);
+
       rtorrentService.getStatus().catch(err => {
         expect(err).not.toBeNull();
         expect(err.faultCode).toEqual(-1);
@@ -599,7 +569,7 @@ describe('RtorrentService', () => {
 
   describe('getGlobals', () => {
     void it('getGlobals return should be ok', done => {
-      rtorrentService.forceRtorrentForMocking(RtorrentServiceTestValues.MOCK_TORRENT);
+      rtorrentService.forceRtorrentForMocking(new RtorrentMock());
       rtorrentService.getGlobals((err, data) => {
         expect(err).toBeNull();
         expect(data).toEqual(RtorrentServiceTestValues.MOCK_ANSWER_GLOBAL);
@@ -610,14 +580,16 @@ describe('RtorrentService', () => {
 
   describe('getTorrents', () => {
     void it('getTorrents return should be ok', done => {
-      rtorrentService.forceRtorrentForMocking(RtorrentServiceTestValues.MOCK_TORRENT);
+      rtorrentService.forceRtorrentForMocking(new RtorrentMock());
       rtorrentService.getTorrents().then(data => {
         expect(data).toEqual(RtorrentServiceTestValues.MOCK_ANSWER_TORRENTS);
         done();
       });
     });
     void it('getTorrents return should be ko on error', done => {
-      rtorrentService.forceRtorrentForMocking(RtorrentServiceTestValues.MOCK_TORRENT_ERR);
+      const rtorrentMock = new RtorrentMock();
+      rtorrentMock.getAllError = true;
+      rtorrentService.forceRtorrentForMocking(rtorrentMock);
       rtorrentService.getTorrents().catch(err => {
         expect(err).not.toBeNull();
         expect(err.faultCode).toEqual(-1);
@@ -626,9 +598,162 @@ describe('RtorrentService', () => {
     });
   });
 
+  describe('actions on torrents', () => {
+    void it('pause start and remove return should be ok', done => {
+      rtorrentService.forceRtorrentForMocking(new RtorrentMock());
+      rtorrentService.getTorrents().then(data1 => {
+        expect(data1).toEqual(RtorrentServiceTestValues.MOCK_ANSWER_TORRENTS);
+
+        // first on pause the good hash should be not active
+        rtorrentService.pauseTorrent(RtorrentServiceTestValues.MOCK_ANSWER_HASH).then(data2 => {
+          const result1 = [];
+          RtorrentServiceTestValues.MOCK_ANSWER_TORRENTS.forEach(t => {
+            const t1 = { ...t };
+            result1.push(t1);
+            if (t.hash === RtorrentServiceTestValues.MOCK_ANSWER_HASH) {
+              t1.active = false;
+            }
+          });
+
+          expect(data2).toEqual(result1);
+
+          // then on start the good hash should be active again
+          rtorrentService.startTorrent(RtorrentServiceTestValues.MOCK_ANSWER_HASH).then(data3 => {
+            expect(data3).toEqual(RtorrentServiceTestValues.MOCK_ANSWER_TORRENTS);
+
+            // then on remove, it should disappear
+            rtorrentService.removeTorrent(RtorrentServiceTestValues.MOCK_ANSWER_HASH).then(data4 => {
+              const result2 = [];
+              RtorrentServiceTestValues.MOCK_ANSWER_TORRENTS.forEach(t => {
+                const t1 = { ...t };
+                if (t.hash !== RtorrentServiceTestValues.MOCK_ANSWER_HASH) {
+                  result2.push(t1);
+                }
+              });
+              expect(data4).toEqual(result2);
+              done();
+            });
+          });
+        });
+      });
+    });
+
+    void it('error should be managed', async () => {
+      expect.assertions(14);
+
+      // pause
+      let rtorrentMock = new RtorrentMock();
+      rtorrentMock.pauseError = true;
+      rtorrentService.forceRtorrentForMocking(rtorrentMock);
+      rtorrentService.pauseTorrent(RtorrentServiceTestValues.MOCK_ANSWER_HASH).catch(err => {
+        expect(err).not.toBeNull();
+        expect(err.faultCode).toEqual(-1);
+      });
+
+      rtorrentMock.pauseError = false;
+      rtorrentMock.getAllError = true;
+      rtorrentService.pauseTorrent(RtorrentServiceTestValues.MOCK_ANSWER_HASH).catch(err => {
+        expect(err).not.toBeNull();
+        expect(err.faultCode).toEqual(-1);
+      });
+
+      // Start
+      rtorrentMock = new RtorrentMock();
+      rtorrentMock.stopError = true;
+      rtorrentService.forceRtorrentForMocking(rtorrentMock);
+      rtorrentService.startTorrent(RtorrentServiceTestValues.MOCK_ANSWER_HASH).catch(err => {
+        expect(err).not.toBeNull();
+        expect(err.faultCode).toEqual(-1);
+      });
+
+      rtorrentMock.stopError = false;
+      rtorrentMock.startError = true;
+      rtorrentService.startTorrent(RtorrentServiceTestValues.MOCK_ANSWER_HASH).catch(err => {
+        expect(err).not.toBeNull();
+        expect(err.faultCode).toEqual(-1);
+      });
+
+      rtorrentMock.startError = false;
+      rtorrentMock.getAllError = true;
+      rtorrentService.startTorrent(RtorrentServiceTestValues.MOCK_ANSWER_HASH).catch(err => {
+        expect(err).not.toBeNull();
+        expect(err.faultCode).toEqual(-1);
+      });
+
+      // Remove
+      rtorrentMock = new RtorrentMock();
+      rtorrentMock.removeAndEraseError = true;
+      rtorrentService.forceRtorrentForMocking(rtorrentMock);
+      rtorrentService.removeTorrent(RtorrentServiceTestValues.MOCK_ANSWER_HASH).catch(err => {
+        expect(err).not.toBeNull();
+        expect(err.faultCode).toEqual(-1);
+      });
+
+      rtorrentMock.removeAndEraseError = false;
+      rtorrentMock.getAllError = true;
+      rtorrentService.removeTorrent(RtorrentServiceTestValues.MOCK_ANSWER_HASH).catch(err => {
+        expect(err).not.toBeNull();
+        expect(err.faultCode).toEqual(-1);
+      });
+    });
+  });
+
+  describe('switch "shall we download" on torrents', () => {
+    void it('return should be ok', done => {
+      expect.assertions(2);
+
+      rtorrentService.forceRtorrentForMocking(new RtorrentMock());
+      rtorrentService.shouldDownload(RtorrentServiceTestValues.MOCK_ANSWER_HASH, true).then(data1 => {
+        const result = [];
+        RtorrentServiceTestValues.MOCK_ANSWER_TORRENTS.forEach(t => {
+          const t1 = { ...t };
+          t1.files = [];
+          t.files.forEach(f => {
+            t1.files.push({ ...f });
+          });
+          if (t.hash === RtorrentServiceTestValues.MOCK_ANSWER_HASH) {
+            t1.shouldDownload = true;
+            t1.files.forEach(f => {
+              f.shouldDownload = true;
+            });
+          }
+          result.push(t1);
+        });
+
+        expect(data1).toEqual(result);
+
+        rtorrentService.shouldDownload(RtorrentServiceTestValues.MOCK_ANSWER_HASH, false).then(data2 => {
+          expect(data2).toEqual(RtorrentServiceTestValues.MOCK_ANSWER_TORRENTS);
+
+          done();
+        });
+      });
+    });
+
+    void it('error should be managed', async () => {
+      expect.assertions(4);
+
+      // pause
+      const rtorrentMock = new RtorrentMock();
+      rtorrentMock.getTorrentFilesError = true;
+      rtorrentService.forceRtorrentForMocking(rtorrentMock);
+      rtorrentService.shouldDownload(RtorrentServiceTestValues.MOCK_ANSWER_HASH, false).catch(err => {
+        expect(err).not.toBeNull();
+        expect(err.faultCode).toEqual(-1);
+      });
+
+      rtorrentMock.getTorrentFilesError = false;
+      rtorrentMock.getAllError = true;
+      rtorrentService.shouldDownload(RtorrentServiceTestValues.MOCK_ANSWER_HASH, true).catch(err => {
+        expect(err).not.toBeNull();
+        expect(err.faultCode).toEqual(-1);
+      });
+    });
+  });
+
   describe('getTorrentFiles', () => {
     void it('getTorrentFiles return should be ko on wrong hash', done => {
-      rtorrentService.forceRtorrentForMocking(RtorrentServiceTestValues.MOCK_TORRENT);
+      rtorrentService.forceRtorrentForMocking(new RtorrentMock());
       //noinspection SpellCheckingInspection
       rtorrentService.getTorrentFiles('5A03DA39750C4BDD0FEBB66D8B138CEEA5993FAA', err => {
         expect(err).not.toBeNull();
@@ -639,7 +764,7 @@ describe('RtorrentService', () => {
     });
 
     void it('getTorrentFiles return should be ok', done => {
-      rtorrentService.forceRtorrentForMocking(RtorrentServiceTestValues.MOCK_TORRENT);
+      rtorrentService.forceRtorrentForMocking(new RtorrentMock());
       rtorrentService.getTorrentFiles(RtorrentServiceTestValues.MOCK_ANSWER_HASH, (err, data) => {
         expect(err).toBeNull();
         expect(data).toEqual(RtorrentServiceTestValues.MOCK_ANSWER_FILES);
@@ -650,18 +775,176 @@ describe('RtorrentService', () => {
 });
 
 export class FtpSeedServiceMock {
+  shouldDownloaded = {};
+
   //noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
-  getProgression(filePath: string): Progression {
-    switch (filePath) {
-      case 'ubuntu-18.10-desktop-amd64.iso':
-      case 'ubuntu-18.10-desktop-amd64.iso2':
+  getProgression(fullPath: string): Progression {
+    switch (fullPath) {
+      case '/home/14user/rutorrent/torrents/ubuntu-18.10-desktop-amd64.iso':
         return {
+          shouldDownload: this.shouldDownloaded[fullPath] === true,
+          progress: 11,
+          size: 1999503360,
+          value: 199950336
+        };
+      case '/home/14user/rutorrent/torrents/ubuntu-18.10-desktop-amd64.iso2':
+        return {
+          shouldDownload: this.shouldDownloaded[fullPath] === true,
           progress: 11,
           size: 1999503360,
           value: 199950336
         };
       default:
         return null;
+    }
+  }
+
+  shouldDownload(fullPath: string, size: number, should: boolean) {
+    this.shouldDownloaded[fullPath] = should;
+  }
+}
+
+export class RtorrentMock {
+  getGlobalsError = false;
+  getAllError = false;
+  getTorrentFilesError = false;
+  pauseError = false;
+  stopError = false;
+  startError = false;
+  removeAndEraseError = false;
+
+  paused = {};
+  removed = {};
+
+  getGlobals(callback) {
+    if (this.getGlobalsError) {
+      callback(
+        {
+          code: -1,
+          faultCode: -1,
+          faultString: 'Error found.'
+        },
+        null
+      );
+    } else {
+      callback(
+        null,
+        _.pick(RtorrentServiceTestValues.FAKE_RTORRENT_RETURN, ['down_rate', 'down_total', 'up_rate', 'up_total'])
+      );
+    }
+  }
+
+  getAll(callback) {
+    if (this.getAllError) {
+      callback(
+        {
+          code: -1,
+          faultCode: -1,
+          faultString: 'Error found.'
+        },
+        null
+      );
+    } else {
+      const all = { ...RtorrentServiceTestValues.FAKE_RTORRENT_RETURN };
+
+      all.torrents = all.torrents.filter(t => {
+        return !this.removed[t.hash];
+      });
+      all.torrents.forEach(t => {
+        t.active = !this.paused[t.hash];
+      });
+
+      callback(null, all);
+    }
+  }
+
+  getTorrentFiles(hash, callback) {
+    if (this.getTorrentFilesError) {
+      callback(
+        {
+          code: -1,
+          faultCode: -1,
+          faultString: 'Error found.'
+        },
+        null
+      );
+    } else {
+      if (hash === RtorrentServiceTestValues.MOCK_ANSWER_HASH) {
+        callback(null, RtorrentServiceTestValues.FAKE_RTORRENT_RETURN.torrents[0].files);
+      } else {
+        callback(
+          {
+            code: -501,
+            faultCode: -501,
+            faultString: 'Could not find info-hash.'
+          },
+          null
+        );
+      }
+    }
+  }
+
+  pause(hash, callback) {
+    if (this.pauseError) {
+      callback(
+        {
+          code: -1,
+          faultCode: -1,
+          faultString: 'Error found.'
+        },
+        null
+      );
+    } else {
+      this.paused[hash] = true;
+      callback();
+    }
+  }
+
+  stop(hash, callback) {
+    if (this.stopError) {
+      callback(
+        {
+          code: -1,
+          faultCode: -1,
+          faultString: 'Error found.'
+        },
+        null
+      );
+    } else {
+      this.paused[hash] = true;
+      callback();
+    }
+  }
+
+  start(hash, callback) {
+    if (this.startError) {
+      callback(
+        {
+          code: -1,
+          faultCode: -1,
+          faultString: 'Error found.'
+        },
+        null
+      );
+    } else {
+      this.paused[hash] = false;
+      callback();
+    }
+  }
+
+  removeAndErase(hash, callback) {
+    if (this.removeAndEraseError) {
+      callback(
+        {
+          code: -1,
+          faultCode: -1,
+          faultString: 'Error found.'
+        },
+        null
+      );
+    } else {
+      this.removed[hash] = true;
+      callback();
     }
   }
 }

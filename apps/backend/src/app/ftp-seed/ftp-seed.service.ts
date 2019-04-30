@@ -7,6 +7,8 @@ import * as fs from 'fs';
 export class FtpSeedService {
   static readonly logger = new Logger(FtpSeedService.name);
 
+  static readonly SIZE_LIMIT_DOWNLOAD = 5 * 1024 * 1024 * 1024;
+
   Client = require('ssh2');
 
   private _ftpConfig: {
@@ -43,7 +45,8 @@ export class FtpSeedService {
     }
   }
 
-  downloadFile(filePath: string): Promise<void> {
+  downloadFile(fullPath: string): Promise<void> {
+    fullPath = this._cleanFullFileName(fullPath);
     return new Promise<void>((collect, reject) => {
       this._initialize();
 
@@ -59,8 +62,8 @@ export class FtpSeedService {
             return reject(err1);
           }
 
-          const fileSrc = path.join(that._pathFtp, filePath);
-          const fileTrg = path.join(that._pathDownload, filePath);
+          const fileSrc = path.join(that._pathFtp, fullPath);
+          const fileTrg = path.join(that._pathDownload, fullPath);
 
           const paths = [path.dirname(fileTrg)];
           while (paths[0] !== '.') {
@@ -77,9 +80,9 @@ export class FtpSeedService {
             fileTrg,
             {
               step: (total_transferred: number, chunk: number, total: number) => {
-                //FtpSeedService.logger.debug(filePath+' '+total_transferred + ' ' + chunk + ' ' + total);
-                that._setProgression(filePath, total_transferred, total);
-                //FtpSeedService.logger.debug(that.getProgression(filePath));
+                //FtpSeedService.logger.debug(fullPath+' '+total_transferred + ' ' + chunk + ' ' + total);
+                that._setProgression(fullPath, total_transferred, total);
+                //FtpSeedService.logger.debug(that.getProgression(fullPath));
               }
             },
             (err2: Error) => {
@@ -112,9 +115,11 @@ export class FtpSeedService {
     });
   }
 
-  getProgression(filePath: string): Progression {
+  getProgression(fullPath: string): Progression {
     this._initialize();
-    const fileTrg = this._getProgressionFileName(filePath);
+    fullPath = this._cleanFullFileName(fullPath);
+
+    const fileTrg = this._getProgressionFileName(fullPath);
     //FtpSeedService.logger.debug(path.resolve(fileTrg));
 
     try {
@@ -125,22 +130,47 @@ export class FtpSeedService {
     }
   }
 
-  private _setProgression(filePath: string, value: number, size: number) {
-    this._initialize();
-    const fileTrg = this._getProgressionFileName(filePath);
+  shouldDownload(fullPath: string, size: number, should: boolean) {
+    fullPath = this._cleanFullFileName(fullPath);
 
-    const obj = {
-      value: value,
-      size: size,
-      progress: Math.round((100 * value) / Math.max(1, size))
-    };
+    let data = this.getProgression(fullPath);
+    if (!data) {
+      this._setProgression(fullPath, 0, size);
+      data = this.getProgression(fullPath);
+    }
 
-    fs.writeFileSync(fileTrg, JSON.stringify(obj), { flag: 'w', encoding: 'utf8' });
+    data.shouldDownload = should;
+    this._saveProgression(fullPath, data);
   }
 
-  tellProgressionUseful(filePath: string) {
+  private _setProgression(fullPath: string, value: number, size: number) {
     this._initialize();
-    const fileTrg = this._getProgressionFileName(filePath);
+    fullPath = this._cleanFullFileName(fullPath);
+
+    const obj: Progression = {
+      value: value,
+      size: size,
+      progress: Math.round((100 * value) / Math.max(1, size)),
+      shouldDownload: size < FtpSeedService.SIZE_LIMIT_DOWNLOAD
+    };
+
+    this._saveProgression(fullPath, obj);
+  }
+
+  private _saveProgression(fullPath: string, data: Progression) {
+    this._initialize();
+    fullPath = this._cleanFullFileName(fullPath);
+
+    const fileTrg = this._getProgressionFileName(fullPath);
+
+    fs.writeFileSync(fileTrg, JSON.stringify(data), { flag: 'w', encoding: 'utf8' });
+  }
+
+  tellProgressionUseful(fullPath: string) {
+    this._initialize();
+    fullPath = this._cleanFullFileName(fullPath);
+
+    const fileTrg = this._getProgressionFileName(fullPath);
 
     if (fs.existsSync(fileTrg)) {
       fs.writeFileSync(fileTrg, ' ', { flag: 'a', encoding: 'utf8' });
@@ -165,8 +195,18 @@ export class FtpSeedService {
     });
   }
 
-  private _getProgressionFileName(filePath: string) {
-    return path.join(this._pathProgress, filePath.replace(/[\\\/]/g, '_') + '.progress');
+  private _getProgressionFileName(fullPath: string): string {
+    fullPath = this._cleanFullFileName(fullPath);
+
+    return path.join(this._pathProgress, fullPath.replace(/[\\\/]/g, '_') + '.progress');
+  }
+
+  private _cleanFullFileName(fullPath: string): string {
+    this._initialize();
+
+    const regexp = new RegExp('.*' + this._configService.getSeedboxFtpPath() + '/');
+
+    return fullPath.replace(regexp, '');
   }
 }
 
@@ -174,4 +214,5 @@ export class Progression {
   value: number;
   size: number;
   progress: number;
+  shouldDownload: boolean;
 }

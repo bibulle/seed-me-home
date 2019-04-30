@@ -15,12 +15,16 @@ export interface RtorrentTorrent {
   leechers: number;
   seeders: number;
   downloaded: number;
+  shouldDownload: boolean;
   active: boolean;
   open: boolean;
-  files: {
-    fullpath: string;
-    path: string;
-    size: string;
-    downloaded: number;
-  }[];
+  files: RTorrentFile[];
+}
+
+export interface RTorrentFile {
+  fullpath: string;
+  path: string;
+  size: number;
+  downloaded: number;
+  shouldDownload: boolean;
 }

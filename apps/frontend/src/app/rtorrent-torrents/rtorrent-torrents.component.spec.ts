@@ -7,7 +7,7 @@ import { Observable, Subject } from 'rxjs';
 import { RtorrentTorrent } from '@seed-me-home/models';
 import { RtorrentTorrentItemComponent } from './rtorrent-torrent-item/rtorrent-torrent-item.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatCardModule, MatIconModule, MatProgressBarModule } from '@angular/material';
+import { MatCardModule, MatDialogModule, MatIconModule, MatMenuModule, MatProgressBarModule } from '@angular/material';
 import { BytesSizePipe } from '../utils/pipes/bytes-size.pipe';
 
 //noinspection SpellCheckingInspection
@@ -31,12 +31,14 @@ const goodAnswer: RtorrentTorrent[] = [
     downloaded: 0,
     active: true,
     open: true,
+    shouldDownload: false,
     files: [
       {
-        size: '1999503360',
+        size: 1999503360,
         fullpath: '/home/14user/rutorrent/torrents/ubuntu-18.10-desktop-amd64.iso',
         path: 'ubuntu-18.10-desktop-amd64.iso',
-        downloaded: 0
+        downloaded: 0,
+        shouldDownload: false
       }
     ]
   },
@@ -59,12 +61,14 @@ const goodAnswer: RtorrentTorrent[] = [
     downloaded: 0,
     active: true,
     open: true,
+    shouldDownload: false,
     files: [
       {
-        size: '1157627904',
+        size: 1157627904,
         fullpath: '/home/14user/rutorrent/torrents/ubuntu-14.04.6-desktop-amd64.iso',
         path: 'ubuntu-14.04.6-desktop-amd64.iso',
-        downloaded: 0
+        downloaded: 0,
+        shouldDownload: false
       }
     ]
   }
@@ -79,7 +83,15 @@ describe('RtorrentTorrentsComponent', () => {
   beforeEach(() => {
     //noinspection JSIgnoredPromiseFromCall
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, TranslateModule.forRoot(), MatCardModule, MatIconModule, MatProgressBarModule],
+      imports: [
+        HttpClientTestingModule,
+        TranslateModule.forRoot(),
+        MatCardModule,
+        MatIconModule,
+        MatProgressBarModule,
+        MatMenuModule,
+        MatDialogModule
+      ],
       declarations: [RtorrentTorrentsComponent, RtorrentTorrentItemComponent, BytesSizePipe],
       providers: [{ provide: RtorrentTorrentsService, useClass: RtorrentTorrentsServiceMock }]
     }).compileComponents();

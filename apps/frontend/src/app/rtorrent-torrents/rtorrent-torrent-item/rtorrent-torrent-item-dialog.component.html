@@ -1,0 +1,8 @@
+<div mat-dialog-title>Remove and erase : <span class="torrent-name">{{torrentName}}</span></div>
+<div mat-dialog-content>
+  <p>Are you sure?</p>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">No Thanks</button>
+  <button mat-button mat-dialog-close="YES" cdkFocusInitial color="warn">Ok</button>
+</div>

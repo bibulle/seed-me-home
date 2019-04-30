@@ -69,7 +69,7 @@ class MockSSH2Client {
   };
 }
 
-jest.setTimeout(60000);
+//jest.setTimeout(60000);
 describe('FtpSeedService', () => {
   let service: FtpSeedService;
   let configService: ConfigService;
@@ -117,13 +117,14 @@ describe('FtpSeedService', () => {
     service.Client.stopFastGetAfterPercent = 100;
 
     expect.assertions(3);
-    service.downloadFile('toto/titi/tutu\\testFile.txt').then(() => {
+    service.downloadFile('/torrents/toto/titi/tutu\\testFile.txt').then(() => {
       expect(true).toBeTruthy();
       expect(service.Client.isEnded).toBeTruthy();
       expect(service.getProgression('toto/titi/tutu\\testFile.txt')).toEqual({
         progress: 100,
         size: 12345678,
-        value: 12345678
+        value: 12345678,
+        shouldDownload: true
       });
       done();
     });
@@ -167,7 +168,8 @@ describe('FtpSeedService', () => {
       expect(service.getProgression('toto/titi/tutu\\testFile.txt')).toEqual({
         progress: 43,
         size: 12345678,
-        value: 5308642
+        value: 5308642,
+        shouldDownload: true
       });
       done();
     });
@@ -212,5 +214,17 @@ describe('FtpSeedService', () => {
 
       done();
     });
+  });
+
+  it('should switch value if method called ', () => {
+    service.shouldDownload('toto/titi/tutu\\testFile1.txt', 10000, true);
+    expect(service.getProgression('toto/titi/tutu\\testFile1.txt')).toBeTruthy();
+    expect(service.getProgression('toto/titi/tutu\\testFile1.txt').shouldDownload).toBe(true);
+    expect(service.getProgression('toto/titi/tutu\\testFile1.txt').progress).toBe(0);
+
+    service.shouldDownload('toto/titi/tutu\\testFile1.txt', 10000, false);
+    expect(service.getProgression('toto/titi/tutu\\testFile1.txt')).toBeTruthy();
+    expect(service.getProgression('toto/titi/tutu\\testFile1.txt').shouldDownload).toBe(false);
+    expect(service.getProgression('toto/titi/tutu\\testFile1.txt').progress).toBe(0);
   });
 });
