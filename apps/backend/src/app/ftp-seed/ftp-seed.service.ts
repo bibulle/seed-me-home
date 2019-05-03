@@ -119,7 +119,10 @@ export class FtpSeedService extends NestSchedule {
   clearOldDoneFiles(olderThan: Date) {
     this._initialize();
 
-    const files = fs.readdirSync(this._pathProgress);
+    let files = [];
+    try {
+      files = fs.readdirSync(this._pathProgress);
+    } catch (e) {}
 
     files.forEach(file => {
       try {
@@ -187,6 +190,11 @@ export class FtpSeedService extends NestSchedule {
     [...Array(FtpSeedService.PARALLELED_DOWNLOAD_MAX)].map(() => {
       this._startADownload();
     });
+
+    // clean very old done files
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    this.clearOldDoneFiles(yesterday);
 
     return true;
   }
