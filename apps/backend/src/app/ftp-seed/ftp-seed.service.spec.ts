@@ -214,7 +214,7 @@ describe('FtpSeedService', () => {
     expect(service.getProgression('toto/titi/tutu\\testFile1.txt').progress).toBe(100);
     expect(service.getProgression('toto/titi/tutu\\testFile2.txt')).toBeNull();
 
-    const after2 = new Date();
+    const after2 = new Date(new Date().getTime() + 1000);
     service.clearOldDoneFiles(after2);
     expect(service.getProgression('toto/titi/tutu\\testFile1.txt')).toBeNull();
     expect(service.getProgression('toto/titi/tutu\\testFile2.txt')).toBeNull();
