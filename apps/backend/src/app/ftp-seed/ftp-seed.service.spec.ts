@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { FtpSeedService } from './ftp-seed.service';
 import { ConfigService } from '../../services/config/config.service';
 import * as fs from 'fs';
+import Mock = jest.Mock;
 
 class MockSSH2Client {
   static errorToSendOnConnect = null;
@@ -73,6 +74,7 @@ class MockSSH2Client {
 describe('FtpSeedService', () => {
   let service: FtpSeedService;
   let configService: ConfigService;
+  let ftpServiceLoggerErrorMock: Mock;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -80,7 +82,7 @@ describe('FtpSeedService', () => {
     }).compile();
 
     service = module.get<FtpSeedService>(FtpSeedService);
-    jest.spyOn(FtpSeedService.logger, 'error').mockImplementation(() => {});
+    ftpServiceLoggerErrorMock = jest.spyOn(FtpSeedService.logger, 'error').mockImplementation(() => {});
     //jest.spyOn(FtpSeedService.logger, 'debug').mockImplementation(() => {});
 
     service.Client = MockSSH2Client;
@@ -111,110 +113,112 @@ describe('FtpSeedService', () => {
     expect(service).toBeDefined();
   });
 
-  //  it('should download', done => {
-  //    service.Client.errorToSendOnConnect = null;
-  //    service.Client.errorToSendOnFastGet = null;
-  //    service.Client.stopFastGetAfterPercent = 100;
-  //
-  //    expect.assertions(3);
-  //    service.downloadFile('/torrents/toto/titi/tutu\\testFile.txt').then(() => {
-  //      expect(true).toBeTruthy();
-  //      expect(service.Client.isEnded).toBeTruthy();
-  //      expect(service.getProgression('toto/titi/tutu\\testFile.txt')).toEqual({
-  //        progress: 100,
-  //        size: 12345678,
-  //        value: 12345678,
-  //        shouldDownload: true
-  //      });
-  //      done();
-  //    });
-  //  });
+  it('should download', async () => {
+    service.Client.errorToSendOnConnect = null;
+    service.Client.errorToSendOnFastGet = null;
+    service.Client.stopFastGetAfterPercent = 100;
 
-  //  it('should catch error on connection refused', done => {
-  //    service.Client.errorToSendOnConnect = 'Connection refused';
-  //    service.Client.errorToSendOnFastGet = null;
-  //
-  //    expect.assertions(3);
-  //    service.downloadFile('testFile.txt').catch(err => {
-  //      expect(true).toBeTruthy();
-  //      expect(err.message).toBe('Connection refused');
-  //      expect(service.Client.isEnded).toBeTruthy();
-  //      //console.error(err.message);
-  //      done();
-  //    });
-  //  });
+    expect.assertions(2);
+    service.setProgression('/torrents/toto/titi/tutu\\testFile.txt', 0, 12345678);
+    await service.intervalJob();
 
-  //  it('should catch error on file not found', done => {
-  //    service.Client.errorToSendOnConnect = null;
-  //    service.Client.errorToSendOnFastGet = 'No such file';
-  //
-  //    expect.assertions(3);
-  //    service.downloadFile('testFile.txt').catch(err => {
-  //      expect(true).toBeTruthy();
-  //      expect(err.message).toBe('No such file : /torrents/testFile.txt');
-  //      expect(service.Client.isEnded).toBeTruthy();
-  //      done();
-  //    });
-  //  });
+    expect(service.Client.isEnded).toBeTruthy();
+    expect(service.getProgression('toto/titi/tutu\\testFile.txt')).toEqual({
+      fullPath: 'toto/titi/tutu\\testFile.txt',
+      progress: 100,
+      size: 12345678,
+      value: 12345678,
+      shouldDownload: true
+    });
+  });
 
-  //  it('should update progression during download', done => {
-  //    service.Client.errorToSendOnConnect = null;
-  //    service.Client.errorToSendOnFastGet = null;
-  //    service.Client.stopFastGetAfterPercent = 43;
-  //
-  //    expect.assertions(2);
-  //    service.downloadFile('toto/titi/tutu\\testFile.txt').then(() => {
-  //      expect(true).toBeTruthy();
-  //      expect(service.getProgression('toto/titi/tutu\\testFile.txt')).toEqual({
-  //        progress: 43,
-  //        size: 12345678,
-  //        value: 5308642,
-  //        shouldDownload: true
-  //      });
-  //      done();
-  //    });
-  //  });
+  it('should catch error on connection refused', async () => {
+    service.Client.errorToSendOnConnect = 'Connection refused';
+    service.Client.errorToSendOnFastGet = null;
+
+    expect.assertions(2);
+    ftpServiceLoggerErrorMock.mockClear();
+
+    service.setProgression('/torrents/toto/titi/tutu\\testFile.txt', 0, 12345678);
+    await service.intervalJob();
+
+    expect(service.Client.isEnded).toBeTruthy();
+    expect(ftpServiceLoggerErrorMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('should catch error on file not found', async () => {
+    service.Client.errorToSendOnConnect = null;
+    service.Client.errorToSendOnFastGet = 'No such file';
+
+    expect.assertions(2);
+    ftpServiceLoggerErrorMock.mockClear();
+
+    service.setProgression('/torrents/toto/titi/tutu\\testFile.txt', 0, 12345678);
+    await service.intervalJob();
+
+    expect(service.Client.isEnded).toBeTruthy();
+    expect(ftpServiceLoggerErrorMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('should update progression during download', async () => {
+    service.Client.errorToSendOnConnect = null;
+    service.Client.errorToSendOnFastGet = null;
+    service.Client.stopFastGetAfterPercent = 43;
+
+    expect.assertions(2);
+
+    service.setProgression('/torrents/toto/titi/tutu\\testFile.txt', 0, 12345678);
+    await service.intervalJob();
+
+    expect(service.Client.isEnded).toBeTruthy();
+    expect(service.getProgression('toto/titi/tutu\\testFile.txt')).toEqual({
+      fullPath: 'toto/titi/tutu\\testFile.txt',
+      progress: 43,
+      size: 12345678,
+      value: 5308642,
+      shouldDownload: true
+    });
+  });
 
   it('should work if no progression', () => {
     expect(service.getProgression('notExistingFile.txt')).toBeNull();
   });
 
-  //  it('should delete old progression', done => {
-  //    const before = new Date();
-  //
-  //    service.Client.errorToSendOnConnect = null;
-  //    service.Client.errorToSendOnFastGet = null;
-  //    service.Client.stopFastGetAfterPercent = 100;
-  //
-  //    expect.assertions(11);
-  //    Promise.all([
-  //      service.downloadFile('toto/titi/tutu\\testFile1.txt'),
-  //      service.downloadFile('toto/titi/tutu\\testFile2.txt')
-  //    ]).then(() => {
-  //      expect(service.getProgression('toto/titi/tutu\\testFile1.txt')).toBeTruthy();
-  //      expect(service.getProgression('toto/titi/tutu\\testFile2.txt')).toBeTruthy();
-  //      expect(service.getProgression('toto/titi/tutu\\testFile1.txt').progress).toBe(100);
-  //      expect(service.getProgression('toto/titi/tutu\\testFile2.txt').progress).toBe(100);
-  //
-  //      service.clearOldDoneFiles(before);
-  //      expect(service.getProgression('toto/titi/tutu\\testFile1.txt')).toBeTruthy();
-  //      expect(service.getProgression('toto/titi/tutu\\testFile2.txt')).toBeTruthy();
-  //
-  //      const after1 = new Date();
-  //      service.tellProgressionUseful('toto/titi/tutu\\testFile1.txt');
-  //      service.clearOldDoneFiles(after1);
-  //      expect(service.getProgression('toto/titi/tutu\\testFile1.txt')).toBeTruthy();
-  //      expect(service.getProgression('toto/titi/tutu\\testFile1.txt').progress).toBe(100);
-  //      expect(service.getProgression('toto/titi/tutu\\testFile2.txt')).toBeNull();
-  //
-  //      const after2 = new Date();
-  //      service.clearOldDoneFiles(after2);
-  //      expect(service.getProgression('toto/titi/tutu\\testFile1.txt')).toBeNull();
-  //      expect(service.getProgression('toto/titi/tutu\\testFile2.txt')).toBeNull();
-  //
-  //      done();
-  //    });
-  //  });
+  it('should delete old progression', async () => {
+    const before = new Date();
+
+    service.Client.errorToSendOnConnect = null;
+    service.Client.errorToSendOnFastGet = null;
+    service.Client.stopFastGetAfterPercent = 100;
+
+    expect.assertions(11);
+
+    service.setProgression('toto/titi/tutu\\testFile1.txt', 0, 12345678);
+    service.setProgression('toto/titi/tutu\\testFile2.txt', 0, 12345678);
+
+    await service.intervalJob();
+
+    expect(service.getProgression('toto/titi/tutu\\testFile1.txt')).toBeTruthy();
+    expect(service.getProgression('toto/titi/tutu\\testFile2.txt')).toBeTruthy();
+    expect(service.getProgression('toto/titi/tutu\\testFile1.txt').progress).toBe(100);
+    expect(service.getProgression('toto/titi/tutu\\testFile2.txt').progress).toBe(100);
+
+    service.clearOldDoneFiles(before);
+    expect(service.getProgression('toto/titi/tutu\\testFile1.txt')).toBeTruthy();
+    expect(service.getProgression('toto/titi/tutu\\testFile2.txt')).toBeTruthy();
+
+    const after1 = new Date();
+    service.tellProgressionUseful('toto/titi/tutu\\testFile1.txt');
+    service.clearOldDoneFiles(after1);
+    expect(service.getProgression('toto/titi/tutu\\testFile1.txt')).toBeTruthy();
+    expect(service.getProgression('toto/titi/tutu\\testFile1.txt').progress).toBe(100);
+    expect(service.getProgression('toto/titi/tutu\\testFile2.txt')).toBeNull();
+
+    const after2 = new Date();
+    service.clearOldDoneFiles(after2);
+    expect(service.getProgression('toto/titi/tutu\\testFile1.txt')).toBeNull();
+    expect(service.getProgression('toto/titi/tutu\\testFile2.txt')).toBeNull();
+  });
 
   it('should switch value if method called ', () => {
     service.switchShouldDownload('toto/titi/tutu\\testFile1.txt', 10000, true);

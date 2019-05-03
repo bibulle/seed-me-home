@@ -3,6 +3,7 @@ import { RtorrentService } from './rtorrent.service';
 import { ConfigService } from '../../services/config/config.service';
 import * as _ from 'lodash';
 import { FtpSeedService, Progression } from '../ftp-seed/ftp-seed.service';
+import { RtorrentTorrent } from '@seed-me-home/models';
 
 export class RtorrentServiceTestValues {
   //noinspection SpellCheckingInspection
@@ -243,7 +244,7 @@ export class RtorrentServiceTestValues {
             range_second: '2208',
             size: '1157627904',
             chunks: '2208',
-            completed_chunks: '1058',
+            completed_chunks: '2208',
             fullpath: '/home/14user/rutorrent/torrents/ubuntu-14.04.6-desktop-amd64.iso',
             path: 'ubuntu-14.04.6-desktop-amd64.iso',
             priority: '1',
@@ -455,7 +456,7 @@ export class RtorrentServiceTestValues {
           range_second: '2208',
           size: '1157627904',
           chunks: '2208',
-          completed_chunks: '1058',
+          completed_chunks: '2208',
           downloaded: 0,
           fullpath: '/home/14user/rutorrent/torrents/ubuntu-14.04.6-desktop-amd64.iso',
           path: 'ubuntu-14.04.6-desktop-amd64.iso',
@@ -522,6 +523,7 @@ export class RtorrentServiceTestValues {
 describe('RtorrentService', () => {
   let rtorrentService: RtorrentService;
   let configService: ConfigService;
+  let ftpSeedService: FtpSeedService;
 
   void beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -532,6 +534,8 @@ describe('RtorrentService', () => {
     configService = module.get<ConfigService>(ConfigService);
     jest.spyOn(configService.logger, 'error').mockImplementation(() => {});
     configService.forceConfigFile('env-model.json');
+
+    ftpSeedService = module.get<FtpSeedService>(FtpSeedService);
   });
 
   void it('should be defined', () => {
@@ -580,9 +584,13 @@ describe('RtorrentService', () => {
 
   describe('getTorrents', () => {
     void it('getTorrents return should be ok', done => {
+      const spyOnsetProgression = jest.spyOn(ftpSeedService, 'setProgression');
+
       rtorrentService.forceRtorrentForMocking(new RtorrentMock());
       rtorrentService.getTorrents().then(data => {
         expect(data).toEqual(RtorrentServiceTestValues.MOCK_ANSWER_TORRENTS);
+
+        expect(spyOnsetProgression).toHaveBeenCalledTimes(1);
         done();
       });
     });
@@ -772,6 +780,34 @@ describe('RtorrentService', () => {
       });
     });
   });
+
+  describe('intervalJob', () => {
+    it('should launch getTorrents', () => {
+      jest.spyOn(rtorrentService, 'getTorrents').mockClear();
+      jest.spyOn(rtorrentService, 'getTorrents').mockImplementation(() => {
+        return new Promise<RtorrentTorrent[]>(collect => {
+          collect([]);
+        });
+      });
+
+      expect(rtorrentService.intervalJob()).toBeFalsy();
+      expect(jest.spyOn(rtorrentService, 'getTorrents')).toHaveBeenCalledTimes(1);
+      expect(jest.spyOn(rtorrentService.logger, 'error')).toHaveBeenCalledTimes(0);
+    });
+    it('should launch getTorrents and managed error', async () => {
+      jest.spyOn(rtorrentService, 'getTorrents').mockClear();
+      jest.spyOn(rtorrentService, 'getTorrents').mockImplementation(() => {
+        return new Promise<RtorrentTorrent[]>((collect, reject) => {
+          reject(new Error());
+        });
+      });
+      jest.spyOn(rtorrentService.logger, 'error').mockImplementation(() => {});
+
+      expect(await rtorrentService.intervalJob()).toBeFalsy();
+      expect(jest.spyOn(rtorrentService, 'getTorrents')).toHaveBeenCalledTimes(1);
+      expect(jest.spyOn(rtorrentService.logger, 'error')).toHaveBeenCalledTimes(1);
+    });
+  });
 });
 
 export class FtpSeedServiceMock {
@@ -782,6 +818,7 @@ export class FtpSeedServiceMock {
     switch (fullPath) {
       case '/home/14user/rutorrent/torrents/ubuntu-18.10-desktop-amd64.iso':
         return {
+          fullPath: '/home/14user/rutorrent/torrents/ubuntu-18.10-desktop-amd64.iso',
           shouldDownload: this.shouldDownloaded[fullPath] === true,
           progress: 11,
           size: 1999503360,
@@ -789,6 +826,7 @@ export class FtpSeedServiceMock {
         };
       case '/home/14user/rutorrent/torrents/ubuntu-18.10-desktop-amd64.iso2':
         return {
+          fullPath: '/home/14user/rutorrent/torrents/ubuntu-18.10-desktop-amd64.iso2',
           shouldDownload: this.shouldDownloaded[fullPath] === true,
           progress: 11,
           size: 1999503360,
