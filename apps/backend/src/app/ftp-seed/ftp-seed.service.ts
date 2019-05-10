@@ -211,6 +211,7 @@ export class FtpSeedService extends NestSchedule {
 
       this._downloadFile(fullpath)
         .then(() => {
+          FtpSeedService.logger.debug('_downloadFile then : ' + fullpath);
           for (let i = 0; i < FtpSeedService.downloadCurrentList.length; i++) {
             if (FtpSeedService.downloadCurrentList[i] === fullpath) {
               FtpSeedService.downloadCurrentList.splice(i, 1);
@@ -218,6 +219,7 @@ export class FtpSeedService extends NestSchedule {
           }
         })
         .catch(() => {
+          FtpSeedService.logger.debug('_downloadFile catch : ' + fullpath);
           for (let i = 0; i < FtpSeedService.downloadCurrentList.length; i++) {
             if (FtpSeedService.downloadCurrentList[i] === fullpath) {
               FtpSeedService.downloadCurrentList.splice(i, 1);
@@ -282,15 +284,15 @@ export class FtpSeedService extends NestSchedule {
           );
         });
       });
-      //      conn.on('close', (hadErr) => {
-      //        //FtpSeedService.logger.debug('close (' + hadErr + ')');
-      //      });
+      conn.on('close', hadErr => {
+        FtpSeedService.logger.debug('close (' + hadErr + ')');
+      });
       conn.on('error', (err: Error) => {
         FtpSeedService.logger.error(err.stack);
         reject(err);
       });
       conn.on('end', () => {
-        //FtpSeedService.logger.debug('end');
+        FtpSeedService.logger.debug('end');
         collect();
       });
 
