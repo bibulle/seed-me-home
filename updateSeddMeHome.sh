@@ -17,6 +17,6 @@ sudo service seed-me-home stop
 sudo service seed-me-home start
 
 #echo "Building frontend"
-npm run ng build frontend --prod
+npm run ng build frontend -- --prod
 
 
