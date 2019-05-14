@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import * as fs from 'fs';
+import { environment } from '../../environments/environment';
 
 class Config {
   public version = 'VERSION_PLACEHOLDER';
@@ -29,7 +30,7 @@ class Config {
   public authent_google_clientSecret = '';
   public authent_google_callbackURL = '';
 
-  public node_env = process.env.NODE_ENV || 'development';
+  public node_env = environment.production ? 'production' : 'development';
 }
 
 @Injectable()
@@ -44,6 +45,9 @@ export class ConfigService {
     // initialize
     if (!this._config) {
       this._config = new Config();
+
+      //this._config.node_env = process.env.NODE_ENV || 'development';
+      this.logger.log('environment : ' + this._config.node_env);
 
       // Check the user env
       if (!fs.existsSync(__dirname + '/' + this._configFile)) {

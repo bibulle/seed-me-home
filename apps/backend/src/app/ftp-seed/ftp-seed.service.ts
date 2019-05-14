@@ -12,7 +12,7 @@ export class FtpSeedService extends NestSchedule {
 
   private static downloadWaitingList: Progression[] = [];
   private static downloadCurrentList: string[] = [];
-  private static readonly PARALLELED_DOWNLOAD_MAX = 4;
+  private static readonly PARALLELED_DOWNLOAD_MAX = 1;
 
   Client = require('ssh2');
 
@@ -43,8 +43,10 @@ export class FtpSeedService extends NestSchedule {
         //debug: (m) => { FtpSeedService.logger.debug(m)}
       };
       this._pathFtp = this._configService.getSeedboxFtpPath();
-      this._pathDownload = this._configService.getPathDownload();
-      this._pathProgress = this._configService.getPathProgress();
+      this._pathDownload = path.join(__dirname, '../../..', this._configService.getPathDownload());
+      this._pathProgress = path.join(__dirname, '../../..', this._configService.getPathProgress());
+      FtpSeedService.logger.log('Download to : ' + this._pathDownload);
+      FtpSeedService.logger.log('Save progress to : ' + this._pathProgress);
 
       if (!fs.existsSync(this._pathProgress)) {
         fs.mkdirSync(this._pathProgress);
@@ -154,7 +156,7 @@ export class FtpSeedService extends NestSchedule {
     return fullPath.replace(regexp, '');
   }
 
-  @Interval(10 * 1000)
+  @Interval(40 * 1000)
   intervalJob() {
     //FtpSeedService.logger.debug('intervalJob');
 
@@ -252,7 +254,7 @@ export class FtpSeedService extends NestSchedule {
           const fileTrg = path.join(that._pathDownload, fullPath);
 
           const paths = [path.dirname(fileTrg)];
-          while (paths[0] !== '.') {
+          while (paths[0] !== '.' && paths[0] !== '/') {
             paths.unshift(path.dirname(paths[0]));
           }
           paths.forEach(p => {
@@ -265,6 +267,10 @@ export class FtpSeedService extends NestSchedule {
             fileSrc,
             fileTrg,
             {
+              //concurrency: 1,
+              debug: msg => {
+                FtpSeedService.logger.debug(msg);
+              },
               step: (total_transferred: number, chunk: number, total: number) => {
                 //FtpSeedService.logger.debug(fullPath+' '+total_transferred + ' ' + chunk + ' ' + total);
                 that.setProgression(fullPath, total_transferred, total);

@@ -34,9 +34,14 @@ async function bootstrap() {
   // start the main server
   //app.setGlobalPrefix(``);
   const port = process.env.port || 4000;
-  await app.listen(port, () => {
-    Logger.log(`Listening at http://localhost:${port}`);
-  });
+  await app
+    .listen(port, () => {
+      Logger.log(`Listening at http://localhost:${port}`);
+    })
+    .catch(reason => {
+      Logger.error('Error on serveur');
+      Logger.error(reason);
+    });
 }
 
 bootstrap();
