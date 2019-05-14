@@ -12,7 +12,7 @@ export class FtpSeedService extends NestSchedule {
 
   private static downloadWaitingList: Progression[] = [];
   private static downloadCurrentList: string[] = [];
-  private static readonly PARALLELED_DOWNLOAD_MAX = 1;
+  private static readonly PARALLELED_DOWNLOAD_MAX = 4;
 
   Client = require('ssh2');
 
