@@ -22,7 +22,12 @@
             "main": "apps/frontend/src/main.ts",
             "polyfills": "apps/frontend/src/polyfills.ts",
             "tsConfig": "apps/frontend/tsconfig.app.json",
-            "assets": ["apps/frontend/src/favicon.ico", "apps/frontend/src/assets", "apps/frontend/src/manifest.json"],
+            "assets": [
+              "apps/frontend/src/favicon.ico",
+              "apps/frontend/src/assets",
+              "apps/frontend/src/manifest.json",
+              "apps/frontend/src/.htaccess"
+            ],
             "styles": ["apps/frontend/src/styles.scss"],
             "scripts": [],
             "es5BrowserSupport": true
