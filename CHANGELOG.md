@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.5.0"></a>
+# [0.5.0](https://github.com/bibulle/seed-me-home/compare/v0.4.0...v0.5.0) (2019-05-14)
+
+
+### Features
+
+* add actions menu to seeds ([81514e5](https://github.com/bibulle/seed-me-home/commit/81514e5))
+* clean old done files ([822bdc8](https://github.com/bibulle/seed-me-home/commit/822bdc8))
+* prepare for files list ([2cc6fdf](https://github.com/bibulle/seed-me-home/commit/2cc6fdf))
+* prepare for production environment ([10d2a14](https://github.com/bibulle/seed-me-home/commit/10d2a14))
+* prepare for production environment ([a70ae21](https://github.com/bibulle/seed-me-home/commit/a70ae21))
+* real downloading locally ([7b00eb5](https://github.com/bibulle/seed-me-home/commit/7b00eb5))
+
+
+
 <a name="0.4.0"></a>
 # [0.4.0](https://github.com/bibulle/seed-me-home/compare/v0.3.0...v0.4.0) (2019-04-26)
 
