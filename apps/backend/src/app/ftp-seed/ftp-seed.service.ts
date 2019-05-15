@@ -304,6 +304,10 @@ export class FtpSeedService extends NestSchedule {
       });
 
       // connect
+      if (this._configService.getSeedboxFtpDisabled()) {
+        FtpSeedService.logger.warn('SeedBox downloading disabled ');
+        return collect();
+      }
       conn.connect(this._ftpConfig);
     });
   }

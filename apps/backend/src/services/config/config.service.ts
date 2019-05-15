@@ -17,6 +17,7 @@ class Config {
   public seedbox_ftp_user = '';
   public seedbox_ftp_pass = '';
   public seedbox_ftp_path = '';
+  public seedbox_ftp_disabled = false;
 
   public path_download = 'downloaded';
   public path_progress = 'progress';
@@ -129,6 +130,11 @@ export class ConfigService {
   public getSeedboxFtpPath() {
     this.initialize();
     return this._config.seedbox_ftp_path;
+  }
+
+  public getSeedboxFtpDisabled() {
+    this.initialize();
+    return this._config.seedbox_ftp_disabled;
   }
 
   public getPathDownload() {
