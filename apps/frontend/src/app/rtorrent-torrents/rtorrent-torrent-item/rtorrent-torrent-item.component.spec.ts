@@ -152,7 +152,7 @@ describe('RtorrentTorrentItemComponent', () => {
     component.torrent.complete = false;
     component.torrent.active = true;
     fixture.detectChanges();
-    expect(fixture.debugElement.queryAll(By.css('.title mat-icon')).length).toBe(2);
+    expect(fixture.debugElement.queryAll(By.css('.title mat-icon')).length).toBe(3);
     expect(fixture.debugElement.query(By.css('.title mat-icon')).nativeElement.textContent).toBe('cloud_download');
     expect(fixture.debugElement.queryAll(By.css('.progress mat-progress-bar'))[0].attributes['ng-reflect-value']).toBe(
       '25'
@@ -180,7 +180,7 @@ describe('RtorrentTorrentItemComponent', () => {
 
     // torrent active is false => pause
     fixture.detectChanges();
-    expect(fixture.debugElement.queryAll(By.css('.title mat-icon')).length).toBe(2);
+    expect(fixture.debugElement.queryAll(By.css('.title mat-icon')).length).toBe(3);
     expect(fixture.debugElement.query(By.css('.title mat-icon')).nativeElement.textContent).toBe('pause');
     expect(fixture.debugElement.queryAll(By.css('.progress mat-progress-bar')).length).toBe(2);
     expect(fixture.debugElement.queryAll(By.css('.progress mat-progress-bar'))[0].attributes['ng-reflect-value']).toBe(
@@ -208,7 +208,7 @@ describe('RtorrentTorrentItemComponent', () => {
 
     // torrent active is true and complete is false => cloud_download
     fixture.detectChanges();
-    expect(fixture.debugElement.queryAll(By.css('.title mat-icon')).length).toBe(2);
+    expect(fixture.debugElement.queryAll(By.css('.title mat-icon')).length).toBe(3);
     expect(fixture.debugElement.query(By.css('.title mat-icon')).nativeElement.textContent).toBe('cloud_download');
     expect(fixture.debugElement.queryAll(By.css('.progress mat-progress-bar'))[0].attributes['ng-reflect-value']).toBe(
       '25'
@@ -266,7 +266,7 @@ describe('RtorrentTorrentItemComponent', () => {
     // torrent active is true and complete is true and downloaded is not zero => save_alt (not red)
     component.torrent.downloaded = component.torrent.size / 2;
     fixture.detectChanges();
-    expect(fixture.debugElement.queryAll(By.css('.title mat-icon')).length).toBe(2);
+    expect(fixture.debugElement.queryAll(By.css('.title mat-icon')).length).toBe(3);
     expect(fixture.debugElement.query(By.css('.title mat-icon')).nativeElement.textContent).toBe('save_alt');
     expect(fixture.debugElement.query(By.css('.title mat-icon')).attributes['color']).toBe('primary');
     expect(fixture.debugElement.queryAll(By.css('.progress mat-progress-bar')).length).toBe(2);

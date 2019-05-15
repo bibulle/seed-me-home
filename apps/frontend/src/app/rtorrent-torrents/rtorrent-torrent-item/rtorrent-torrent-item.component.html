@@ -54,7 +54,7 @@
             color="primary"
             title="{{ 'seed.done' | translate}}"
   >done</mat-icon>
-  <mat-icon *ngIf="torrent && !torrent.shouldDownload"
+  <mat-icon *ngIf="torrent && !torrent.shouldDownload && (torrent.downloaded !== torrent.size)"
             class="shouldNotDownload"
             title="{{ 'seed.wont.be.downloaded' | translate}}"
             (click)="shouldGetFromSeeBox(true)"
