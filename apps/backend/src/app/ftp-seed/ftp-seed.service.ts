@@ -158,8 +158,6 @@ export class FtpSeedService extends NestSchedule {
 
   @Interval(40 * 1000)
   intervalJob() {
-    //FtpSeedService.logger.debug('intervalJob');
-
     const shouldDownload: Progression[] = [];
 
     // read all files
@@ -172,7 +170,10 @@ export class FtpSeedService extends NestSchedule {
         FtpSeedService.logger.warn('Cannot read progression for file : ' + file);
       } else {
         if (progress.shouldDownload && progress.progress !== 100) {
-          shouldDownload.push(progress);
+          // test if in currentDownload
+          if (!FtpSeedService.downloadCurrentList.includes(progress.fullPath)) {
+            shouldDownload.push(progress);
+          }
         }
       }
     });

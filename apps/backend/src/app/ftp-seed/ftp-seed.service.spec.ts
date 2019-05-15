@@ -120,6 +120,7 @@ describe('FtpSeedService', () => {
 
     expect.assertions(2);
     service.setProgression('/torrents/toto/titi/tutu\\testFile.txt', 0, 12345678);
+
     await service.intervalJob();
 
     expect(service.Client.isEnded).toBeTruthy();
