@@ -30,13 +30,36 @@
     {{'added' | translate}}
   </span>
 </div>
-<div class="title" title="{{torrent?.name}}">
-  <mat-icon *ngIf="torrent && !torrent.active" color="warn">pause</mat-icon>
-  <mat-icon *ngIf="torrent && torrent.active && !torrent.complete" color="primary">cloud_download</mat-icon>
-  <mat-icon *ngIf="torrent && torrent.active && torrent.complete && (torrent.downloaded === 0)" color="warn">save_alt</mat-icon>
-  <mat-icon *ngIf="torrent && torrent.active && torrent.complete && (torrent.downloaded !== 0) && (torrent.downloaded !== torrent.size)" color="primary">save_alt</mat-icon>
-  <mat-icon *ngIf="torrent && torrent.active && torrent.complete && (torrent.downloaded !== 0) && (torrent.downloaded === torrent.size)" color="primary">done</mat-icon>
-  <span>{{torrent?.name}}</span>
+<div class="title">
+  <mat-icon *ngIf="torrent && !torrent.active"
+            color="warn"
+            title="{{ 'seed.paused' | translate}}"
+            (click)="start()"
+  >pause</mat-icon>
+  <mat-icon *ngIf="torrent && torrent.active && !torrent.complete"
+            color="primary"
+            title="{{ 'seed.seedbox.download' | translate}}"
+            (click)="pause()"
+  >cloud_download</mat-icon>
+  <mat-icon *ngIf="torrent && torrent.active && torrent.complete && (torrent.downloaded === 0)"
+            color="warn"
+            title="{{ 'seed.seedbox.downloaded' | translate}}"
+            (click)="shouldGetFromSeeBox(false)"
+  >save_alt</mat-icon>
+  <mat-icon *ngIf="torrent && torrent.active && torrent.complete && (torrent.downloaded !== 0) && (torrent.downloaded !== torrent.size)"
+            color="primary"
+            title="{{ 'seed.local.download' | translate}}"
+  >save_alt</mat-icon>
+  <mat-icon *ngIf="torrent && torrent.active && torrent.complete && (torrent.downloaded !== 0) && (torrent.downloaded === torrent.size)"
+            color="primary"
+            title="{{ 'seed.done' | translate}}"
+  >done</mat-icon>
+  <mat-icon *ngIf="torrent && !torrent.shouldDownload"
+            class="shouldNotDownload"
+            title="{{ 'seed.wont.be.downloaded' | translate}}"
+            (click)="shouldGetFromSeeBox(true)"
+  >block</mat-icon>
+  <span title="{{torrent?.name}}">{{torrent?.name}}</span>
   <button mat-icon-button [matMenuTriggerFor]="moreActionMenu" #menuTrigger='matMenuTrigger'><mat-icon>more_horiz</mat-icon></button>
   <mat-menu #moreActionMenu="matMenu" xPosition="before">
     <button mat-menu-item (click)="pause()" *ngIf="torrent && torrent.active"><mat-icon>pause</mat-icon>{{ 'seed.pause' | translate}}</button>
