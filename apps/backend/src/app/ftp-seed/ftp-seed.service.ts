@@ -273,9 +273,13 @@ export class FtpSeedService extends NestSchedule {
                 FtpSeedService.logger.debug(msg);
               },
               step: (total_transferred: number, chunk: number, total: number) => {
-                //FtpSeedService.logger.debug(fullPath+' '+total_transferred + ' ' + chunk + ' ' + total);
-                that.setProgression(fullPath, total_transferred, total);
-                //FtpSeedService.logger.debug(that.getProgression(fullPath));
+                const progress = that.getProgression(fullPath);
+                if (!progress.shouldDownload) {
+                  FtpSeedService.logger.log('Asked to stop downloading : ' + fullPath);
+                  sftp.end();
+                } else {
+                  that.setProgression(fullPath, total_transferred, total);
+                }
               }
             },
             (err2: Error) => {
