@@ -49,6 +49,7 @@
   <mat-icon *ngIf="torrent && torrent.active && torrent.complete && (torrent.downloaded !== 0) && (torrent.downloaded !== torrent.size)"
             color="primary"
             title="{{ 'seed.local.download' | translate}}"
+            (click)="shouldGetFromSeeBox(false)"
   >save_alt</mat-icon>
   <mat-icon *ngIf="torrent && torrent.active && torrent.complete && (torrent.downloaded !== 0) && (torrent.downloaded === torrent.size)"
             color="primary"
