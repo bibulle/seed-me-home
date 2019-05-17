@@ -5,6 +5,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { NotificationModule, NotificationService } from '../notification/notification.service';
 import { NGXLogger, NGXLoggerMock } from 'ngx-logger';
+import { TranslateModule } from '@ngx-translate/core';
 
 const flushPromises = () => {
   return new Promise(resolve => setImmediate(resolve));
@@ -17,7 +18,7 @@ describe('RtorrentTorrentsService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientModule, HttpClientTestingModule, NotificationModule],
+      imports: [HttpClientModule, HttpClientTestingModule, NotificationModule, TranslateModule.forRoot()],
       providers: [NotificationService, { provide: NGXLogger, useClass: NGXLoggerMock }]
     });
     service = TestBed.get(RtorrentStatusService);

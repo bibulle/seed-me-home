@@ -73,7 +73,7 @@ export class NotificationService {
 }
 
 @NgModule({
-  imports: [HttpClientModule, MatSnackBarModule, TranslateModule.forRoot()],
+  imports: [HttpClientModule, MatSnackBarModule, TranslateModule],
   declarations: [],
   exports: [],
   providers: [NotificationService, { provide: NGXLogger, useClass: NGXLoggerMock }]

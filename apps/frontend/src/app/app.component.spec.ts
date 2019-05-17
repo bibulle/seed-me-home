@@ -4,11 +4,12 @@ import { RtorrentStatusModule } from './rtorrent-status/rtorrent-status.componen
 import { NavBarModule } from './navbar/nav-bar.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NGXLogger, NGXLoggerMock } from 'ngx-logger';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [NavBarModule, RtorrentStatusModule, RouterTestingModule],
+      imports: [NavBarModule, RtorrentStatusModule, RouterTestingModule, TranslateModule.forRoot()],
       declarations: [AppComponent],
       providers: [{ provide: NGXLogger, useClass: NGXLoggerMock }]
     }).compileComponents();

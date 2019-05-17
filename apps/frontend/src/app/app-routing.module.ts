@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { NotFoundComponent, NotFoundModule } from './not-found/not-found.component';
-import { UserService } from './user/user.service';
 import { FilesComponent, FilesModule } from './files/files.component';
 import { SeedsComponent, SeedsModule } from './seeds/seeds.component';
 import { AuthGuard, AuthGuardAdmin } from './authent/auth.guard';
@@ -50,6 +49,6 @@ const routes: Routes = [
 @NgModule({
   imports: [RouterModule.forRoot(routes), SeedsModule, FilesModule, NotFoundModule],
   exports: [RouterModule],
-  providers: [UserService, WindowService]
+  providers: [WindowService]
 })
 export class AppRoutingModule {}

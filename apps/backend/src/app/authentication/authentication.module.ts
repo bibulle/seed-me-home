@@ -9,6 +9,7 @@ import { ConfigService } from '../../services/config/config.service';
 @Module({
   controllers: [AuthenticationController],
   imports: [PassportModule.register({ defaultStrategy: 'jwt' })],
-  providers: [AuthenticationService, GoogleStrategy, JwtStrategy, ConfigService]
+  providers: [AuthenticationService, GoogleStrategy, JwtStrategy, ConfigService],
+  exports: [AuthenticationService]
 })
 export class AuthenticationModule {}

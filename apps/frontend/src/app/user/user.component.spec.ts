@@ -31,7 +31,7 @@ describe('UserComponent', () => {
         MatToolbarModule,
         MatMenuModule,
         MatButtonModule,
-        TranslateModule.forRoot(),
+        TranslateModule,
         RouterTestingModule,
         UserModule
       ],

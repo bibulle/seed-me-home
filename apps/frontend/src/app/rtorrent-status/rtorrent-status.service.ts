@@ -10,7 +10,7 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class RtorrentStatusService {
-  private static REFRESH_EVERY = 60 * 1000;
+  private static REFRESH_EVERY = 21 * 1000;
   private static _refreshIsRunning = false;
 
   API_URL = environment.serverUrl + 'rtorrent/status';

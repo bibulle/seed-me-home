@@ -139,9 +139,13 @@ export class RtorrentService extends NestSchedule {
 
   private _getAll(callback: (err, status) => void) {
     this._initialize();
-    this._rtorrent.getAll((err, status) => {
-      callback(err, status);
-    });
+    try {
+      this._rtorrent.getAll((err, status) => {
+        callback(err, status);
+      });
+    } catch (e) {
+      callback(e, null);
+    }
   }
 
   getTorrentFiles(hash: string, callback: (err, files) => void) {

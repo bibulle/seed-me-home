@@ -5,7 +5,7 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { environment } from '../../environments/environment';
 import { NotificationModule, NotificationService } from '../notification/notification.service';
 import { NGXLogger, NGXLoggerMock } from 'ngx-logger';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 describe('UserService', () => {
   let service: UserService;
@@ -16,7 +16,7 @@ describe('UserService', () => {
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, NotificationModule],
+      imports: [HttpClientTestingModule, NotificationModule, TranslateModule.forRoot()],
       providers: [UserService, NotificationService, { provide: NGXLogger, useClass: NGXLoggerMock }]
     });
 

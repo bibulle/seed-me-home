@@ -29,7 +29,9 @@ export class JwtHelperServiceService {
   }
 }
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class UserService {
   private static KEY_TOKEN_LOCAL_STORAGE = 'id_token';
 
@@ -82,7 +84,7 @@ export class UserService {
    * Get token from local storage
    * @returns {string | null}
    */
-  private static tokenGetter() {
+  static tokenGetter() {
     return localStorage.getItem(UserService.KEY_TOKEN_LOCAL_STORAGE);
   }
 
@@ -90,7 +92,7 @@ export class UserService {
    * Set token to local storage
    * @param {string | null} token
    */
-  private static tokenSetter(token: string | null) {
+  static tokenSetter(token: string | null) {
     localStorage.setItem(UserService.KEY_TOKEN_LOCAL_STORAGE, token);
   }
 
@@ -136,6 +138,12 @@ export class UserService {
       this.user = {} as User;
     } else {
       this.user = this._jwtHelperServiceService.getJwtHelper().decodeToken(jwt) as User;
+
+      // const expirationDate = new Date(0);
+      // expirationDate.setUTCSeconds(this.user['exp']);
+      // const minutesBeforeExpiration = (expirationDate.valueOf() - new Date().valueOf()) / (60 * 1000);
+      // this.logger.debug(`Expiration in ${minutesBeforeExpiration.toFixed()} min (${expirationDate.toLocaleTimeString()})`);
+
       ret = true;
     }
 

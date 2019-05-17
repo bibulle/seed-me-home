@@ -89,7 +89,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
 
 @NgModule({
   imports: [
-    TranslateModule.forRoot(),
+    TranslateModule,
     CommonModule,
     MatButtonModule,
     MatIconModule,
