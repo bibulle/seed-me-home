@@ -1,22 +1,53 @@
-#!/bin/sh
+#!/bin/bash
 
-echo "Updating to server revision..."
+echo
+echo "Updating to server revision"
+echo "---------------------------"
 git fetch --all
 git reset --hard origin/master
 
-echo "Building backend"
+echo
+echo "Install dependencies"
+echo "--------------------"
 npm install
+
+echo
+echo "Building backend"
+echo "----------------"
 npm run ng build backend -- --prod
 
-sudo systemctl daemon-reload
-# node dist/apps/backend/main.js dist/apps/backend/main.js.map >> /var/log/seed-me-home.log   2>&1
-
-
+echo
 echo "Restarting backend"
+echo "------------------"
+sudo systemctl daemon-reload
 sudo service seed-me-home stop
 sudo service seed-me-home start
 
-#echo "Building frontend"
+echo
+echo "Building frontend"
+echo "-----------------"
 npm run ng build frontend -- --prod
+
+echo
+echo "deploy frontend"
+echo "---------------"
+trgDist="distFrontendA"
+oldDist="distFrontendB"
+if [[ -d ${trgDist} ]]
+then
+  trgDist="distFrontendB"
+  oldDist="distFrontendA"
+fi
+echo "deploying to ${trgDist}"
+rm -fr ${trgDist}
+mv dist/apps/frontend ${trgDist}
+
+rm distFrontendCurrent
+ln -s ${trgDist} distFrontendCurrent
+
+rm -fr ${oldDist}
+
+echo
+echo "done."
 
 
