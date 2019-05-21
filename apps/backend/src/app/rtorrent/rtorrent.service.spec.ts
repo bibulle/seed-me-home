@@ -790,7 +790,7 @@ describe('RtorrentService', () => {
         });
       });
 
-      expect(rtorrentService.intervalJob()).toBeFalsy();
+      expect(rtorrentService.intervalJob_RtorrentService()).toBeFalsy();
       expect(jest.spyOn(rtorrentService, 'getTorrents')).toHaveBeenCalledTimes(1);
       expect(jest.spyOn(rtorrentService.logger, 'error')).toHaveBeenCalledTimes(0);
     });
@@ -803,7 +803,7 @@ describe('RtorrentService', () => {
       });
       jest.spyOn(rtorrentService.logger, 'error').mockImplementation(() => {});
 
-      expect(await rtorrentService.intervalJob()).toBeFalsy();
+      expect(await rtorrentService.intervalJob_RtorrentService()).toBeFalsy();
       expect(jest.spyOn(rtorrentService, 'getTorrents')).toHaveBeenCalledTimes(1);
       expect(jest.spyOn(rtorrentService.logger, 'error')).toHaveBeenCalledTimes(1);
     });

@@ -112,7 +112,7 @@ describe('FtpSeedService', () => {
     expect.assertions(2);
     service.setProgression('/torrents/toto/titi_1/tutu\\testFile.txt', 0, 12345678);
 
-    await service.intervalJob();
+    await service.intervalJob_FtpSeedService();
 
     expect(service.Client.isEnded).toBeTruthy();
     expect(service.getProgression('toto/titi_1/tutu\\testFile.txt')).toEqual({
@@ -134,7 +134,7 @@ describe('FtpSeedService', () => {
     ftpServiceLoggerErrorMock.mockClear();
 
     service.setProgression('/torrents/toto/titi_2/tutu\\testFile.txt', 0, 12345678);
-    await service.intervalJob();
+    await service.intervalJob_FtpSeedService();
 
     expect(service.Client.isEnded).toBeTruthy();
     expect(ftpServiceLoggerErrorMock).toHaveBeenCalledTimes(1);
@@ -150,7 +150,7 @@ describe('FtpSeedService', () => {
     ftpServiceLoggerErrorMock.mockClear();
 
     service.setProgression('/torrents/toto/titi_3/tutu\\testFile.txt', 0, 12345678);
-    await service.intervalJob();
+    await service.intervalJob_FtpSeedService();
 
     expect(service.Client.isEnded).toBeTruthy();
     expect(ftpServiceLoggerErrorMock).toHaveBeenCalledTimes(1);
@@ -166,7 +166,7 @@ describe('FtpSeedService', () => {
     expect.assertions(2);
 
     service.setProgression('/torrents/toto/titi_4/tutu\\testFile.txt', 0, 12345678);
-    await service.intervalJob();
+    await service.intervalJob_FtpSeedService();
 
     expect(service.Client.isEnded).toBeTruthy();
     expect(service.getProgression('toto/titi_4/tutu\\testFile.txt')).toEqual({
@@ -196,7 +196,7 @@ describe('FtpSeedService', () => {
     service.setProgression('toto/titi_5/tutu\\testFile1.txt', 0, 12345678);
     service.setProgression('toto/titi_5/tutu\\testFile2.txt', 0, 12345678);
 
-    await service.intervalJob();
+    await service.intervalJob_FtpSeedService();
 
     expect(service.getProgression('toto/titi_5/tutu\\testFile1.txt')).toBeTruthy();
     expect(service.getProgression('toto/titi_5/tutu\\testFile2.txt')).toBeTruthy();
