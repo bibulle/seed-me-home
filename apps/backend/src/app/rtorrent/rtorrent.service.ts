@@ -263,8 +263,8 @@ export class RtorrentService extends NestSchedule {
   //  }
 
   @Interval(60 * 1000)
-  intervalJob() {
-    //this.logger.debug('intervalJob');
+  intervalJob_RtorrentService() {
+    // this.logger.debug('intervalJob_RtorrentService');
 
     this.getTorrents().catch(err => {
       this.logger.error(err);

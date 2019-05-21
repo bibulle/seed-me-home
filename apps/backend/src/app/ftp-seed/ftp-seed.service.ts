@@ -157,7 +157,8 @@ export class FtpSeedService extends NestSchedule {
   }
 
   @Interval(40 * 1000)
-  intervalJob() {
+  intervalJob_FtpSeedService() {
+    // FtpSeedService.logger.debug('intervalJob_FtpSeedService');
     const shouldDownload: Progression[] = [];
 
     // read all files
@@ -199,7 +200,7 @@ export class FtpSeedService extends NestSchedule {
     yesterday.setDate(yesterday.getDate() - 1);
     this.clearOldDoneFiles(yesterday);
 
-    return true;
+    return false;
   }
 
   private _startADownload() {
