@@ -1,10 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from './config.service';
+import { environment } from '../../environments/environment';
 
 describe('ConfigService', () => {
   let service: ConfigService;
 
   beforeAll(async () => {
+    environment.production = true;
     const module: TestingModule = await Test.createTestingModule({
       providers: [ConfigService]
     }).compile();
@@ -19,7 +21,7 @@ describe('ConfigService', () => {
     expect(service.getSeedboxMode()).toEqual('xmlrpc');
   });
   it('Seedbox Host should be localhost', () => {
-    expect(service.getSeedboxHost()).toEqual('localhost');
+    expect(service.getSeedboxHost()).toEqual('aSeedbox.com');
   });
   it('Seedbox Port should be 80', () => {
     expect(service.getSeedboxPort()).toEqual(80);
@@ -32,6 +34,9 @@ describe('ConfigService', () => {
   });
   it('Seedbox Pass should be password', () => {
     expect(service.getSeedboxPass()).toEqual('password');
+  });
+  it('Nas Path should be password', () => {
+    expect(service.getPathNas()).toEqual('/mnt/nas/media/Videos/');
   });
   it('Authent Google ID Pass should be my-id', () => {
     expect(service.getAuthentGoogleClientID()).toEqual('my-id');

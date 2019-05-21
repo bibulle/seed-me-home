@@ -29,6 +29,12 @@ describe('Rtorrent Controller', () => {
 
   it('status should be ok', async () => {
     service.forceRtorrentForMocking(new RtorrentMock());
+    const disk = require('diskusage');
+    jest.spyOn(disk, 'check').mockImplementation(() => {
+      return new Promise(resolve => {
+        resolve({ available: 123456, free: 1234567, total: 12345678 });
+      });
+    });
     expect(await controller.getStatus()).toEqual(RtorrentServiceTestValues.MOCK_ANSWER_STATUS);
   });
 
@@ -41,7 +47,7 @@ describe('Rtorrent Controller', () => {
     controller.getStatus().catch(err => {
       expect(err).not.toBeNull();
       expect(err.faultCode).toEqual(-1);
-      //done();
+      //done();Œ
     });
   });
 

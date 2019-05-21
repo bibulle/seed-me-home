@@ -83,6 +83,7 @@
     "@ngx-translate/core": "^11.0.1",
     "@ngx-translate/http-loader": "^4.0.0",
     "core-js": "^2.5.4",
+    "diskusage": "^1.1.1",
     "express-session": "^1.16.1",
     "moment": "^2.24.0",
     "nest-schedule": "^0.5.0",

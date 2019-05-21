@@ -40,7 +40,8 @@ describe('RtorrentStatusComponent', () => {
       down_total: 463360286085,
       up_rate: 191,
       up_total: 1293694778894,
-      free_disk_space: 24319991808
+      free_disk_space: 24319991808,
+      free_disk_space_local: 24319991808
     };
 
     component.ngOnInit();
@@ -63,6 +64,7 @@ describe('RtorrentStatusComponent', () => {
 class RtorrentStatusServiceMock {
   status$: Subject<RtorrentStatus> = new Subject<RtorrentStatus>();
 
+  //noinspection JSUnusedGlobalSymbols
   currentStatusObservable(): Observable<RtorrentStatus> {
     return this.status$;
   }

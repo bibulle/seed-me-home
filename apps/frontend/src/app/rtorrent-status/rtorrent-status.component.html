@@ -20,5 +20,9 @@
       <span class="label" title="{{'label.free_disk_space' | translate}}"><mat-icon>storage</mat-icon><span>{{'label.free_disk_space' | translate}}</span></span>
       <span class="value">{{rtorrentStatus?.free_disk_space | bytesSize}}</span>
     </div>
+    <div>
+      <span class="label" title="{{'label.free_disk_space_local' | translate}}"><mat-icon>storage</mat-icon><span>{{'label.free_disk_space_local' | translate}}</span></span>
+      <span class="value">{{rtorrentStatus?.free_disk_space_local | bytesSize}}</span>
+    </div>
   </mat-card-content>
 </mat-card>

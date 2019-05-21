@@ -43,8 +43,8 @@ export class FtpSeedService extends NestSchedule {
         //debug: (m) => { FtpSeedService.logger.debug(m)}
       };
       this._pathFtp = this._configService.getSeedboxFtpPath();
-      this._pathDownload = path.join(__dirname, '../../..', this._configService.getPathDownload());
-      this._pathProgress = path.join(__dirname, '../../..', this._configService.getPathProgress());
+      this._pathDownload = path.join(this.getPathLocal(), this._configService.getPathDownload());
+      this._pathProgress = path.join(this.getPathLocal(), this._configService.getPathProgress());
       FtpSeedService.logger.log('Download to : ' + this._pathDownload);
       FtpSeedService.logger.log('Save progress to : ' + this._pathProgress);
 
@@ -52,6 +52,10 @@ export class FtpSeedService extends NestSchedule {
         fs.mkdirSync(this._pathProgress);
       }
     }
+  }
+
+  getPathLocal() {
+    return path.join(__dirname, '../../..');
   }
 
   getProgression(fullPath: string): Progression {

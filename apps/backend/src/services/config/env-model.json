@@ -16,6 +16,7 @@
 
     "path_download": "downloaded_test",
     "path_progress": "progress_test",
+    "path_nas": "nas_test",
 
     "users_authorized": ["authorized user"],
     "users_admin": ["administrator"],
@@ -43,6 +44,7 @@
 
     "path_download": "downloaded_test",
     "path_progress": "progress_test",
+    "path_nas": "nas_test",
 
     "users_authorized": ["authorized user"],
     "users_admin": ["administrator"],
@@ -67,6 +69,8 @@
     "seedbox_ftp_pass": "password",
     "seedbox_ftp_path": "/torrents",
     "seedbox_ftp_disabled": false,
+
+    "path_nas": "/mnt/nas/media/Videos/",
 
     "users_authorized": ["authorized user"],
     "users_admin": ["administrator"],

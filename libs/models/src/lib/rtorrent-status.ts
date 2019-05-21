@@ -4,4 +4,5 @@ export interface RtorrentStatus {
   up_rate: number;
   up_total: number;
   free_disk_space: number;
+  free_disk_space_local: number;
 }

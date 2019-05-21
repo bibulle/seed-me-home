@@ -22,6 +22,8 @@ class Config {
   public path_download = 'downloaded';
   public path_progress = 'progress';
 
+  public path_nas = './nas';
+
   public users_authorized = [];
   public users_admin = [];
 
@@ -145,6 +147,11 @@ export class ConfigService {
   public getPathProgress() {
     this.initialize();
     return this._config.path_progress;
+  }
+
+  public getPathNas() {
+    this.initialize();
+    return this._config.path_nas;
   }
 
   public getAuthentGoogleClientID() {

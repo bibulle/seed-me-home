@@ -357,6 +357,14 @@ export class RtorrentServiceTestValues {
     down_total: '463360286085',
     up_rate: '191',
     up_total: '1293694778894',
+    free_disk_space: 24319991808,
+    free_disk_space_local: 1234567
+  };
+  static readonly MOCK_ANSWER_STATUS_WITHOUT_LOCAL = {
+    down_rate: '28',
+    down_total: '463360286085',
+    up_rate: '191',
+    up_total: '1293694778894',
     free_disk_space: 24319991808
   };
   static readonly MOCK_ANSWER_GLOBAL = {
@@ -530,6 +538,7 @@ describe('RtorrentService', () => {
       providers: [RtorrentService, ConfigService, { provide: FtpSeedService, useClass: FtpSeedServiceMock }]
     }).compile();
     rtorrentService = module.get<RtorrentService>(RtorrentService);
+    jest.spyOn(rtorrentService.logger, 'error').mockImplementation(() => {});
 
     configService = module.get<ConfigService>(ConfigService);
     jest.spyOn(configService.logger, 'error').mockImplementation(() => {});
@@ -553,6 +562,14 @@ describe('RtorrentService', () => {
 
     void it('getStatus return should be ok', done => {
       rtorrentService.forceRtorrentForMocking(new RtorrentMock());
+
+      const disk = require('diskusage');
+      jest.spyOn(disk, 'check').mockImplementation(() => {
+        return new Promise(resolve => {
+          resolve({ available: 123456, free: 1234567, total: 12345678 });
+        });
+      });
+
       rtorrentService.getStatus().then(data => {
         expect(data).toEqual(RtorrentServiceTestValues.MOCK_ANSWER_STATUS);
         done();
@@ -568,6 +585,21 @@ describe('RtorrentService', () => {
         expect(err.faultCode).toEqual(-1);
         done();
       });
+    });
+  });
+  void it('getStatus return should be ok/ko on path local not existing', done => {
+    rtorrentService.forceRtorrentForMocking(new RtorrentMock());
+
+    const disk = require('diskusage');
+    jest.spyOn(disk, 'check').mockImplementation(() => {
+      return new Promise((resolve, reject) => {
+        reject();
+      });
+    });
+
+    rtorrentService.getStatus().then(data => {
+      expect(data).toEqual(RtorrentServiceTestValues.MOCK_ANSWER_STATUS_WITHOUT_LOCAL);
+      done();
     });
   });
 
@@ -783,6 +815,7 @@ describe('RtorrentService', () => {
 
   describe('intervalJob', () => {
     it('should launch getTorrents', () => {
+      jest.spyOn(rtorrentService.logger, 'error').mockClear();
       jest.spyOn(rtorrentService, 'getTorrents').mockClear();
       jest.spyOn(rtorrentService, 'getTorrents').mockImplementation(() => {
         return new Promise<RtorrentTorrent[]>(collect => {
@@ -812,6 +845,11 @@ describe('RtorrentService', () => {
 
 export class FtpSeedServiceMock {
   shouldDownloaded = {};
+
+  //noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
+  getPathLocal() {
+    return '.';
+  }
 
   //noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
   getProgression(fullPath: string): Progression {

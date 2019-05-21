@@ -6,6 +6,7 @@ import { FtpSeedService } from '../ftp-seed/ftp-seed.service';
 import { Interval, NestSchedule } from 'nest-schedule';
 
 const Rtorrent = require('@electorrent/node-rtorrent');
+const disk = require('diskusage');
 
 @Injectable()
 export class RtorrentService extends NestSchedule {
@@ -52,16 +53,38 @@ export class RtorrentService extends NestSchedule {
   getStatus(): Promise<RtorrentStatus> {
     this._initialize();
     return new Promise<RtorrentStatus>((resolve, reject) => {
-      this._getAll((err, status) => {
-        if (err) {
-          reject(err);
-        } else {
-          if (status) {
-            status = _.pick(status, ['down_rate', 'down_total', 'up_rate', 'up_total', 'free_disk_space']);
+      Promise.all([
+        // get torrent status
+        new Promise<RtorrentStatus>((resolve1, reject1) => {
+          this._getAll((err, status) => {
+            if (err) {
+              //this.logger.debug(err);
+              reject1(err);
+            } else {
+              if (status) {
+                status = _.pick(status, ['down_rate', 'down_total', 'up_rate', 'up_total', 'free_disk_space']);
+              }
+              resolve1(status);
+            }
+          });
+        }),
+        // get local disk status
+        disk.check(this._ftpSeedService.getPathLocal()).catch(reason => {
+          this.logger.error(reason);
+        })
+      ])
+        .then(result => {
+          // merge both
+          const status: RtorrentStatus = (result[0] as unknown) as RtorrentStatus;
+
+          if (result[1]) {
+            status.free_disk_space_local = result[1].free;
           }
           resolve(status);
-        }
-      });
+        })
+        .catch(reason => {
+          reject(reason);
+        });
     });
   }
 

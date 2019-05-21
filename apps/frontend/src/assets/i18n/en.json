@@ -11,7 +11,9 @@
   "label.down_total": "Download total",
   "label.up_rate": "Upload speed",
   "label.up_total": "Upload total",
-  "label.free_disk_space": "Free disk space",
+  "label.free_disk_space": "Free seedbox disk",
+  "label.free_disk_space_local": "Free local disk",
+
   "seed.pause": "Pause seed",
   "seed.start": "Start seed",
   "seed.erase": "Erase seed",
