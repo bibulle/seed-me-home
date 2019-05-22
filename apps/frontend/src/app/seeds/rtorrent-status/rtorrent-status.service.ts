@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { Observable, ReplaySubject, Subject } from 'rxjs';
 import { ApiReturn, RtorrentStatus } from '@seed-me-home/models';
 import { HttpClient } from '@angular/common/http';
-import { NotificationService } from '../notification/notification.service';
+import { NotificationService } from '../../notification/notification.service';
 import { NGXLogger } from 'ngx-logger';
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'

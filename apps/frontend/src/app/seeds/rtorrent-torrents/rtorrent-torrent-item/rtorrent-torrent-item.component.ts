@@ -12,7 +12,7 @@ import {
   MatProgressBarModule
 } from '@angular/material';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { BytesSizeModule } from '../../utils/pipes/bytes-size.pipe';
+import { BytesSizeModule } from '../../../utils/pipes/bytes-size.pipe';
 import { CommonModule } from '@angular/common';
 import * as moment from 'moment';
 import { RtorrentTorrentsService } from '../rtorrent-torrents.service';

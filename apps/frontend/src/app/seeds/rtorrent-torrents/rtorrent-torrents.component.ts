@@ -3,7 +3,7 @@ import { RtorrentTorrentsService } from './rtorrent-torrents.service';
 import { Subscription } from 'rxjs';
 import { MatCardModule, MatIconModule } from '@angular/material';
 import { TranslateModule } from '@ngx-translate/core';
-import { BytesSizeModule } from '../utils/pipes/bytes-size.pipe';
+import { BytesSizeModule } from '../../utils/pipes/bytes-size.pipe';
 import { RtorrentTorrent } from '@seed-me-home/models';
 import { RtorrentTorrentItemModule } from './rtorrent-torrent-item/rtorrent-torrent-item.component';
 import { CommonModule } from '@angular/common';

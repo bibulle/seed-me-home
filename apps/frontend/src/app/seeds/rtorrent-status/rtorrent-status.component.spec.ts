@@ -7,7 +7,7 @@ import { Observable, Subject } from 'rxjs';
 import { RtorrentStatus } from '@seed-me-home/models';
 import { MatCardModule, MatIconModule } from '@angular/material';
 import { TranslateModule } from '@ngx-translate/core';
-import { BytesSizeModule } from '../utils/pipes/bytes-size.pipe';
+import { BytesSizeModule } from '../../utils/pipes/bytes-size.pipe';
 
 describe('RtorrentStatusComponent', () => {
   let component: RtorrentStatusComponent;

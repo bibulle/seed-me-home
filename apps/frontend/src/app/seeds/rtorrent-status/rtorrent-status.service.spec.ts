@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { RtorrentStatusService } from './rtorrent-status.service';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { NotificationModule, NotificationService } from '../notification/notification.service';
+import { NotificationModule, NotificationService } from '../../notification/notification.service';
 import { NGXLogger, NGXLoggerMock } from 'ngx-logger';
 import { TranslateModule } from '@ngx-translate/core';
 

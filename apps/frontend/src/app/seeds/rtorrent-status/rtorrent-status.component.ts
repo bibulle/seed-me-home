@@ -4,7 +4,7 @@ import { RtorrentStatus } from '@seed-me-home/models';
 import { Subscription } from 'rxjs';
 import { MatCardModule, MatIconModule } from '@angular/material';
 import { TranslateModule } from '@ngx-translate/core';
-import { BytesSizeModule } from '../utils/pipes/bytes-size.pipe';
+import { BytesSizeModule } from '../../utils/pipes/bytes-size.pipe';
 
 @Component({
   selector: 'app-rtorrent-status',

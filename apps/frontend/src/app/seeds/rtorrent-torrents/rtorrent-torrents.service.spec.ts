@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { RtorrentTorrentsService } from './rtorrent-torrents.service';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { NotificationService } from '../notification/notification.service';
+import { NotificationService } from '../../notification/notification.service';
 import { NGXLogger, NGXLoggerMock } from 'ngx-logger';
 import { ApiReturn, RtorrentTorrent } from '@seed-me-home/models';
 import { throwError } from 'rxjs';

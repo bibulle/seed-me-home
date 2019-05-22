@@ -17,7 +17,7 @@ import {
   TranslateService,
   TranslationChangeEvent
 } from '@ngx-translate/core';
-import { BytesSizeModule } from '../../utils/pipes/bytes-size.pipe';
+import { BytesSizeModule } from '../../../utils/pipes/bytes-size.pipe';
 import { BrowserModule, By } from '@angular/platform-browser';
 import { RtorrentTorrent } from '@seed-me-home/models';
 import * as moment from 'moment';

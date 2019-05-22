@@ -8,7 +8,7 @@ import { RtorrentTorrent } from '@seed-me-home/models';
 import { RtorrentTorrentItemComponent } from './rtorrent-torrent-item/rtorrent-torrent-item.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatCardModule, MatDialogModule, MatIconModule, MatMenuModule, MatProgressBarModule } from '@angular/material';
-import { BytesSizePipe } from '../utils/pipes/bytes-size.pipe';
+import { BytesSizePipe } from '../../utils/pipes/bytes-size.pipe';
 
 //noinspection SpellCheckingInspection
 const goodAnswer: RtorrentTorrent[] = [
