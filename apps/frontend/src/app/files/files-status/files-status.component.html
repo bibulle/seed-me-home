@@ -1,0 +1,12 @@
+<mat-card>
+  <mat-card-content>
+    <div [class.mat-error]="!filesStatus?.free_disk_space_local">
+      <span class="label" title="{{'label.free_disk_space_local' | translate}}"><mat-icon>storage</mat-icon><span>{{'label.free_disk_space_local' | translate}}</span></span>
+      <span class="value">{{filesStatus?.free_disk_space_local | bytesSize}}</span>
+    </div>
+    <div [class.mat-error]="!filesStatus?.free_disk_space_nas">
+      <span class="label" title="{{'label.free_disk_space_nas' | translate}}"><mat-icon>storage</mat-icon><span>{{'label.free_disk_space_nas' | translate}}</span></span>
+      <span class="value">{{filesStatus?.free_disk_space_nas | bytesSize}}</span>
+    </div>
+  </mat-card-content>
+</mat-card>

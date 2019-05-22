@@ -1,5 +1,6 @@
 import { Component, NgModule, OnInit } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
+import { FilesStatusModule } from './files-status/files-status.component';
 
 @Component({
   selector: 'app-files',
@@ -13,7 +14,7 @@ export class FilesComponent implements OnInit {
 }
 
 @NgModule({
-  imports: [TranslateModule.forChild()],
+  imports: [TranslateModule.forChild(), FilesStatusModule],
   declarations: [FilesComponent],
   exports: [FilesComponent]
 })

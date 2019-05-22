@@ -13,6 +13,7 @@
   "label.up_total": "Upload total",
   "label.free_disk_space": "Free seedbox disk",
   "label.free_disk_space_local": "Free local disk",
+  "label.free_disk_space_nas": "Free nas disk",
 
   "seed.pause": "Pause seed",
   "seed.start": "Start seed",

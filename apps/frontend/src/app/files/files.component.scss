@@ -1,0 +1,13 @@
+:host {
+  display: flex;
+  padding: 0.5em;
+
+  app-files-status {
+    padding: 0.5em;
+    min-width: 0;
+  }
+
+  app-files-files {
+    min-width: 0;
+  }
+}

@@ -1,18 +1,17 @@
 import { TestBed } from '@angular/core/testing';
-
-import { RtorrentStatusService } from './rtorrent-status.service';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { NotificationModule, NotificationService } from '../../notification/notification.service';
 import { NGXLogger, NGXLoggerMock } from 'ngx-logger';
 import { TranslateModule } from '@ngx-translate/core';
+import { FilesStatusService } from './files-status.service';
 
 const flushPromises = () => {
   return new Promise(resolve => setImmediate(resolve));
 };
 
-describe('RtorrentStatusService', () => {
-  let service: RtorrentStatusService;
+describe('FilesStatusService', () => {
+  let service: FilesStatusService;
   let notificationService: NotificationService;
   let httpMock: HttpTestingController;
 
@@ -21,7 +20,7 @@ describe('RtorrentStatusService', () => {
       imports: [HttpClientModule, HttpClientTestingModule, NotificationModule, TranslateModule.forRoot()],
       providers: [NotificationService, { provide: NGXLogger, useClass: NGXLoggerMock }]
     });
-    service = TestBed.get(RtorrentStatusService);
+    service = TestBed.get(FilesStatusService);
     notificationService = TestBed.get(NotificationService);
     httpMock = TestBed.get(HttpTestingController);
 
