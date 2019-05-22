@@ -46,6 +46,14 @@
       margin-top: -5px;
       margin-left: -6px;
     }
+
+    .paused,
+    .seedbox-download,
+    .seedbox-downloaded,
+    .local-download,
+    .shouldNotDownload {
+      cursor: pointer;
+    }
   }
 
   .header,

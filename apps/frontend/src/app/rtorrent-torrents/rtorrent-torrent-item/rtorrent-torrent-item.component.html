@@ -32,21 +32,25 @@
 </div>
 <div class="title">
   <mat-icon *ngIf="torrent && !torrent.active"
+            class="paused"
             color="warn"
             title="{{ 'seed.paused' | translate}}"
             (click)="start()"
   >pause</mat-icon>
   <mat-icon *ngIf="torrent && torrent.active && !torrent.complete"
+            class="seedbox-download"
             color="primary"
             title="{{ 'seed.seedbox.download' | translate}}"
             (click)="pause()"
   >cloud_download</mat-icon>
   <mat-icon *ngIf="torrent && torrent.active && torrent.complete && (torrent.downloaded === 0)"
+            class="seedbox-downloaded"
             color="warn"
             title="{{ 'seed.seedbox.downloaded' | translate}}"
             (click)="shouldGetFromSeeBox(false)"
   >save_alt</mat-icon>
   <mat-icon *ngIf="torrent && torrent.active && torrent.complete && (torrent.downloaded !== 0) && (torrent.downloaded !== torrent.size)"
+            class="local-download"
             color="primary"
             title="{{ 'seed.local.download' | translate}}"
             (click)="shouldGetFromSeeBox(false)"
