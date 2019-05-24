@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.6.0"></a>
+# [0.6.0](https://github.com/bibulle/seed-me-home/compare/v0.5.0...v0.6.0) (2019-05-24)
+
+
+### Bug Fixes
+
+* .htaccess should be distributed ([6a037a8](https://github.com/bibulle/seed-me-home/commit/6a037a8))
+* bash script should be executable ([eb315a6](https://github.com/bibulle/seed-me-home/commit/eb315a6))
+* clickable icons should have pointer cursor ([59675f0](https://github.com/bibulle/seed-me-home/commit/59675f0))
+* download only once each file ([b8e3b49](https://github.com/bibulle/seed-me-home/commit/b8e3b49))
+* frontend should be production too ([ac209c6](https://github.com/bibulle/seed-me-home/commit/ac209c6))
+* interval jobs should run ([31ad225](https://github.com/bibulle/seed-me-home/commit/31ad225))
+* interval jobs should run ([ec558d5](https://github.com/bibulle/seed-me-home/commit/ec558d5))
+* torrent done can't be stopped ;-) ([6b4f8c6](https://github.com/bibulle/seed-me-home/commit/6b4f8c6))
+
+
+### Features
+
+* add authent token refresh if needed ([c211d25](https://github.com/bibulle/seed-me-home/commit/c211d25))
+* add files list to front-end (first round) ([9d64b96](https://github.com/bibulle/seed-me-home/commit/9d64b96))
+* add files status to front-end ([45b958e](https://github.com/bibulle/seed-me-home/commit/45b958e))
+* add free disk in status ([1293bf9](https://github.com/bibulle/seed-me-home/commit/1293bf9))
+* change frontend deployment ([0c1e337](https://github.com/bibulle/seed-me-home/commit/0c1e337))
+* local download can be canceled ([af3a6dd](https://github.com/bibulle/seed-me-home/commit/af3a6dd))
+* local download can be canceled ([7a509fc](https://github.com/bibulle/seed-me-home/commit/7a509fc))
+* on torrent item, add actions ([b63b894](https://github.com/bibulle/seed-me-home/commit/b63b894))
+
+
+
 <a name="0.5.0"></a>
 # [0.5.0](https://github.com/bibulle/seed-me-home/compare/v0.4.0...v0.5.0) (2019-05-14)
 
