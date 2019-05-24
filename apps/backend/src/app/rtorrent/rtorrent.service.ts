@@ -290,6 +290,7 @@ export class RtorrentService extends NestSchedule {
     // this.logger.debug('intervalJob_RtorrentService');
 
     this.getTorrents().catch(err => {
+      this.logger.error('getTorrents error');
       this.logger.error(err);
     });
 

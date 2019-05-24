@@ -4,6 +4,8 @@ import { FilesComponent } from './files.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { NotificationModule } from '../notification/notification.service';
 import { FilesStatusModule } from './files-status/files-status.component';
+import { FilesFilesModule } from './files-files/files-files.component';
+import { By } from '@angular/platform-browser';
 
 describe('FilesComponent', () => {
   let component: FilesComponent;
@@ -12,7 +14,7 @@ describe('FilesComponent', () => {
   beforeEach(async(() => {
     //noinspection JSIgnoredPromiseFromCall
     TestBed.configureTestingModule({
-      imports: [TranslateModule.forRoot(), NotificationModule, FilesStatusModule],
+      imports: [TranslateModule.forRoot(), NotificationModule, FilesStatusModule, FilesFilesModule],
       declarations: [FilesComponent]
     }).compileComponents();
   }));
@@ -25,5 +27,11 @@ describe('FilesComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should have one status and 2 file lists', () => {
+    expect(fixture.debugElement.queryAll(By.css('app-files-status')).length).toBe(1);
+
+    expect(fixture.debugElement.queryAll(By.css('app-files-files')).length).toBe(2);
   });
 });

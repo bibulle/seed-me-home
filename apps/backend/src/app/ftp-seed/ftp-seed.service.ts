@@ -62,8 +62,9 @@ export class FtpSeedService extends NestSchedule {
     this._initialize();
     fullPath = this._cleanFullFileName(fullPath);
 
+    // FtpSeedService.logger.debug(path.resolve(fullPath));
     const fileTrg = this._getProgressionFileName(fullPath);
-    //FtpSeedService.logger.debug(path.resolve(fileTrg));
+    // FtpSeedService.logger.debug(path.resolve(fileTrg));
 
     try {
       const data = fs.readFileSync(fileTrg, { encoding: 'utf8' });
@@ -155,7 +156,9 @@ export class FtpSeedService extends NestSchedule {
   private _cleanFullFileName(fullPath: string): string {
     this._initialize();
 
-    const regexp = new RegExp('.*' + this._configService.getSeedboxFtpPath() + '/');
+    const regexp = new RegExp(
+      '.*(' + this._configService.getSeedboxFtpPath() + '|' + this._configService.getPathDownload() + ')/'
+    );
 
     return fullPath.replace(regexp, '');
   }

@@ -40,4 +40,94 @@ describe('Files Controller', () => {
       total_disk_space_nas: 12345678
     });
   });
+
+  it('files local should be ok', async () => {
+    jest.spyOn(service, 'getFilesLocal').mockImplementation(() => {
+      return new Promise(resolve => {
+        resolve({
+          path: 'dir1',
+          fullpath: 'downloaded_test/dir1',
+          size: 301000,
+          downloaded: 211000,
+          isDirectory: true,
+          modifiedDate: new Date(0),
+          children: [
+            {
+              path: 'dir1/file1',
+              fullpath: 'downloaded_test/dir1/file1',
+              size: 100000,
+              downloaded: 10000,
+              isDirectory: false,
+              modifiedDate: new Date(2),
+              children: []
+            }
+          ]
+        });
+      });
+    });
+    expect(await controller.getFilesLocal()).toEqual({
+      path: 'dir1',
+      fullpath: 'downloaded_test/dir1',
+      size: 301000,
+      downloaded: 211000,
+      isDirectory: true,
+      modifiedDate: new Date(0),
+      children: [
+        {
+          path: 'dir1/file1',
+          fullpath: 'downloaded_test/dir1/file1',
+          size: 100000,
+          downloaded: 10000,
+          isDirectory: false,
+          modifiedDate: new Date(2),
+          children: []
+        }
+      ]
+    });
+  });
+
+  it('files nas should be ok', async () => {
+    jest.spyOn(service, 'getFilesNas').mockImplementation(() => {
+      return new Promise(resolve => {
+        resolve({
+          path: 'dir1',
+          fullpath: 'downloaded_test/dir1',
+          size: 301000,
+          downloaded: 211000,
+          isDirectory: true,
+          modifiedDate: new Date(0),
+          children: [
+            {
+              path: 'dir1/file1',
+              fullpath: 'downloaded_test/dir1/file1',
+              size: 100000,
+              downloaded: 10000,
+              isDirectory: false,
+              modifiedDate: new Date(2),
+              children: []
+            }
+          ]
+        });
+      });
+    });
+    expect(await controller.getFilesNas()).toEqual({
+      path: 'dir1',
+      fullpath: 'downloaded_test/dir1',
+      size: 301000,
+      downloaded: 211000,
+      isDirectory: true,
+      modifiedDate: new Date(0),
+      children: [
+        {
+          path: 'dir1/file1',
+          fullpath: 'downloaded_test/dir1/file1',
+          size: 100000,
+          downloaded: 10000,
+          isDirectory: false,
+          modifiedDate: new Date(2),
+          children: []
+        }
+      ]
+    });
+  });
 });

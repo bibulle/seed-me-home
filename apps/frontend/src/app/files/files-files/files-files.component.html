@@ -1,0 +1,7 @@
+<mat-card>
+  <mat-card-title *ngIf="filePath === filePathTypes.Local">{{'label.files_local' | translate}}</mat-card-title>
+  <mat-card-title *ngIf="filePath === filePathTypes.Nas">{{'label.files_nas' | translate}}</mat-card-title>
+  <mat-card-content *ngIf="filesFiles">
+    <app-files-files-item *ngFor="let file of filesFiles.children" [file]="file"></app-files-files-item>
+  </mat-card-content>
+</mat-card>

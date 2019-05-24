@@ -75,8 +75,8 @@
   </mat-menu>
 </div>
 <div class="progress">
-  <mat-progress-bar mode="determinate" value="{{100 * torrent?.completed/torrent?.size}}" color="{{torrent?.completed === torrent?.size ? 'primary' : 'warn'}}"></mat-progress-bar>
-  <mat-progress-bar mode="determinate" value="{{100 * torrent?.downloaded/torrent?.size}}" color="{{torrent?.downloaded === torrent?.size ? 'primary' : 'warn'}}"></mat-progress-bar>
+  <mat-progress-bar mode="determinate" title="{{(100 * torrent?.completed/torrent?.size).toFixed(0) + '%'}}" value="{{100 * torrent?.completed/torrent?.size}}" color="{{torrent?.completed === torrent?.size ? 'primary' : 'warn'}}"></mat-progress-bar>
+  <mat-progress-bar mode="determinate" title="{{(100 * torrent?.downloaded/torrent?.size).toFixed(0) + '%'}}" value="{{100 * torrent?.downloaded/torrent?.size}}" color="{{torrent?.downloaded === torrent?.size ? 'primary' : 'warn'}}"></mat-progress-bar>
 </div>
 <div class="info">
   <span class="done">&nbsp;</span>

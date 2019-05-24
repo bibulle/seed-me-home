@@ -828,6 +828,7 @@ describe('RtorrentService', () => {
       expect(jest.spyOn(rtorrentService.logger, 'error')).toHaveBeenCalledTimes(0);
     });
     it('should launch getTorrents and managed error', async () => {
+      jest.spyOn(rtorrentService.logger, 'error').mockClear();
       jest.spyOn(rtorrentService, 'getTorrents').mockClear();
       jest.spyOn(rtorrentService, 'getTorrents').mockImplementation(() => {
         return new Promise<RtorrentTorrent[]>((collect, reject) => {
@@ -838,7 +839,7 @@ describe('RtorrentService', () => {
 
       expect(await rtorrentService.intervalJob_RtorrentService()).toBeFalsy();
       expect(jest.spyOn(rtorrentService, 'getTorrents')).toHaveBeenCalledTimes(1);
-      expect(jest.spyOn(rtorrentService.logger, 'error')).toHaveBeenCalledTimes(1);
+      expect(jest.spyOn(rtorrentService.logger, 'error')).toHaveBeenCalledTimes(2);
     });
   });
 });
