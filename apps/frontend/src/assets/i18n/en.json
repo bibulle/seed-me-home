@@ -38,5 +38,6 @@
   "Not Found": "Internal API page not found",
   "Gateway Timeout": "Internal API timeout",
   "Unknown Error": "Unknown Error",
+  "Service Unavailable": "Cannot join Backend",
   "not_administrator": "You are not an administrator"
 }
