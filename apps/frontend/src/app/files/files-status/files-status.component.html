@@ -1,4 +1,5 @@
 <mat-card>
+  <mat-card-title>{{'title.files.status' | translate}}</mat-card-title>
   <mat-card-content>
     <div [class.mat-error]="!filesStatus?.free_disk_space_local">
       <span class="label" title="{{'label.free_disk_space_local' | translate}}"><mat-icon>storage</mat-icon><span>{{'label.free_disk_space_local' | translate}}</span></span>

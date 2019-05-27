@@ -4,11 +4,17 @@
 
   app-files-status {
     padding: 0.5em;
-    min-width: 0;
+    min-width: 14em;
+    flex: 1 1 20%;
   }
 
   app-files-files {
     padding: 0.5em;
     min-width: 0;
+    flex: 1 1 40%;
+  }
+
+  @media only screen and (max-width: 800px) {
+    flex-direction: column;
   }
 }

@@ -14,6 +14,13 @@
   "label.free_disk_space": "Free seedbox disk",
   "label.free_disk_space_local": "Free local disk",
   "label.free_disk_space_nas": "Free nas disk",
+  "label.files.empty": "Empty",
+
+  "title.rtorrent.status": "Seedbox status",
+  "title.rtorrent.torrents": "Torrents",
+  "title.files.status": "Files status",
+  "title.files.files_local": "Downloaded files",
+  "title.files.files_nas": "Files on NAS",
 
   "seed.pause": "Pause seed",
   "seed.start": "Start seed",
