@@ -1,14 +1,22 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FilesFilesItemComponent, FilesFilesItemDialogComponent } from './files-files-item.component';
+import {
+  FilesFilesItemComponent,
+  FilesFilesItemDialogMoveComponent,
+  FilesFilesItemDialogRemoveComponent
+} from './files-files-item.component';
 import {
   MAT_DIALOG_DATA,
+  MatCheckboxModule,
   MatDialog,
   MatDialogModule,
   MatDialogRef,
+  MatFormFieldModule,
   MatIconModule,
+  MatInputModule,
   MatMenuModule,
-  MatProgressBarModule
+  MatProgressBarModule,
+  MatRadioModule
 } from '@angular/material';
 import {
   DefaultLangChangeEvent,
@@ -25,6 +33,7 @@ import { EventEmitter } from '@angular/core';
 import { FilesFilesService } from '../files-files.service';
 import { of } from 'rxjs';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FormsModule } from '@angular/forms';
 
 const files1: FilesFile = {
   path: 'dir1',
@@ -98,7 +107,6 @@ describe('FilesFilesItemComponent', () => {
     component = fixture.componentInstance;
 
     filesFilesService = TestBed.get(FilesFilesService);
-    filesFilesService.component = component;
 
     dialog = TestBed.get(MatDialog);
     spyOn(dialog, 'open').and.callThrough();
@@ -247,11 +255,32 @@ describe('FilesFilesItemComponent', () => {
     component.menuTrigger.openMenu();
     expect(fixture.debugElement.queryAll(By.css('.mat-menu-content')).length).toBe(1);
     const menuContent = fixture.debugElement.queryAll(By.css('.mat-menu-content'))[0];
-    expect(menuContent.queryAll(By.css('button')).length).toBe(1);
-    expect(menuContent.queryAll(By.css('button'))[0].nativeElement.textContent).toBe(
+    expect(menuContent.queryAll(By.css('button')).length).toBe(2);
+    expect(menuContent.queryAll(By.css('button'))[1].nativeElement.textContent).toBe(
       'delete_forever[this is a fake translation of file.erase]'
     );
     // remove the file
+    menuContent.queryAll(By.css('button'))[1].nativeElement.click();
+
+    fixture.detectChanges();
+    expect(dialog.open).toHaveBeenCalled();
+  });
+
+  it('should move file on click', () => {
+    expect.assertions(4);
+
+    component.file = files1;
+    fixture.detectChanges();
+
+    // action menu
+    component.menuTrigger.openMenu();
+    expect(fixture.debugElement.queryAll(By.css('.mat-menu-content')).length).toBe(1);
+    const menuContent = fixture.debugElement.queryAll(By.css('.mat-menu-content'))[0];
+    expect(menuContent.queryAll(By.css('button')).length).toBe(2);
+    expect(menuContent.queryAll(By.css('button'))[0].nativeElement.textContent).toBe(
+      'save_alt[this is a fake translation of file.move]'
+    );
+    // move the file
     menuContent.queryAll(By.css('button'))[0].nativeElement.click();
 
     fixture.detectChanges();
@@ -259,28 +288,75 @@ describe('FilesFilesItemComponent', () => {
   });
 });
 
-describe('FilesFilesItemDialogComponent', () => {
-  let component: FilesFilesItemDialogComponent;
-  let fixture: ComponentFixture<FilesFilesItemDialogComponent>;
-  let dialogRef: MatDialogRef<FilesFilesItemDialogComponent>;
+describe('FilesFilesItemDialogRemoveComponent', () => {
+  let component: FilesFilesItemDialogRemoveComponent;
+  let fixture: ComponentFixture<FilesFilesItemDialogRemoveComponent>;
+  let dialogRef: MatDialogRef<FilesFilesItemDialogRemoveComponent>;
 
   beforeEach(async(() => {
     //noinspection JSIgnoredPromiseFromCall
     TestBed.configureTestingModule({
       imports: [MatDialogModule, BrowserAnimationsModule, BrowserModule, TranslateModule],
-      declarations: [FilesFilesItemDialogComponent],
+      declarations: [FilesFilesItemDialogRemoveComponent],
       providers: [
         { provide: MAT_DIALOG_DATA, useValue: {} },
         { provide: MatDialogRef, useClass: MatDialogRefMock },
-        //        { provide: FilesFilesService, useClass: FilesFilesServiceMock },
         { provide: TranslateService, useClass: TranslateServiceStub }
-        //        {provide: MatDialog, useClass: MdDialogMock}
       ]
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FilesFilesItemDialogComponent);
+    fixture = TestBed.createComponent(FilesFilesItemDialogRemoveComponent);
+    component = fixture.componentInstance;
+
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('click should close the dialog', () => {
+    dialogRef = TestBed.get(MatDialogRef);
+    spyOn(dialogRef, 'close').and.callThrough();
+
+    expect(fixture.debugElement.queryAll(By.css('button')).length).toBe(2);
+    fixture.debugElement.queryAll(By.css('button'))[0].triggerEventHandler('click', null);
+    expect(dialogRef.close).toHaveBeenCalled();
+  });
+});
+
+describe('FilesFilesItemDialogMoveComponent', () => {
+  let component: FilesFilesItemDialogMoveComponent;
+  let fixture: ComponentFixture<FilesFilesItemDialogMoveComponent>;
+  let dialogRef: MatDialogRef<FilesFilesItemDialogMoveComponent>;
+
+  beforeEach(async(() => {
+    //noinspection JSIgnoredPromiseFromCall
+    TestBed.configureTestingModule({
+      imports: [
+        MatDialogModule,
+        BrowserAnimationsModule,
+        BrowserModule,
+        TranslateModule,
+        MatFormFieldModule,
+        MatInputModule,
+        FormsModule,
+        MatRadioModule,
+        MatCheckboxModule
+      ],
+      declarations: [FilesFilesItemDialogMoveComponent],
+      providers: [
+        { provide: MAT_DIALOG_DATA, useValue: {} },
+        { provide: MatDialogRef, useClass: MatDialogRefMock },
+        { provide: TranslateService, useClass: TranslateServiceStub }
+      ]
+    }).compileComponents();
+  }));
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(FilesFilesItemDialogMoveComponent);
     component = fixture.componentInstance;
 
     fixture.detectChanges();
@@ -301,34 +377,7 @@ describe('FilesFilesItemDialogComponent', () => {
 });
 
 class FilesFilesServiceMock {
-  component: FilesFilesItemComponent;
-
-  //  //noinspection JSUnusedLocalSymbols
-  //  pauseTorrent (hash: string) {
-  //    if (this.component.torrent) {
-  //      this.component.torrent.active = false;
-  //    }
-  //  }
-  //
-  //  //noinspection JSUnusedLocalSymbols
-  //  startTorrent (hash: string) {
-  //    if (this.component.torrent) {
-  //      this.component.torrent.active = true;
-  //    }
-  //  }
-  //
-  //  shouldGetFromSeeBox (hash: string, should: boolean) {
-  //    if (this.component.torrent) {
-  //      this.component.torrent.shouldDownload = should;
-  //    }
-  //  }
-  //
-  //  //noinspection JSUnusedLocalSymbols
-  //  removeTorrent (hash: string) {
-  //    if (this.component.torrent) {
-  //      this.component.torrent = null;
-  //    }
-  //  }
+  calculateTrgPath() {}
 }
 
 class TranslateServiceStub {
@@ -352,7 +401,7 @@ export class MdDialogMock {
   // with an afterClosed method that allows to subscribe to the dialog result observable.
   open() {
     return {
-      afterClosed: () => of(true)
+      afterClosed: () => of({})
     };
   }
 }

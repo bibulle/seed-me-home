@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { Observable, ReplaySubject, Subject } from 'rxjs';
-import { ApiReturn, FilesFile } from '@seed-me-home/models';
+import { ApiReturn, FileMove, FilesFile, MoveType } from '@seed-me-home/models';
 import { HttpClient } from '@angular/common/http';
 import { NotificationService } from '../../notification/notification.service';
 import { NGXLogger } from 'ngx-logger';
+import { String } from 'typescript-string-operations';
 
 @Injectable({
   providedIn: 'root'
@@ -130,5 +131,103 @@ export class FilesFilesService {
           reject(error);
         });
     });
+  }
+
+  calculateTrgPath(path: string): FileMove {
+    const ret: FileMove = { sourcePath: path, targetPath: path, targetType: MoveType.movies };
+
+    // test if series
+    const series_matcher = [
+      /(.+)[ .]+[s]([0-9]+)[e]([0-9]+)[ -.]*(.*)[.]([^.]*)/i,
+      /(.+)[ .]+([0-9]+)[-.x]([0-9]+)[ -.]*(.*)[.]([^.]*)/i
+    ];
+
+    const tv_shows_format =
+      '${seriesName}/Season ${seasonNum1}/${seriesName} S${seasonNum}E${episodeNum}${episodeName}.${extension}';
+
+    const file_cleaner = [
+      'Repack',
+      'Multi',
+      'BDrip',
+      'DVDrip',
+      'HDRip',
+      'WEBRip',
+      'VDRip',
+      'Xvid',
+      'AC-3-UTT',
+      '[-]*UTT[-]*',
+      '[-]*LECHTI[-]*',
+      'TrueFrench',
+      'VOSTFR',
+      'MAGNET',
+      'HDTV',
+      'PTN',
+      'PROPER',
+      'SSL',
+      '[-]*GKS',
+      '[-]RAW',
+      '[-]PROTEiGON',
+      '[-]F4ST',
+      'x264',
+      'H.264',
+      'BluRay',
+      'TDPG',
+      'FTMVHD',
+      'FRENCH',
+      'PDTV',
+      '-2T',
+      '[-]FiXi0N',
+      'CCS3',
+      'ATeam',
+      'ViGi',
+      'NSP',
+      'SN2P',
+      'AMZN',
+      'ARK01',
+      'HEVC',
+      'x265',
+      'AAC',
+      'AC3',
+      'HVS',
+      'DD5.1',
+      'AAC5.1',
+      '1080p',
+      '720p',
+      'WEB-DL',
+      'HDLight',
+      'SEEHD'
+    ];
+
+    file_cleaner.forEach(str => {
+      const regexp = new RegExp(`[ .-]*${str}([ .-]*)`, 'i');
+      ret.targetPath = ret.targetPath.replace(regexp, '$1');
+    });
+
+    while (ret.targetPath.match(/[.]([^.]*[.][^.]+$)/)) {
+      ret.targetPath = ret.targetPath.replace(/[.]([^.]*[.][^.]+$)/, ' $1');
+    }
+    ret.targetPath = ret.targetPath.replace(/ ([0-9][0-9][0-9][0-9])([.][^.]+$)/, ' ($1)$2');
+
+    series_matcher.forEach(matcher => {
+      if (ret.targetPath.match(matcher)) {
+        const seriesName = matcher.exec(ret.targetPath)[1];
+        const seasonNum = matcher.exec(ret.targetPath)[2];
+        const episodeNum = matcher.exec(ret.targetPath)[3];
+        const episodeName = matcher.exec(ret.targetPath)[4];
+        const extension = matcher.exec(ret.targetPath)[5];
+
+        ret.targetPath = tv_shows_format
+          .replace(/[$]{seriesName}/gi, seriesName)
+          .replace(/[$]{seasonNum1}/gi, String.Format('{0:0}', seasonNum))
+          .replace(/[$]{seasonNum}/gi, String.Format('{0:00}', seasonNum))
+          .replace(/[$]{episodeNum}/gi, String.Format('{0:00}', episodeNum))
+          .replace(/[$]{episodeName}/gi, episodeName ? ' ' + episodeName : '')
+          .replace(/[$]{extension}/gi, extension);
+
+        ret.targetType = MoveType.series;
+      }
+    });
+
+    return ret;
   }
 }

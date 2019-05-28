@@ -1,0 +1,14 @@
+:host {
+  .file-name {
+    white-space: nowrap;
+  }
+  .mat-dialog-content {
+    padding-bottom: 1em;
+  }
+  .mat-radio-button ~ .mat-radio-button {
+    margin-left: 1.5em;
+  }
+  mat-form-field {
+    width: 100%;
+  }
+}

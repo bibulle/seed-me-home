@@ -480,4 +480,5 @@ class FilesFilesServiceMock {
   }
   startLoadingStats() {}
   removeFile() {}
+  calculateTrgPath() {}
 }

@@ -245,6 +245,33 @@ describe('FilesFilesService', () => {
     });
   });
 
+  describe('calculateTrgPath', () => {
+    it('should should transform movie name', function() {
+      expect(service.calculateTrgPath('Test.title.2010.BdRip MULTI-VOSTFR.mkv')).toEqual({
+        sourcePath: 'Test.title.2010.BdRip MULTI-VOSTFR.mkv',
+        targetPath: 'Test title (2010).mkv',
+        targetType: 0
+      });
+    });
+    it('should should transform series name', function() {
+      expect(service.calculateTrgPath('A series.s5e3-An.episode.mkv')).toEqual({
+        sourcePath: 'A series.s5e3-An.episode.mkv',
+        targetPath: 'A series/Season 5/A series S05E03 An episode.mkv',
+        targetType: 1
+      });
+      expect(service.calculateTrgPath('A series.s5e3.mkv')).toEqual({
+        sourcePath: 'A series.s5e3.mkv',
+        targetPath: 'A series/Season 5/A series S05E03.mkv',
+        targetType: 1
+      });
+      expect(service.calculateTrgPath('A series 5x3.mkv')).toEqual({
+        sourcePath: 'A series 5x3.mkv',
+        targetPath: 'A series/Season 5/A series S05E03.mkv',
+        targetType: 1
+      });
+    });
+  });
+
   afterEach(() => {
     jest.clearAllMocks();
     httpMock.verify();

@@ -74,7 +74,8 @@ describe('RtorrentTorrentsService', () => {
             }
           ]
         }
-      ]
+      ],
+      refreshToken: 'A refresh token'
     };
     const goodAnswer2: ApiReturn = {
       version: { version: '1.3' },
@@ -109,7 +110,8 @@ describe('RtorrentTorrentsService', () => {
             }
           ]
         }
-      ]
+      ],
+      refreshToken: 'A refresh token'
     };
 
     it('it should do nothing if none has subscribed to the event', () => {
@@ -243,7 +245,8 @@ describe('RtorrentTorrentsService', () => {
             }
           ]
         }
-      ]
+      ],
+      refreshToken: 'A refresh token'
     };
 
     it('should pause torrents', async () => {

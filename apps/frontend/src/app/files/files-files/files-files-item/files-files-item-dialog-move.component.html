@@ -1,0 +1,17 @@
+<div mat-dialog-title>{{'title.file.move' | translate}} : <span class="file-name">{{data.sourcePath}}</span></div>
+<div mat-dialog-content>
+  <mat-form-field color="primary">
+    <label>
+      <input cdkFocusInitial matInput [(ngModel)]="data.targetPath">
+    </label>
+    <mat-label>{{'file.move.target' | translate}}</mat-label>
+  </mat-form-field>
+  <mat-radio-group [(ngModel)]="data.targetType">
+    <mat-radio-button [value]="moveType.movies" color="primary">{{'file.move.movie' | translate}}</mat-radio-button>
+    <mat-radio-button [value]="moveType.series" color="primary">{{'file.move.series' | translate}}</mat-radio-button>
+  </mat-radio-group>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">{{'label.no.thanks' | translate}}</button>
+  <button mat-button [mat-dialog-close]="data" color="warn">Ok</button>
+</div>

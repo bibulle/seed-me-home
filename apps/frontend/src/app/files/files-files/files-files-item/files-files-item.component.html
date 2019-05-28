@@ -22,18 +22,15 @@
   <span title="{{file?.path}}">{{file?.path}}</span>
   <button mat-icon-button [matMenuTriggerFor]="moreActionMenu" #menuTrigger='matMenuTrigger'><mat-icon>more_horiz</mat-icon></button>
   <mat-menu #moreActionMenu="matMenu" xPosition="before">
-<!--    <button mat-menu-item (click)="pause()" *ngIf="torrent && torrent.active"><mat-icon>pause</mat-icon>{{ 'seed.pause' | translate}}</button>-->
-<!--    <button mat-menu-item (click)="start()" *ngIf="torrent && !torrent.active"><mat-icon>play_arrow</mat-icon>{{ 'seed.start' | translate}}</button>-->
+    <button mat-menu-item (click)="move()"><mat-icon>save_alt</mat-icon>{{ 'file.move' | translate}}</button>
     <button mat-menu-item (click)="remove()"><mat-icon>delete_forever</mat-icon>{{ 'file.erase' | translate}}</button>
-<!--    <button mat-menu-item (click)="shouldGetFromSeeBox(true)" *ngIf="torrent && !torrent.shouldDownload"><mat-icon>save_alt</mat-icon>{{ 'seed.save_here' | translate}}</button>-->
-<!--    <button mat-menu-item (click)="shouldGetFromSeeBox(false)" *ngIf="torrent && torrent.shouldDownload"><mat-icon>block</mat-icon>{{ 'seed.not_save_here' | translate}}</button>-->
   </mat-menu>
 </div>
 <div class="progress" title="{{(100 * file?.downloaded/file?.size).toFixed(0) + '%'}}">
   <mat-progress-bar mode="determinate" value="{{100 * file?.downloaded/file?.size}}" color="{{file?.downloaded === file?.size ? 'primary' : 'warn'}}"></mat-progress-bar>
 </div>
 <div class="info">
-  <span class="done">&nbsp;</span>
+  <span class="done"> </span>
   <span class="size">{{file?.size | bytesSize}}</span>
   <span class="date">{{formatDate(file?.modifiedDate)}}</span>
 </div>

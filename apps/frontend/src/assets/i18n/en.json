@@ -24,6 +24,7 @@
   "title.files.status": "Files status",
   "title.files.files_local": "Downloaded files",
   "title.files.files_nas": "Files on NAS",
+  "title.file.move": "Move to NAS",
   "title.file.remove": "Remove and erase",
 
   "seed.pause": "Pause seed",
@@ -37,6 +38,10 @@
   "seed.local.download": "Local download",
   "seed.done": "Seed done",
   "seed.wont.be.downloaded": "This seed won't be downloaded locally",
+  "file.move": "Move to NAS",
+  "file.move.target": "Target file name",
+  "file.move.movie": "movies",
+  "file.move.series": "series",
   "file.erase": "Remove",
   "progress": "Progress",
   "size": "Size",
