@@ -81,6 +81,31 @@ describe('RefreshTokenInterceptor', () => {
       )
       .subscribe();
   });
+
+  it('intercept should init data if none', async () => {
+    const dataMock = undefined;
+
+    const next: CallHandler = {
+      handle() {
+        return of(dataMock);
+      }
+    };
+
+    // data should change if expiration date is less than 10 minutes
+    const context = getContextMock(9, 'unauthorized user');
+    interceptor
+      .intercept(<ExecutionContext>context, next)
+      .pipe(
+        map(async data => {
+          data.then(d => {
+            expect(d).toBeTruthy();
+            expect(d.data).toEqual({});
+          });
+          return data;
+        })
+      )
+      .subscribe();
+  });
 });
 
 function getExpiration(minutesBeforeExpiration: number): number {

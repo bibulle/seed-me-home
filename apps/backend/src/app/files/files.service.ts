@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { FilesFile, FilesStatus } from '@seed-me-home/models';
 import { ConfigService } from '../../services/config/config.service';
 import { FtpSeedService } from '../ftp-seed/ftp-seed.service';
@@ -120,6 +120,59 @@ export class FilesService {
             });
         }
       });
+    });
+  }
+
+  removeFile(fullPath: string): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      //this.logger.debug(fullPath);
+
+      // File exist ?
+      try {
+        fullPath = fs.realpathSync(fullPath);
+      } catch (e) {
+        return reject(new HttpException('File not found', HttpStatus.NOT_FOUND));
+      }
+      this.logger.debug(fullPath);
+
+      // File in downloaded or Nas ?
+      let path_local, path_nas;
+      try {
+        path_local = fs.realpathSync(
+          path.join(this._ftpSeedService.getPathLocal(), this._configService.getPathDownload())
+        );
+      } catch (e) {}
+      try {
+        path_nas = fs.realpathSync(this._configService.getPathNas());
+      } catch (e) {}
+
+      this.logger.debug(path_local);
+      this.logger.debug(path_nas);
+
+      const isAuthorized =
+        (path_local && fullPath && fullPath.startsWith(path_local)) ||
+        (path_nas && fullPath && fullPath.startsWith(path_nas));
+
+      this.logger.debug(isAuthorized);
+      if (!isAuthorized) {
+        return reject(new HttpException('Forbidden', HttpStatus.FORBIDDEN));
+      }
+
+      // Delete it
+      try {
+        fs.unlink(fullPath, err => {
+          if (err) {
+            this.logger.error('cannot remove ' + fullPath);
+            this.logger.error(err);
+            return reject(new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR));
+          }
+          resolve();
+        });
+      } catch (e) {
+        this.logger.error('cannot remove ' + fullPath);
+        this.logger.error(e);
+        return reject(new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR));
+      }
     });
   }
 }

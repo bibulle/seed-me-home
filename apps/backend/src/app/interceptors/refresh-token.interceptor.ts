@@ -39,6 +39,9 @@ export class RefreshTokenInterceptor implements NestInterceptor {
       return next.handle().pipe(
         map(async data => {
           //console.log(data);
+          if (!data) {
+            data = {};
+          }
           if (!data.data) {
             data = { data: data };
           }

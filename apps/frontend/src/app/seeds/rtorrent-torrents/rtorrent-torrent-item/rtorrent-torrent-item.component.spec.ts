@@ -527,13 +527,13 @@ describe('RtorrentTorrentItemDialogComponent', () => {
   beforeEach(async(() => {
     //noinspection JSIgnoredPromiseFromCall
     TestBed.configureTestingModule({
-      imports: [MatDialogModule, BrowserAnimationsModule, BrowserModule],
+      imports: [MatDialogModule, BrowserAnimationsModule, BrowserModule, TranslateModule],
       declarations: [RtorrentTorrentItemDialogComponent],
       providers: [
         { provide: MAT_DIALOG_DATA, useValue: {} },
-        { provide: MatDialogRef, useClass: MatDialogRefMock }
+        { provide: MatDialogRef, useClass: MatDialogRefMock },
         //        { provide: RtorrentTorrentsService, useClass: RtorrentTorrentsServiceMock },
-        //        { provide: TranslateService, useClass: TranslateServiceStub },
+        { provide: TranslateService, useClass: TranslateServiceStub }
         //        {provide: MatDialog, useClass: MdDialogMock}
       ]
     }).compileComponents();

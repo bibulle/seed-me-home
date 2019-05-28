@@ -281,6 +281,190 @@ describe('FilesFilesComponent', () => {
     // TODO : due to rxjs bug, commented code
     //expect(filesFilesService.files$.observers.length).toBe(0);
   });
+
+  it('should remove file if service OK', async () => {
+    jest.spyOn(filesFilesService, 'removeFile').mockImplementation(() => {
+      return new Promise(resolve => {
+        resolve();
+      });
+    });
+
+    // No error if filesFiles not set
+    expect(component.filesFiles).toBeFalsy();
+    await component.removeFile({
+      path: 'dir1/dir2/file2_1',
+      fullpath: 'downloaded_test/dir1/dir2/file2_1',
+      size: 200000,
+      downloaded: 200000,
+      isDirectory: false,
+      modifiedDate: new Date(3),
+      children: []
+    });
+
+    // File should be removed if OK
+    component.filesFiles = {
+      path: 'dir1',
+      fullpath: 'downloaded_test/dir1',
+      size: 301000,
+      downloaded: 211000,
+      isDirectory: true,
+      modifiedDate: new Date(0),
+      children: [
+        {
+          path: 'dir1/file1',
+          fullpath: 'downloaded_test/dir1/file1',
+          size: 100000,
+          downloaded: 10000,
+          isDirectory: false,
+          modifiedDate: new Date(2),
+          children: []
+        },
+        {
+          path: 'dir1/dir2',
+          fullpath: 'downloaded_test/dir1/dir2',
+          size: 201000,
+          downloaded: 201000,
+          isDirectory: true,
+          modifiedDate: new Date(1),
+          children: [
+            {
+              path: 'dir1/dir2/file2_1',
+              fullpath: 'downloaded_test/dir1/dir2/file2_1',
+              size: 200000,
+              downloaded: 200000,
+              isDirectory: false,
+              modifiedDate: new Date(3),
+              children: []
+            },
+            {
+              path: 'dir1/dir2/file2_2',
+              fullpath: 'downloaded_test/dir1/dir2/file2_2',
+              size: 1000,
+              downloaded: 1000,
+              isDirectory: false,
+              modifiedDate: new Date(4),
+              children: []
+            },
+            {
+              path: 'dir1/dir2/error_file',
+              fullpath: 'downloaded_test/dir1/dir2/error_file',
+              size: 0,
+              downloaded: 0,
+              isDirectory: false,
+              modifiedDate: null,
+              children: []
+            }
+          ]
+        }
+      ]
+    };
+
+    expect(component.filesFiles).toBeTruthy();
+    expect(component.filesFiles.children.length).toBe(2);
+    expect(component.filesFiles.children[1].children.length).toBe(3);
+    expect(component.filesFiles.children[1].children[0].path).toBe('dir1/dir2/file2_1');
+
+    await component.removeFile({
+      path: 'dir1/dir2/file2_1',
+      fullpath: 'downloaded_test/dir1/dir2/file2_1',
+      size: 200000,
+      downloaded: 200000,
+      isDirectory: false,
+      modifiedDate: new Date(3),
+      children: []
+    });
+
+    expect(component.filesFiles).toBeTruthy();
+    expect(component.filesFiles.children.length).toBe(2);
+    expect(component.filesFiles.children[1].children.length).toBe(2);
+    expect(component.filesFiles.children[1].children[0].path).toBe('dir1/dir2/file2_2');
+  });
+
+  it('should not remove file if service KO', async () => {
+    jest.spyOn(filesFilesService, 'removeFile').mockImplementation(() => {
+      return new Promise((resolve, reject) => {
+        reject();
+      });
+    });
+
+    // File should be removed if OK
+    component.filesFiles = {
+      path: 'dir1',
+      fullpath: 'downloaded_test/dir1',
+      size: 301000,
+      downloaded: 211000,
+      isDirectory: true,
+      modifiedDate: new Date(0),
+      children: [
+        {
+          path: 'dir1/file1',
+          fullpath: 'downloaded_test/dir1/file1',
+          size: 100000,
+          downloaded: 10000,
+          isDirectory: false,
+          modifiedDate: new Date(2),
+          children: []
+        },
+        {
+          path: 'dir1/dir2',
+          fullpath: 'downloaded_test/dir1/dir2',
+          size: 201000,
+          downloaded: 201000,
+          isDirectory: true,
+          modifiedDate: new Date(1),
+          children: [
+            {
+              path: 'dir1/dir2/file2_1',
+              fullpath: 'downloaded_test/dir1/dir2/file2_1',
+              size: 200000,
+              downloaded: 200000,
+              isDirectory: false,
+              modifiedDate: new Date(3),
+              children: []
+            },
+            {
+              path: 'dir1/dir2/file2_2',
+              fullpath: 'downloaded_test/dir1/dir2/file2_2',
+              size: 1000,
+              downloaded: 1000,
+              isDirectory: false,
+              modifiedDate: new Date(4),
+              children: []
+            },
+            {
+              path: 'dir1/dir2/error_file',
+              fullpath: 'downloaded_test/dir1/dir2/error_file',
+              size: 0,
+              downloaded: 0,
+              isDirectory: false,
+              modifiedDate: null,
+              children: []
+            }
+          ]
+        }
+      ]
+    };
+
+    expect(component.filesFiles).toBeTruthy();
+    expect(component.filesFiles.children.length).toBe(2);
+    expect(component.filesFiles.children[1].children.length).toBe(3);
+    expect(component.filesFiles.children[1].children[0].path).toBe('dir1/dir2/file2_1');
+
+    await component.removeFile({
+      path: 'dir1/dir2/file2_1',
+      fullpath: 'downloaded_test/dir1/dir2/file2_1',
+      size: 200000,
+      downloaded: 200000,
+      isDirectory: false,
+      modifiedDate: new Date(3),
+      children: []
+    });
+
+    expect(component.filesFiles).toBeTruthy();
+    expect(component.filesFiles.children.length).toBe(2);
+    expect(component.filesFiles.children[1].children.length).toBe(3);
+    expect(component.filesFiles.children[1].children[0].path).toBe('dir1/dir2/file2_1');
+  });
 });
 
 class FilesFilesServiceMock {
@@ -295,4 +479,5 @@ class FilesFilesServiceMock {
     return this.files$;
   }
   startLoadingStats() {}
+  removeFile() {}
 }

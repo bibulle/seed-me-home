@@ -15,6 +15,7 @@ export class FilesFilesService {
 
   API_URL_LOCAL = environment.serverUrl + 'files/local';
   API_URL_NAS = environment.serverUrl + 'files/nas';
+  API_URL_REMOVE = environment.serverUrl + 'files/remove';
 
   private readonly currentFilesSubjectLocal: Subject<FilesFile>;
   private readonly currentFilesSubjectNas: Subject<FilesFile>;
@@ -109,7 +110,25 @@ export class FilesFilesService {
   currentFilesObservableLocal(): Observable<FilesFile> {
     return this.currentFilesSubjectLocal;
   }
+
   currentFilesObservableNas(): Observable<FilesFile> {
     return this.currentFilesSubjectNas;
+  }
+
+  removeFile(fullpath: string): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      this.httpClient
+        .post(this.API_URL_REMOVE, { fullpath: '/toto' + fullpath })
+        .toPromise()
+        .then(() => {
+          //this.logger.debug('removeFile OK');
+          resolve();
+        })
+        .catch(error => {
+          //this.logger.debug('removeFile KO');
+          this._notificationService.handleError(error);
+          reject(error);
+        });
+    });
   }
 }

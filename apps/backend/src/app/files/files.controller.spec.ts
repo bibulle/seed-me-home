@@ -130,4 +130,15 @@ describe('Files Controller', () => {
       ]
     });
   });
+
+  it('remove file should be OK', async () => {
+    jest.spyOn(service, 'removeFile').mockImplementation(path => {
+      expect(path).toEqual('/toto/titi');
+      return new Promise(resolve => {
+        resolve();
+      });
+    });
+
+    expect(await controller.removeFile({ fullpath: '/toto/titi' })).toBeUndefined();
+  });
 });

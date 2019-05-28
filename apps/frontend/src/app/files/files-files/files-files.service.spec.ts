@@ -75,7 +75,7 @@ describe('FilesFilesService', () => {
       }
     };
 
-    it('it should do nothing if none has subscribed to the event', () => {
+    it('should do nothing if none has subscribed to the event', () => {
       service.startLoadingStats(true);
 
       httpMock.expectNone(`${service.API_URL_LOCAL}`);
@@ -84,16 +84,26 @@ describe('FilesFilesService', () => {
       jest.clearAllTimers();
     });
 
-    it('it should return a value if someone subscribe the local event and refresh 10 second later', async () => {
+    it('should return a value if someone subscribe the local event and refresh 10 second later', async () => {
       // This should test the content of the service return
-      let callCpt = 0;
+      let callCptLocal = 0;
       service.currentFilesObservableLocal().subscribe(files => {
-        if (callCpt % 2 === 0) {
+        if (callCptLocal % 2 === 0) {
           expect(files).toEqual(goodAnswer1.data);
         } else {
           expect(files).toEqual(goodAnswer2.data);
         }
-        callCpt++;
+        callCptLocal++;
+      });
+
+      let callCptNas = 0;
+      service.currentFilesObservableNas().subscribe(files => {
+        if (callCptNas % 2 === 0) {
+          expect(files).toEqual(goodAnswer1.data);
+        } else {
+          expect(files).toEqual(goodAnswer2.data);
+        }
+        callCptNas++;
       });
 
       // start
@@ -128,7 +138,7 @@ describe('FilesFilesService', () => {
       jest.clearAllTimers();
     });
 
-    it('it should manage error if http response is Ko (and update after a while)', async () => {
+    it('should manage error if http response is Ko (and update after a while)', async () => {
       // Just test the error content
       jest.spyOn(notificationService, 'error').mockImplementation(message => {
         expect(message).toBe('Tested http error');
@@ -185,7 +195,58 @@ describe('FilesFilesService', () => {
     });
   });
 
+  describe('removeFile', () => {
+    it('should say ok if http return ok', async () => {
+      expect.assertions(2);
+
+      service
+        .removeFile('/path')
+        .then(() => {
+          expect(true).toBe(true);
+        })
+        .catch(() => {
+          expect(true).toBe(false);
+        });
+
+      // immediately get url called
+      const req = httpMock.expectOne(`${service.API_URL_REMOVE}`);
+      expect(req.request.method).toBe('POST');
+      req.flush({});
+    });
+
+    it('should say ko if http return ko', async () => {
+      expect.assertions(4);
+
+      jest.spyOn(notificationService, 'error').mockImplementation(message => {
+        expect(message).toBe('Tested http error');
+      });
+
+      service
+        .removeFile('/path')
+        .then(() => {
+          expect(true).toBe(false);
+        })
+        .catch(() => {
+          expect(true).toBe(true);
+        });
+
+      // immediately get url called
+      const req = httpMock.expectOne(`${service.API_URL_REMOVE}`);
+      expect(req.request.method).toBe('POST');
+      req.error(
+        new ErrorEvent('HTTP_ERROR', {
+          error: new Error('Http error'),
+          message: 'Tested http error'
+        })
+      );
+
+      await flushPromises();
+      expect(jest.spyOn(notificationService, 'error')).toHaveBeenCalledTimes(1);
+    });
+  });
+
   afterEach(() => {
+    jest.clearAllMocks();
     httpMock.verify();
     jest.clearAllTimers();
   });

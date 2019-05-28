@@ -69,4 +69,29 @@ describe('VersionInterceptor', () => {
       }
     );
   });
+
+  it('intercept should add first level if not exists', async done => {
+    const next = {
+      handle() {
+        return of(undefined);
+      }
+    };
+    jest.spyOn(next, 'handle');
+
+    await interceptor.intercept(null, next);
+
+    expect(jest.spyOn(next, 'handle')).toHaveBeenCalledTimes(1);
+
+    await interceptor.intercept(null, next).subscribe(
+      value => {
+        expect(value).toBeTruthy();
+        expect(value.data).toBeTruthy();
+
+        done();
+      },
+      error => {
+        expect(error).toBeNull();
+      }
+    );
+  });
 });

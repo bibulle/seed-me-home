@@ -11,6 +11,9 @@ export class VersionInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(
       map(data => {
+        if (!data) {
+          data = {};
+        }
         if (!data.data) {
           data = { data: data };
         }

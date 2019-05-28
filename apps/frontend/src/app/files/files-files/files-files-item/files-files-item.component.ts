@@ -1,4 +1,4 @@
-import { Component, Inject, Input, NgModule, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Inject, Input, NgModule, OnInit, Output, ViewChild } from '@angular/core';
 import { FilesFile } from '@seed-me-home/models';
 import {
   MAT_DIALOG_DATA,
@@ -24,6 +24,9 @@ import * as moment from 'moment';
 export class FilesFilesItemComponent implements OnInit {
   @Input()
   file: FilesFile;
+
+  @Output()
+  removeFileEvent = new EventEmitter<FilesFile>();
 
   open = false;
 
@@ -51,12 +54,12 @@ export class FilesFilesItemComponent implements OnInit {
   remove() {
     const dialogRef = this.dialog.open(FilesFilesItemDialogComponent, {
       width: '80%',
-      data: this.file.fullpath
+      data: this.file.path
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        //this._filesFilesService.removeTorrent(this.torrent.hash);
+        this.removeFileEvent.emit(this.file);
       }
     });
   }
@@ -70,7 +73,7 @@ export class FilesFilesItemComponent implements OnInit {
 export class FilesFilesItemDialogComponent {
   constructor(
     public dialogRef: MatDialogRef<FilesFilesItemDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public torrentName: string
+    @Inject(MAT_DIALOG_DATA) public fileName: string
   ) {}
 
   onNoClick(): void {

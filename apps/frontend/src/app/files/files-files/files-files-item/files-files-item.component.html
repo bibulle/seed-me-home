@@ -24,7 +24,7 @@
   <mat-menu #moreActionMenu="matMenu" xPosition="before">
 <!--    <button mat-menu-item (click)="pause()" *ngIf="torrent && torrent.active"><mat-icon>pause</mat-icon>{{ 'seed.pause' | translate}}</button>-->
 <!--    <button mat-menu-item (click)="start()" *ngIf="torrent && !torrent.active"><mat-icon>play_arrow</mat-icon>{{ 'seed.start' | translate}}</button>-->
-<!--    <button mat-menu-item (click)="remove()"><mat-icon>delete_forever</mat-icon>{{ 'seed.erase' | translate}}</button>-->
+    <button mat-menu-item (click)="remove()"><mat-icon>delete_forever</mat-icon>{{ 'file.erase' | translate}}</button>
 <!--    <button mat-menu-item (click)="shouldGetFromSeeBox(true)" *ngIf="torrent && !torrent.shouldDownload"><mat-icon>save_alt</mat-icon>{{ 'seed.save_here' | translate}}</button>-->
 <!--    <button mat-menu-item (click)="shouldGetFromSeeBox(false)" *ngIf="torrent && torrent.shouldDownload"><mat-icon>block</mat-icon>{{ 'seed.not_save_here' | translate}}</button>-->
   </mat-menu>
@@ -38,5 +38,9 @@
   <span class="date">{{formatDate(file?.modifiedDate)}}</span>
 </div>
 <div class="children" [class.open]="open" *ngIf="file?.children.length">
-  <app-files-files-item *ngFor="let child of file?.children" [file]="child"></app-files-files-item>
+  <app-files-files-item
+      *ngFor="let child of file?.children"
+      [file]="child"
+      (removeFileEvent)="removeFileEvent.emit($event)"
+  ></app-files-files-item>
 </div>

@@ -15,12 +15,16 @@
   "label.free_disk_space_local": "Disponible local",
   "label.free_disk_space_nas": "Disponible nas",
   "label.files.empty": "Vide",
+  "label.sure": "Êtes-vous sûrs ?",
+  "label.no.thanks": "Non merci",
 
   "title.rtorrent.status": "État seedbox",
   "title.rtorrent.torrents": "Torrents",
+  "title.rtorrent.remove": "Supprimer totalement",
   "title.files.status": "État fichiers",
   "title.files.files_local": "Fichiers téléchargés",
   "title.files.files_nas": "Fichiers sur le NAS",
+  "title.file.remove": "Supprimer totalement",
 
   "seed.pause": "Pause ce seed",
   "seed.start": "Démarre ce seed",
@@ -33,6 +37,7 @@
   "seed.local.download": "Téléchargement en local",
   "seed.done": "Seed traité",
   "seed.wont.be.downloaded": "Ce seed ne sera pas téléchargé localement",
+  "file.erase": "Supprime",
   "progress": "Avancement",
   "size": "Taille",
   "down": "Down",
@@ -41,6 +46,7 @@
   "added": "Ajouté",
 
   "Unauthorized": "Vous n'êtes pas autorisé à utiliser cette application.",
+  "Forbidden": "Cette action est interdite.",
   "Internal Server Error": "Erreur interne.",
   "Not Found": "API interne non trouvée",
   "Gateway Timeout": "API interne ne répond pas",

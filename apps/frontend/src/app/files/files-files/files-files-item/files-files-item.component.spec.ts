@@ -232,6 +232,31 @@ describe('FilesFilesItemComponent', () => {
       '100'
     );
   });
+
+  it('should delete file on click', () => {
+    expect.assertions(5);
+
+    component.removeFileEvent.subscribe(event => {
+      expect(event).toBe(files1);
+    });
+
+    component.file = files1;
+    fixture.detectChanges();
+
+    // action menu
+    component.menuTrigger.openMenu();
+    expect(fixture.debugElement.queryAll(By.css('.mat-menu-content')).length).toBe(1);
+    const menuContent = fixture.debugElement.queryAll(By.css('.mat-menu-content'))[0];
+    expect(menuContent.queryAll(By.css('button')).length).toBe(1);
+    expect(menuContent.queryAll(By.css('button'))[0].nativeElement.textContent).toBe(
+      'delete_forever[this is a fake translation of file.erase]'
+    );
+    // remove the file
+    menuContent.queryAll(By.css('button'))[0].nativeElement.click();
+
+    fixture.detectChanges();
+    expect(dialog.open).toHaveBeenCalled();
+  });
 });
 
 describe('FilesFilesItemDialogComponent', () => {
@@ -242,13 +267,13 @@ describe('FilesFilesItemDialogComponent', () => {
   beforeEach(async(() => {
     //noinspection JSIgnoredPromiseFromCall
     TestBed.configureTestingModule({
-      imports: [MatDialogModule, BrowserAnimationsModule, BrowserModule],
+      imports: [MatDialogModule, BrowserAnimationsModule, BrowserModule, TranslateModule],
       declarations: [FilesFilesItemDialogComponent],
       providers: [
         { provide: MAT_DIALOG_DATA, useValue: {} },
-        { provide: MatDialogRef, useClass: MatDialogRefMock }
+        { provide: MatDialogRef, useClass: MatDialogRefMock },
         //        { provide: FilesFilesService, useClass: FilesFilesServiceMock },
-        //        { provide: TranslateService, useClass: TranslateServiceStub },
+        { provide: TranslateService, useClass: TranslateServiceStub }
         //        {provide: MatDialog, useClass: MdDialogMock}
       ]
     }).compileComponents();

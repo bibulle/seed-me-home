@@ -77,6 +77,33 @@ export class FilesFilesComponent implements OnInit, OnDestroy {
       trg.children.splice(i, 1);
     });
   }
+
+  removeFile(file: FilesFile) {
+    this._filesFilesService
+      .removeFile(file.fullpath)
+      .then(() => {
+        this._removeFromFile(this.filesFiles, file.fullpath);
+      })
+      .catch(() => {});
+  }
+
+  _removeFromFile(file: FilesFile, fullpath: string): boolean {
+    let found = false;
+    if (!file) {
+      return false;
+    } else {
+      file.children = file.children.filter(f => {
+        found = f.fullpath === fullpath;
+        return f.fullpath !== fullpath;
+      });
+      file.children.forEach(f => {
+        if (!found) {
+          found = this._removeFromFile(f, fullpath);
+        }
+      });
+      return found;
+    }
+  }
 }
 
 export enum FilePath {

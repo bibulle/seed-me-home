@@ -163,10 +163,13 @@ export class RtorrentService extends NestSchedule {
   private _getAll(callback: (err, status) => void) {
     this._initialize();
     try {
+      this.logger.debug('_getAll before getAll');
       this._rtorrent.getAll((err, status) => {
+        this.logger.debug('_getAll in callback');
         callback(err, status);
       });
     } catch (e) {
+      this.logger.debug('_getAll in catch');
       callback(e, null);
     }
   }
