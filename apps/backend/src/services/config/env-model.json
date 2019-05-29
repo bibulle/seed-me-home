@@ -17,6 +17,8 @@
     "path_download": "downloaded_test",
     "path_progress": "progress_test",
     "path_nas": "nas_test",
+    "path_movies": "movies",
+    "path_series": "series",
 
     "users_authorized": ["authorized user"],
     "users_admin": ["administrator"],
@@ -45,6 +47,8 @@
     "path_download": "downloaded_test",
     "path_progress": "progress_test",
     "path_nas": "nas_test",
+    "path_movies": "movies",
+    "path_series": "series",
 
     "users_authorized": ["authorized user"],
     "users_admin": ["administrator"],
@@ -71,6 +75,8 @@
     "seedbox_ftp_disabled": false,
 
     "path_nas": "/mnt/nas/media/Videos/",
+    "path_movies": "movies",
+    "path_series": "series",
 
     "users_authorized": ["authorized user"],
     "users_admin": ["administrator"],

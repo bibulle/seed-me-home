@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { FilesFile, FilesStatus } from '@seed-me-home/models';
+import { FileMove, FilesFile, FilesStatus } from '@seed-me-home/models';
 import { FilesService } from './files.service';
 
 class FileFullPath {
@@ -33,5 +33,11 @@ export class FilesController {
   @UseGuards(AuthGuard('jwt'))
   async removeFile(@Body() fileFullPath: FileFullPath): Promise<void> {
     return this.filesService.removeFile(fileFullPath.fullpath);
+  }
+
+  @Post('move')
+  @UseGuards(AuthGuard('jwt'))
+  async moveFile(@Body() fileMove: FileMove): Promise<void> {
+    return this.filesService.moveFile(fileMove);
   }
 }

@@ -17,6 +17,7 @@ export class FilesFilesService {
   API_URL_LOCAL = environment.serverUrl + 'files/local';
   API_URL_NAS = environment.serverUrl + 'files/nas';
   API_URL_REMOVE = environment.serverUrl + 'files/remove';
+  API_URL_MOVE = environment.serverUrl + 'files/move';
 
   private readonly currentFilesSubjectLocal: Subject<FilesFile>;
   private readonly currentFilesSubjectNas: Subject<FilesFile>;
@@ -31,7 +32,7 @@ export class FilesFilesService {
     this.currentFilesSubjectNas = new ReplaySubject<FilesFile>();
   }
 
-  private _refreshFiles() {
+  private _refreshFiles(noTimeout = false) {
     if (this.currentFilesSubjectLocal.observers.length + this.currentFilesSubjectNas.observers.length > 0) {
       FilesFilesService._refreshIsRunning = true;
       this._loadFiles()
@@ -40,17 +41,28 @@ export class FilesFilesService {
           //this.logger.debug(filesTable[0]);
           this.currentFilesSubjectLocal.next(filesTable[0]);
           this.currentFilesSubjectNas.next(filesTable[1]);
-          setTimeout(() => {
-            this._refreshFiles();
-          }, FilesFilesService.REFRESH_EVERY);
+          if (!noTimeout) {
+            setTimeout(() => {
+              this._refreshFiles();
+            }, FilesFilesService.REFRESH_EVERY);
+          }
         })
         .catch(() => {
           FilesFilesService._refreshIsRunning = false;
-          setTimeout(() => {
-            this._refreshFiles();
-          }, FilesFilesService.REFRESH_EVERY);
+          if (!noTimeout) {
+            setTimeout(() => {
+              this._refreshFiles();
+            }, FilesFilesService.REFRESH_EVERY);
+          }
         });
     }
+  }
+
+  /**
+   * force refreshing of file (without
+   */
+  private _forceRefreshFiles() {
+    this._refreshFiles(true);
   }
 
   /**
@@ -68,6 +80,13 @@ export class FilesFilesService {
             resolve(value);
           })
           .catch(error => {
+            //console.log(error);
+            if (error && error.error && error.error.message === 'File not found') {
+              error.error = new ErrorEvent('HTTP_ERROR', {
+                error: new Error('Http error'),
+                message: 'Local not found'
+              });
+            }
             this._notificationService.handleError(error);
             reject(error);
           });
@@ -82,6 +101,12 @@ export class FilesFilesService {
             resolve(value);
           })
           .catch(error => {
+            if (error && error.error && error.error.message === 'File not found') {
+              error.error = new ErrorEvent('HTTP_ERROR', {
+                error: new Error('Http error'),
+                message: 'Nas not found'
+              });
+            }
             this._notificationService.handleError(error);
             reject(error);
           });
@@ -119,7 +144,7 @@ export class FilesFilesService {
   removeFile(fullpath: string): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       this.httpClient
-        .post(this.API_URL_REMOVE, { fullpath: '/toto' + fullpath })
+        .post(this.API_URL_REMOVE, { fullpath: fullpath })
         .toPromise()
         .then(() => {
           //this.logger.debug('removeFile OK');
@@ -133,8 +158,31 @@ export class FilesFilesService {
     });
   }
 
-  calculateTrgPath(path: string): FileMove {
-    const ret: FileMove = { sourcePath: path, targetPath: path, targetType: MoveType.movies };
+  moveFile(result: FileMove): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      this.httpClient
+        .post(this.API_URL_MOVE, result)
+        .toPromise()
+        .then(() => {
+          //this.logger.debug('moveFile OK');
+          this._forceRefreshFiles();
+          resolve();
+        })
+        .catch(error => {
+          //this.logger.debug('moveFile KO');
+          this._notificationService.handleError(error);
+          reject(error);
+        });
+    });
+  }
+
+  calculateTrgPath(sourcePath: string, sourceFullPath: string): FileMove {
+    const ret: FileMove = {
+      sourcePath: sourcePath,
+      sourceFullPath: sourceFullPath,
+      targetPath: sourcePath,
+      targetType: MoveType.movies
+    };
 
     // test if series
     const series_matcher = [

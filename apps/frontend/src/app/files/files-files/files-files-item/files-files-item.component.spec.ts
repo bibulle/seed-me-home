@@ -299,6 +299,7 @@ describe('FilesFilesItemDialogRemoveComponent', () => {
       imports: [MatDialogModule, BrowserAnimationsModule, BrowserModule, TranslateModule],
       declarations: [FilesFilesItemDialogRemoveComponent],
       providers: [
+        { provide: FilesFilesService, useClass: FilesFilesServiceMock },
         { provide: MAT_DIALOG_DATA, useValue: {} },
         { provide: MatDialogRef, useClass: MatDialogRefMock },
         { provide: TranslateService, useClass: TranslateServiceStub }
@@ -378,6 +379,11 @@ describe('FilesFilesItemDialogMoveComponent', () => {
 
 class FilesFilesServiceMock {
   calculateTrgPath() {}
+  moveFile(): Promise<void> {
+    return new Promise<void>(resolve => {
+      resolve();
+    });
+  }
 }
 
 class TranslateServiceStub {

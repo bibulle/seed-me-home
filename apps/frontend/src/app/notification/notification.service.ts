@@ -42,7 +42,11 @@ export class NotificationService {
       // The response body may contain clues as to what went wrong,
       this.logger.error(`Backend returned code ${error.status}, ` + `body was: ${JSON.stringify(error.error)}`);
 
-      message = error.statusText + ' | translate';
+      if (error && error.error && error.error.message) {
+        message = error.error.message + ' | translate';
+      } else {
+        message = error.statusText + ' | translate';
+      }
     }
 
     this.error(message);

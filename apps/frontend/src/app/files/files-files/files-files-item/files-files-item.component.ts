@@ -75,7 +75,7 @@ export class FilesFilesItemComponent implements OnInit {
   }
 
   move() {
-    const fileMove: FileMove = this._filesFilesService.calculateTrgPath(this.file.path);
+    const fileMove: FileMove = this._filesFilesService.calculateTrgPath(this.file.path, this.file.fullpath);
     const dialogRef = this.dialog.open(FilesFilesItemDialogMoveComponent, {
       width: '80%',
       data: fileMove
@@ -84,7 +84,7 @@ export class FilesFilesItemComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result: FileMove) => {
       if (result) {
         //console.log(result);
-        //this._filesFilesService.moveFile(this.file, result);
+        this._filesFilesService.moveFile(result).then(() => {});
       }
     });
   }

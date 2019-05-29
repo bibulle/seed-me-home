@@ -4,6 +4,7 @@ import { FtpSeedServiceMock } from '../rtorrent/rtorrent.service.spec';
 import { FilesService } from './files.service';
 import { ConfigService } from '../../services/config/config.service';
 import { FtpSeedService } from '../ftp-seed/ftp-seed.service';
+import { FileMove, MoveType } from '@seed-me-home/models';
 
 describe('Files Controller', () => {
   let controller: FilesController;
@@ -140,5 +141,23 @@ describe('Files Controller', () => {
     });
 
     expect(await controller.removeFile({ fullpath: '/toto/titi' })).toBeUndefined();
+  });
+
+  it('move file should be OK', async () => {
+    jest.spyOn(service, 'moveFile').mockImplementation((fileMove: FileMove) => {
+      expect(fileMove.sourcePath).toEqual('/toto/titi');
+      return new Promise(resolve => {
+        resolve();
+      });
+    });
+
+    expect(
+      await controller.moveFile({
+        sourceFullPath: '/tmp/toto/titi',
+        sourcePath: '/toto/titi',
+        targetPath: '/toto/titi',
+        targetType: MoveType.movies
+      })
+    ).toBeUndefined();
   });
 });

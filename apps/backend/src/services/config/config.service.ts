@@ -23,6 +23,8 @@ class Config {
   public path_progress = 'progress';
 
   public path_nas = './nas';
+  public path_movies = 'movies';
+  public path_series = 'series';
 
   public users_authorized = [];
   public users_admin = [];
@@ -152,6 +154,16 @@ export class ConfigService {
   public getPathNas() {
     this.initialize();
     return this._config.path_nas;
+  }
+
+  getPathMovies() {
+    this.initialize();
+    return this._config.path_movies;
+  }
+
+  getPathSeries() {
+    this.initialize();
+    return this._config.path_series;
   }
 
   public getAuthentGoogleClientID() {

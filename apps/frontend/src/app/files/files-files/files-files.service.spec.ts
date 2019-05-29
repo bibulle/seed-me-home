@@ -5,6 +5,7 @@ import { NotificationModule, NotificationService } from '../../notification/noti
 import { NGXLogger, NGXLoggerMock } from 'ngx-logger';
 import { TranslateModule } from '@ngx-translate/core';
 import { FilesFilesService } from './files-files.service';
+import { MoveType } from '@seed-me-home/models';
 
 const flushPromises = () => {
   return new Promise(resolve => setImmediate(resolve));
@@ -139,9 +140,9 @@ describe('FilesFilesService', () => {
     });
 
     it('should manage error if http response is Ko (and update after a while)', async () => {
-      // Just test the error content
+      // Just test the error content for local
       jest.spyOn(notificationService, 'error').mockImplementation(message => {
-        expect(message).toBe('Tested http error');
+        expect(message).toBe('Local not found');
       });
 
       // Just do nothing but subscribe
@@ -156,7 +157,7 @@ describe('FilesFilesService', () => {
       req.error(
         new ErrorEvent('HTTP_ERROR', {
           error: new Error('Http error'),
-          message: 'Tested http error'
+          message: 'File not found'
         })
       );
       req = httpMock.expectOne(`${service.API_URL_NAS}`);
@@ -166,6 +167,11 @@ describe('FilesFilesService', () => {
       // timeout has been called
       await flushPromises();
       expect(setTimeout).toHaveBeenCalledTimes(1);
+
+      // Just test the error content for Nas
+      jest.spyOn(notificationService, 'error').mockImplementation(message => {
+        expect(message).toBe('Nas not found');
+      });
 
       // No new request (because we wait 10 seconds)
       httpMock.expectNone(`${service.API_URL_LOCAL}`);
@@ -183,7 +189,7 @@ describe('FilesFilesService', () => {
       req.error(
         new ErrorEvent('HTTP_ERROR', {
           error: new Error('Http error'),
-          message: 'Tested http error'
+          message: 'File not found'
         })
       );
 
@@ -245,27 +251,98 @@ describe('FilesFilesService', () => {
     });
   });
 
+  describe('moveFile', () => {
+    it('should say ok if http return ok', async () => {
+      expect.assertions(2);
+
+      service
+        .moveFile({
+          sourceFullPath: '/toto/downloaded/path.mkv',
+          sourcePath: 'path.mkv',
+          targetPath: 'path.mkv',
+          targetType: MoveType.movies
+        })
+        .then(() => {
+          expect(true).toBe(true);
+        })
+        .catch(() => {
+          expect(true).toBe(false);
+        });
+
+      // immediately get url called
+      const req = httpMock.expectOne(`${service.API_URL_MOVE}`);
+      expect(req.request.method).toBe('POST');
+      req.flush({});
+    });
+
+    it('should say ko if http return ko', async () => {
+      expect.assertions(4);
+
+      jest.spyOn(notificationService, 'error').mockImplementation(message => {
+        expect(message).toBe('Tested http error');
+      });
+
+      service
+        .moveFile({
+          sourceFullPath: '/toto/downloaded/path.mkv',
+          sourcePath: 'path.mkv',
+          targetPath: 'path.mkv',
+          targetType: MoveType.movies
+        })
+        .then(() => {
+          expect(true).toBe(false);
+        })
+        .catch(() => {
+          expect(true).toBe(true);
+        });
+
+      // immediately get url called
+      const req = httpMock.expectOne(`${service.API_URL_MOVE}`);
+      expect(req.request.method).toBe('POST');
+      req.error(
+        new ErrorEvent('HTTP_ERROR', {
+          error: new Error('Http error'),
+          message: 'Tested http error'
+        })
+      );
+
+      await flushPromises();
+      expect(jest.spyOn(notificationService, 'error')).toHaveBeenCalledTimes(1);
+    });
+  });
+
   describe('calculateTrgPath', () => {
     it('should should transform movie name', function() {
-      expect(service.calculateTrgPath('Test.title.2010.BdRip MULTI-VOSTFR.mkv')).toEqual({
+      expect(
+        service.calculateTrgPath(
+          'Test.title.2010.BdRip MULTI-VOSTFR.mkv',
+          'downloaded/toto/Test.title.2010.BdRip MULTI-VOSTFR.mkv'
+        )
+      ).toEqual({
         sourcePath: 'Test.title.2010.BdRip MULTI-VOSTFR.mkv',
+        sourceFullPath: 'downloaded/toto/Test.title.2010.BdRip MULTI-VOSTFR.mkv',
         targetPath: 'Test title (2010).mkv',
         targetType: 0
       });
     });
     it('should should transform series name', function() {
-      expect(service.calculateTrgPath('A series.s5e3-An.episode.mkv')).toEqual({
+      expect(
+        service.calculateTrgPath('A series.s5e3-An.episode.mkv', 'downloaded/toto/A series.s5e3-An.episode.mkv')
+      ).toEqual({
         sourcePath: 'A series.s5e3-An.episode.mkv',
+        sourceFullPath: 'downloaded/toto/A series.s5e3-An.episode.mkv',
         targetPath: 'A series/Season 5/A series S05E03 An episode.mkv',
         targetType: 1
       });
-      expect(service.calculateTrgPath('A series.s5e3.mkv')).toEqual({
+      expect(service.calculateTrgPath('A series.s5e3.mkv', 'downloaded/toto/A series.s5e3.mkv')).toEqual({
         sourcePath: 'A series.s5e3.mkv',
+        sourceFullPath: 'downloaded/toto/A series.s5e3.mkv',
         targetPath: 'A series/Season 5/A series S05E03.mkv',
         targetType: 1
       });
-      expect(service.calculateTrgPath('A series 5x3.mkv')).toEqual({
+      expect(service.calculateTrgPath('A series 5x3.mkv', 'downloaded/toto/A series 5x3.mkv')).toEqual({
         sourcePath: 'A series 5x3.mkv',
+        sourceFullPath: 'downloaded/toto/A series 5x3.mkv',
         targetPath: 'A series/Season 5/A series S05E03.mkv',
         targetType: 1
       });

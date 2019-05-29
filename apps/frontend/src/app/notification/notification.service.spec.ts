@@ -113,6 +113,25 @@ describe('NotificationService', () => {
 
     notificationServiceErrorMock.mockClear();
   });
+
+  it('handleError should manage HttpErrorResponse not containing ErrorEvent with error message', async () => {
+    const errorEvent = new HttpErrorResponse({ statusText: 'Tested http error', error: { message: 'Message' } });
+
+    const notificationServiceErrorMock = jest.spyOn(service, 'error');
+    notificationServiceErrorMock.mockImplementation(mess => {
+      expect(mess).toEqual('Message | translate');
+    });
+
+    try {
+      service.handleError(errorEvent);
+    } catch (e) {
+      console.error(e);
+    }
+
+    expect(notificationServiceErrorMock).toHaveBeenCalledTimes(1);
+
+    notificationServiceErrorMock.mockClear();
+  });
 });
 class TranslateServiceStub {
   //noinspection JSUnusedGlobalSymbols

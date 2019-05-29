@@ -35,8 +35,14 @@ describe('ConfigService', () => {
   it('Seedbox Pass should be password', () => {
     expect(service.getSeedboxPass()).toEqual('password');
   });
-  it('Nas Path should be password', () => {
+  it('Nas Path should be /mnt/nas/media/Videos/', () => {
     expect(service.getPathNas()).toEqual('/mnt/nas/media/Videos/');
+  });
+  it('Movies Path should be movies', () => {
+    expect(service.getPathMovies()).toEqual('movies');
+  });
+  it('Series Path should be series', () => {
+    expect(service.getPathSeries()).toEqual('series');
   });
   it('Authent Google ID Pass should be my-id', () => {
     expect(service.getAuthentGoogleClientID()).toEqual('my-id');

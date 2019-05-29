@@ -57,5 +57,8 @@
   "Gateway Timeout": "API interne ne répond pas",
   "Unknown Error": "Erreur inconnue",
   "Service Unavailable": "Impossible de joindre le backend",
-  "not_administrator": "Vous n'êtes pas administrateur."
+  "not_administrator": "Vous n'êtes pas administrateur.",
+
+  "Nas not found": "Répertoire NAS non trouvé",
+  "Local not found": "Répertoire local non trouvé"
 }
