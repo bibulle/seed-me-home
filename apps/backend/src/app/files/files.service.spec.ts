@@ -7,6 +7,9 @@ import { MoveType } from '@seed-me-home/models';
 const fs = require('fs');
 jest.mock('fs'); // this auto mocks all methods on fs - so you can treat fs.existsSync and fs.mkdirSync like you would jest.fn()
 
+jest.mock('mv');
+const mv = require('mv');
+
 describe('FilesService', () => {
   let service: FilesService;
   let configService: ConfigService;
@@ -612,7 +615,7 @@ describe('FilesService', () => {
   });
 
   it('should moveFile answer something', async () => {
-    expect.assertions(16);
+    expect.assertions(13);
 
     // No parameter
     await service
@@ -703,11 +706,8 @@ describe('FilesService', () => {
     jest.spyOn(configService, 'getPathDownload').mockImplementation(() => 'download_test');
     jest.spyOn(configService, 'getPathNas').mockImplementation(() => 'nas_test');
     jest.spyOn(configService, 'getPathMovies').mockImplementation(() => 'movies_test');
-    jest.spyOn(fs, 'mkdirSync').mockImplementation(() => {
-      throw new Error('Error mkdir');
-    });
     jest.spyOn(fs, 'readdirSync').mockImplementation(() => {
-      return [];
+      return ['titi'];
     });
     jest.spyOn(fs, 'realpathSync').mockImplementation((path: string) => {
       if (path.endsWith('download_test')) {
@@ -718,59 +718,42 @@ describe('FilesService', () => {
         return '/test/toto/titi/download_test/toto.txt';
       }
     });
-    await service
-      .moveFile({
-        sourceFullPath: '/test/toto/titi/download_test/toto.txt',
-        sourcePath: 'toto.txt',
-        targetPath: 'toto.txt',
-        targetType: MoveType.movies
-      })
-      .then(() => {
-        expect(true).toBe(false);
-      })
-      .catch(err => {
-        //console.log(err);
-        expect(err).toBeTruthy();
-        expect(err.message.message).toEqual('Error mkdir');
-      });
+    mv.mockImplementation((src, trg, option, callback) => {
+      return callback('Error mkdir');
+    });
 
-    // File ok and cannot rename
-    jest.spyOn(configService, 'getPathDownload').mockImplementation(() => 'download_test');
-    jest.spyOn(configService, 'getPathNas').mockImplementation(() => 'nas_test');
-    jest.spyOn(configService, 'getPathMovies').mockImplementation(() => 'movies_test');
-    jest.spyOn(fs, 'mkdirSync').mockImplementation(() => true);
-    jest.spyOn(fs, 'rename').mockImplementation((src, trg, callback: CallableFunction) => callback('Error rename'));
-    jest.spyOn(fs, 'realpathSync').mockImplementation((path: string) => {
-      if (path.endsWith('download_test')) {
-        return '/test/toto/titi/download_test';
-      } else if (path.endsWith('nas_test')) {
-        return '/test/toto/titi/nas_test';
-      } else {
-        return '/test/toto/titi/download_test/toto.txt';
-      }
-    });
     await service
       .moveFile({
         sourceFullPath: '/test/toto/titi/download_test/toto.txt',
         sourcePath: 'toto.txt',
-        targetPath: 'toto.txt',
+        targetPath: 'TiTi/toto.txt',
         targetType: MoveType.movies
       })
       .then(() => {
         expect(true).toBe(false);
       })
       .catch(err => {
-        //console.log(err);
         expect(err).toBeTruthy();
-        expect(err.message).toEqual('Error rename');
+        expect(err.message).toEqual('Error mkdir');
       });
 
     // Everything ok, paths should be correct
     jest.spyOn(configService, 'getPathDownload').mockImplementation(() => 'download_test');
     jest.spyOn(configService, 'getPathNas').mockImplementation(() => 'nas_test');
-    jest.spyOn(configService, 'getPathMovies').mockImplementation(() => 'movies_test');
     jest.spyOn(configService, 'getPathSeries').mockImplementation(() => 'series_test');
-    jest.spyOn(fs, 'mkdirSync').mockImplementation(() => true);
+    jest.spyOn(fs, 'readdirSync').mockImplementation(() => {
+      return ['titi'];
+    });
+    jest.spyOn(fs, 'existsSync').mockImplementation((path: string) => {
+      switch (path) {
+        case 'nas_test':
+        case 'nas_test/series_test':
+          return true;
+        default:
+          //console.log('existsSync '+path);
+          return false;
+      }
+    });
     jest.spyOn(fs, 'realpathSync').mockImplementation((path: string) => {
       if (path.endsWith('download_test')) {
         return '/test/toto/titi/download_test';
@@ -780,35 +763,17 @@ describe('FilesService', () => {
         return '/test/toto/titi/download_test/toto.txt';
       }
     });
-
-    jest.spyOn(fs, 'rename').mockImplementation((src, trg, callback: CallableFunction) => {
-      expect(trg).toBe('nas_test/movies_test/toto.txt');
-      callback();
+    mv.mockImplementation((src, trg, option, callback) => {
+      expect(src).toEqual('/test/toto/titi/download_test/toto.txt');
+      expect(trg).toEqual('nas_test/series_test/titi/toto.txt');
+      return callback();
     });
+
     await service
       .moveFile({
         sourceFullPath: '/test/toto/titi/download_test/toto.txt',
         sourcePath: 'toto.txt',
-        targetPath: 'toto.txt',
-        targetType: MoveType.movies
-      })
-      .then(() => {
-        expect(true).toBe(true);
-      })
-      .catch(err => {
-        console.log(err);
-        expect(true).toBe(false);
-      });
-
-    jest.spyOn(fs, 'rename').mockImplementation((src, trg, callback: CallableFunction) => {
-      expect(trg).toBe('nas_test/series_test/toto.txt');
-      callback();
-    });
-    await service
-      .moveFile({
-        sourceFullPath: '/test/toto/titi/download_test/toto.txt',
-        sourcePath: 'toto.txt',
-        targetPath: 'toto.txt',
+        targetPath: 'TiTi/toto.txt',
         targetType: MoveType.series
       })
       .then(() => {

@@ -5,6 +5,8 @@ import { FtpSeedService } from '../ftp-seed/ftp-seed.service';
 import * as fs from 'fs';
 import * as path from 'path';
 
+const mv = require('mv');
+
 const disk = require('diskusage');
 
 @Injectable()
@@ -213,12 +215,7 @@ export class FilesService {
             // search in parent (with no case)
             previousFound = false;
             fs.readdirSync(path.dirname(d)).forEach(f => {
-              if (
-                path
-                  .join(path.dirname(d), f)
-                  .toLowerCase()
-                  .replace('0', '') === d.toLowerCase().replace('0', '')
-              ) {
+              if (path.join(path.dirname(d), f).toLowerCase() === d.toLowerCase()) {
                 previousFound = true;
                 replaced = d0;
                 replacer = path.join(path.dirname(d), f);
@@ -230,24 +227,15 @@ export class FilesService {
       fullPathTarget = fullPathTarget.replace(replaced, replacer);
 
       // Move it
-      try {
-        //this.logger.debug(fullPathTarget);
-        //this.logger.debug(path.dirname(fullPathTarget));
-        fs.mkdirSync(path.dirname(fullPathTarget), { recursive: true });
-
-        fs.rename(fileMove.sourceFullPath, fullPathTarget, err => {
-          if (err) {
-            this.logger.error('cannot move "' + fileMove.sourceFullPath + '" to "' + fullPathTarget + '"');
-            this.logger.error(err);
-            return reject(new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR));
-          }
-          resolve();
-        });
-      } catch (e) {
-        this.logger.error('cannot move "' + fileMove.sourceFullPath + '" to "' + fullPathTarget + '"');
-        this.logger.error(e);
-        return reject(new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR));
-      }
+      const that = this;
+      mv(fileMove.sourceFullPath, fullPathTarget, { mkdirp: true }, function(err) {
+        if (err) {
+          that.logger.error('cannot move "' + fileMove.sourceFullPath + '" to "' + fullPathTarget + '"');
+          that.logger.error(err);
+          return reject(new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+        resolve();
+      });
     });
   }
 
