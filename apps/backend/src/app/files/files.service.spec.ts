@@ -706,6 +706,9 @@ describe('FilesService', () => {
     jest.spyOn(fs, 'mkdirSync').mockImplementation(() => {
       throw new Error('Error mkdir');
     });
+    jest.spyOn(fs, 'readdirSync').mockImplementation(() => {
+      return [];
+    });
     jest.spyOn(fs, 'realpathSync').mockImplementation((path: string) => {
       if (path.endsWith('download_test')) {
         return '/test/toto/titi/download_test';

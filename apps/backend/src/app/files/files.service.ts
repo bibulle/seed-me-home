@@ -125,12 +125,12 @@ export class FilesService {
       } catch (e) {
         return reject(new HttpException('File not found', HttpStatus.NOT_FOUND));
       }
-      this.logger.debug(fullPath);
+      //this.logger.debug(fullPath);
 
       // File in downloaded or Nas ?
       const isAuthorized = this._fileModificationAuthorized(fullPath);
 
-      this.logger.debug(isAuthorized);
+      //this.logger.debug(isAuthorized);
       if (!isAuthorized) {
         return reject(new HttpException('Forbidden', HttpStatus.FORBIDDEN));
       }
