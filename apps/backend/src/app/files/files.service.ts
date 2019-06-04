@@ -196,26 +196,38 @@ export class FilesService {
         );
       }
 
-      //      fileMove.sourceFullPath= 'Game of Thrones S08E04.mkv';
-      //      fullPathTarget = 'nAs/Series/Game of Thrones/Season 08/Game of Thrones S08E04.mkv';
-      //      // modify target full path depending on case
-      //      const dirs = [];
-      //      let dir = path.dirname(fullPathTarget);
-      //      while (dir.length !== 1) {
-      //        dirs.push(dir);
-      //        dir = path.dirname(dir);
-      //      }
-      //      dirs.reverse().forEach((d, i, a) => {
-      //        this.logger.debug('->'+d);
-      //        if (!fs.existsSync(d)) {
-      //          this.logger.debug("not exists : "+path.dirname(d));
-      //        } else {
-      //          this.logger.debug('exists : '+d);
-      //          this.logger.debug(fs.realpathSync(d));
-      //        }
-      //
-      //      });
-      //      this.logger.debug(dirs);
+      // modify target full path depending on case
+      const dirs = [];
+      let dir = path.dirname(fullPathTarget);
+      while (dir.length !== 1) {
+        dirs.push(dir);
+        dir = path.dirname(dir);
+      }
+      let replaced = '';
+      let replacer = '';
+      let previousFound = true;
+      dirs.reverse().forEach(d0 => {
+        if (previousFound) {
+          const d = d0.replace(replaced, replacer);
+          if (!fs.existsSync(d)) {
+            // search in parent (with no case)
+            previousFound = false;
+            fs.readdirSync(path.dirname(d)).forEach(f => {
+              if (
+                path
+                  .join(path.dirname(d), f)
+                  .toLowerCase()
+                  .replace('0', '') === d.toLowerCase().replace('0', '')
+              ) {
+                previousFound = true;
+                replaced = d0;
+                replacer = path.join(path.dirname(d), f);
+              }
+            });
+          }
+        }
+      });
+      fullPathTarget = fullPathTarget.replace(replaced, replacer);
 
       // Move it
       try {
