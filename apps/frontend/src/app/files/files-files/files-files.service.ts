@@ -14,10 +14,10 @@ export class FilesFilesService {
   private static REFRESH_EVERY = 21 * 1000;
   private static _refreshIsRunning = false;
 
-  API_URL_LOCAL = environment.serverUrl + 'files/local';
-  API_URL_NAS = environment.serverUrl + 'files/nas';
-  API_URL_REMOVE = environment.serverUrl + 'files/remove';
-  API_URL_MOVE = environment.serverUrl + 'files/move';
+  API_URL_LOCAL = environment.serverUrl + 'files_api/local';
+  API_URL_NAS = environment.serverUrl + 'files_api/nas';
+  API_URL_REMOVE = environment.serverUrl + 'files_api/remove';
+  API_URL_MOVE = environment.serverUrl + 'files_api/move';
 
   private readonly currentFilesSubjectLocal: Subject<FilesFile>;
   private readonly currentFilesSubjectNas: Subject<FilesFile>;

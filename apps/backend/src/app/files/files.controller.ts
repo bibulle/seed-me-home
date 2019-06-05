@@ -7,7 +7,7 @@ class FileFullPath {
   fullpath: string;
 }
 
-@Controller('files')
+@Controller('files_api')
 export class FilesController {
   constructor(private readonly filesService: FilesService) {}
 

@@ -13,7 +13,7 @@ export class FilesStatusService {
   private static REFRESH_EVERY = 21 * 1000;
   private static _refreshIsRunning = false;
 
-  API_URL = environment.serverUrl + 'files/status';
+  API_URL = environment.serverUrl + 'files_api/status';
 
   private readonly currentStatusSubject: Subject<FilesStatus>;
 
