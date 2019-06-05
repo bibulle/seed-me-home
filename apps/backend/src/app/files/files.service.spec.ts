@@ -608,9 +608,9 @@ describe('FilesService', () => {
   });
 
   it('should removeFile answer something', async () => {
-    expect.assertions(6);
+    expect.assertions(8);
 
-    // File not found
+    // File not found => error
     jest.spyOn(fs, 'realpathSync').mockImplementation(() => {
       throw new Error('Error');
     });
@@ -623,7 +623,7 @@ describe('FilesService', () => {
         expect(err).toBeTruthy();
       });
 
-    // File not in Local nor Nas
+    // File not in Local nor Nas => error
     jest.spyOn(configService, 'getPathDownload').mockImplementation(() => 'download_test');
     jest.spyOn(configService, 'getPathNas').mockImplementation(() => 'nas_test');
     jest.spyOn(fs, 'realpathSync').mockImplementation((path: string) => {
@@ -644,21 +644,55 @@ describe('FilesService', () => {
         expect(err).toBeTruthy();
       });
 
-    // File in Local and can remove
+    // Directory in Local and can remove => OK
     jest.spyOn(configService, 'getPathDownload').mockImplementation(() => 'download_test');
     jest.spyOn(configService, 'getPathNas').mockImplementation(() => 'nas_test');
-    jest.spyOn(fs, 'unlink').mockImplementation((path, callback: Function) => callback(null));
+    jest.spyOn(fs, 'existsSync').mockImplementation(() => {
+      return true;
+    });
+    jest.spyOn(fs, 'lstatSync').mockImplementation((path: string) => {
+      if (path.endsWith('directory1')) {
+        return {
+          isDirectory() {
+            return true;
+          }
+        };
+      } else {
+        return {
+          isDirectory() {
+            return false;
+          }
+        };
+      }
+    });
+    jest.spyOn(fs, 'unlinkSync').mockImplementation(path => {
+      console.log('unlink ' + path);
+      expect(path).toBe('/test/toto/titi/download_test/directory1/toto.txt');
+    });
+    jest.spyOn(fs, 'rmdirSync').mockImplementation(path => {
+      console.log('rmdir ' + path);
+      expect(path).toBe('/test/toto/titi/download_test/directory1');
+    });
     jest.spyOn(fs, 'realpathSync').mockImplementation((path: string) => {
       if (path.endsWith('download_test')) {
         return '/test/toto/titi/download_test';
       } else if (path.endsWith('nas_test')) {
         return '/test/toto/titi/nas_test';
+      } else if (path.endsWith('directory1')) {
+        return '/test/toto/titi/download_test/directory1';
       } else {
-        return '/test/toto/titi/download_test/toto.txt';
+        return '/test/toto/titi/download_test/directory1/toto.txt';
+      }
+    });
+    jest.spyOn(fs, 'readdirSync').mockImplementation((path: string) => {
+      if (path.endsWith('directory1')) {
+        return ['toto.txt'];
+      } else {
+        return [];
       }
     });
     service
-      .removeFile('toto.txt')
+      .removeFile('directory1')
       .then(() => {
         expect(true).toBe(true);
       })
@@ -667,10 +701,13 @@ describe('FilesService', () => {
         expect(err).toBeFalsy();
       });
 
-    // File in Nas and can remove
+    // File in Nas and can remove => OK
     jest.spyOn(configService, 'getPathDownload').mockImplementation(() => 'download_test');
     jest.spyOn(configService, 'getPathNas').mockImplementation(() => 'nas_test');
-    jest.spyOn(fs, 'unlink').mockImplementation((path, callback: Function) => callback(null));
+    jest.spyOn(fs, 'unlinkSync').mockImplementation(path => {
+      console.log('unlink ' + path);
+      expect(path).toBe('/test/toto/titi/nas_test/toto.txt');
+    });
     jest.spyOn(fs, 'realpathSync').mockImplementation((path: string) => {
       if (path.endsWith('download_test')) {
         return '/test/toto/titi/download_test';
@@ -690,18 +727,8 @@ describe('FilesService', () => {
         expect(err).toBeFalsy();
       });
 
-    // File in Nas and cannot remove (with error)
-    jest.spyOn(fs, 'unlink').mockImplementation((path, callback: Function) => callback('error'));
-    service
-      .removeFile('toto.txt')
-      .then(() => {
-        expect(true).toBe(false);
-      })
-      .catch(err => {
-        expect(err).toBeTruthy();
-      });
     // File in Nas and cannot remove (with exception)
-    jest.spyOn(fs, 'unlink').mockImplementation(() => {
+    jest.spyOn(fs, 'unlinkSync').mockImplementation(() => {
       throw new Error('error');
     });
     service

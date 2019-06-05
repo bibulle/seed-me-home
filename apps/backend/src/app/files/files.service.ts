@@ -141,20 +141,30 @@ export class FilesService {
 
       // Delete it
       try {
-        fs.unlink(fullPath, err => {
-          if (err) {
-            this.logger.error('cannot remove ' + fullPath);
-            this.logger.error(err);
-            return reject(new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR));
-          }
-          resolve();
-        });
+        this._deleteFolderRecursive(fullPath);
+        resolve();
       } catch (e) {
         this.logger.error('cannot remove ' + fullPath);
         this.logger.error(e);
         return reject(new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR));
       }
     });
+  }
+
+  private _deleteFolderRecursive(fullPath: string) {
+    if (fs.existsSync(fullPath)) {
+      if (fs.lstatSync(fullPath).isDirectory()) {
+        // Directory : remove the content
+        fs.readdirSync(fullPath).forEach(file => {
+          const curPath = path.join(fullPath, file);
+          this._deleteFolderRecursive(curPath);
+        });
+        fs.rmdirSync(fullPath);
+      } else {
+        // File : simply remove it
+        fs.unlinkSync(fullPath);
+      }
+    }
   }
 
   moveFile(fileMove: FileMove) {

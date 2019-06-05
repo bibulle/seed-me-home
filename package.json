@@ -74,7 +74,7 @@
     "@angular/router": "^7.2.14",
     "@auth0/angular-jwt": "^2.1.0",
     "@electorrent/node-rtorrent": "^1.2.1",
-    "@nestjs/common": "^6.1.1",
+    "@nestjs/common": "^6.3.0",
     "@nestjs/core": "^6.1.1",
     "@nestjs/passport": "^6.0.0",
     "@nestjs/platform-express": "^6.1.1",
