@@ -286,6 +286,26 @@ describe('FilesFilesItemComponent', () => {
     fixture.detectChanges();
     expect(dialog.open).toHaveBeenCalled();
   });
+
+  it('click on header should toggle the sort', () => {
+    component.index = 0;
+
+    let selected = '';
+    component.toggleSortEvent.subscribe(value => (selected = value));
+    fixture.detectChanges();
+
+    fixture.debugElement.query(By.css('.header .size')).triggerEventHandler('click', null);
+    expect(selected).toBe('size');
+
+    fixture.debugElement.query(By.css('.header .size')).triggerEventHandler('click', null);
+    expect(selected).toBe('size');
+
+    fixture.debugElement.query(By.css('.header .done')).triggerEventHandler('click', null);
+    expect(selected).toBe('progress');
+
+    fixture.debugElement.query(By.css('.header .date')).triggerEventHandler('click', null);
+    expect(selected).toBe('date');
+  });
 });
 
 describe('FilesFilesItemDialogRemoveComponent', () => {

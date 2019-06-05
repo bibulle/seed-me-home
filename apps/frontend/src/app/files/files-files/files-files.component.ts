@@ -22,6 +22,9 @@ export class FilesFilesComponent implements OnInit, OnDestroy {
   filesFiles: FilesFile;
   private _currentFilesFilesSubscription: Subscription;
 
+  sortItem = 'date';
+  sortDirection = 'desc';
+
   constructor(private _filesFilesService: FilesFilesService) {}
 
   ngOnInit() {
@@ -38,7 +41,9 @@ export class FilesFilesComponent implements OnInit, OnDestroy {
       this._currentFilesFilesSubscription = observable.subscribe((files: FilesFile) => {
         if (!this.filesFiles) {
           this.filesFiles = files;
+          this._doSort();
         } else {
+          this._doSort(files);
           this.mergeFiles(this.filesFiles, files);
         }
       });
@@ -102,6 +107,46 @@ export class FilesFilesComponent implements OnInit, OnDestroy {
         }
       });
       return found;
+    }
+  }
+
+  toggleSort(sort: string) {
+    if (sort === this.sortItem) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortItem = sort;
+      this.sortDirection = 'desc';
+    }
+    this._doSort();
+  }
+
+  _doSort(files = this.filesFiles) {
+    if (files) {
+      files.children.sort((f1: FilesFile, f2: FilesFile) => {
+        let ret = 0;
+        switch (this.sortItem) {
+          case 'date':
+            ret = new Date(f1.modifiedDate).getTime() - new Date(f2.modifiedDate).getTime();
+            break;
+          case 'size':
+            ret = f1.size - f2.size;
+            break;
+          case 'progress':
+            ret = f1.downloaded / Math.max(1, f1.size) - f2.downloaded / Math.max(1, f2.size);
+            break;
+        }
+
+        if (ret === 0) {
+          ret = new Date(f1.modifiedDate).getTime() - new Date(f2.modifiedDate).getTime();
+        }
+        return ret;
+      });
+      if (this.sortDirection === 'desc') {
+        files.children.reverse();
+      }
+      files.children.forEach(f => {
+        this._doSort(f);
+      });
     }
   }
 }

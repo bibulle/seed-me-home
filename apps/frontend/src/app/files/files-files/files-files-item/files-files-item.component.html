@@ -1,3 +1,20 @@
+<div *ngIf="index==0" class="header">
+  <span class="done" (click)="toggleSort('progress')" [class.unselected]="(sortItem!=='progress')">
+    <mat-icon *ngIf="(sortItem!=='progress') || (sortDirection!=='asc')">keyboard_arrow_down</mat-icon>
+    <mat-icon *ngIf="(sortItem==='progress') && (sortDirection==='asc')">keyboard_arrow_up</mat-icon>
+    {{'progress' | translate}}
+  </span>
+  <span class="size"  (click)="toggleSort('size')" [class.unselected]="(sortItem!=='size')">
+    <mat-icon *ngIf="(sortItem!=='size') || (sortDirection!=='asc')">keyboard_arrow_down</mat-icon>
+    <mat-icon *ngIf="(sortItem==='size') && (sortDirection==='asc')">keyboard_arrow_up</mat-icon>
+    {{'size' | translate}}
+  </span>
+  <span class="date" (click)="toggleSort('date')" [class.unselected]="(sortItem!=='date')">
+    <mat-icon *ngIf="(sortItem!=='date') || (sortDirection!=='asc')">keyboard_arrow_down</mat-icon>
+    <mat-icon *ngIf="(sortItem==='date') && (sortDirection==='asc')">keyboard_arrow_up</mat-icon>
+    {{'added' | translate}}
+  </span>
+</div>
 <div class="title">
   <mat-icon *ngIf="file && !file.isDirectory && (file?.downloaded !== file?.size) && (file?.downloaded === 0)"
             color="warn"

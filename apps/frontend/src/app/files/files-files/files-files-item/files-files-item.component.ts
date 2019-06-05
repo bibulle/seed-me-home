@@ -31,6 +31,18 @@ export class FilesFilesItemComponent implements OnInit {
   @Input()
   file: FilesFile;
 
+  @Input()
+  index: number;
+
+  @Input()
+  sortItem: string;
+
+  @Input()
+  sortDirection: string;
+
+  @Output()
+  toggleSortEvent = new EventEmitter<string>();
+
   @Output()
   removeFileEvent = new EventEmitter<FilesFile>();
 
@@ -59,6 +71,10 @@ export class FilesFilesItemComponent implements OnInit {
 
   toggleOpen() {
     this.open = !this.open;
+  }
+
+  toggleSort(sort: string) {
+    this.toggleSortEvent.emit(sort);
   }
 
   remove() {

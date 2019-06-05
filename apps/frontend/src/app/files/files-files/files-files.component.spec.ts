@@ -465,6 +465,107 @@ describe('FilesFilesComponent', () => {
     expect(component.filesFiles.children[1].children.length).toBe(3);
     expect(component.filesFiles.children[1].children[0].path).toBe('dir1/dir2/file2_1');
   });
+
+  it('toggle sort should do the job', () => {
+    const goodAnswer: FilesFile = {
+      path: 'dir1',
+      fullpath: 'downloaded_test/dir1',
+      size: 301000,
+      downloaded: 211000,
+      isDirectory: true,
+      modifiedDate: new Date(0),
+      children: [
+        {
+          path: 'dir1/file1',
+          fullpath: 'downloaded_test/dir1/file1',
+          size: 100000,
+          downloaded: 10000,
+          isDirectory: false,
+          modifiedDate: new Date(2),
+          children: []
+        },
+        {
+          path: 'dir1/dir2',
+          fullpath: 'downloaded_test/dir1/dir2',
+          size: 201000,
+          downloaded: 201000,
+          isDirectory: true,
+          modifiedDate: new Date(1),
+          children: [
+            {
+              path: 'dir1/dir2/file2_1',
+              fullpath: 'downloaded_test/dir1/dir2/file2_1',
+              size: 200000,
+              downloaded: 200000,
+              isDirectory: false,
+              modifiedDate: new Date(3),
+              children: []
+            },
+            {
+              path: 'dir1/dir2/file2_2',
+              fullpath: 'downloaded_test/dir1/dir2/file2_2',
+              size: 1000,
+              downloaded: 1000,
+              isDirectory: false,
+              modifiedDate: new Date(4),
+              children: []
+            },
+            {
+              path: 'dir1/dir2/error_file',
+              fullpath: 'downloaded_test/dir1/dir2/error_file',
+              size: 0,
+              downloaded: 0,
+              isDirectory: false,
+              modifiedDate: null,
+              children: []
+            }
+          ]
+        }
+      ]
+    };
+
+    component.filePath = FilePath.Local;
+    component.ngOnInit();
+    filesFilesService.files$.next(goodAnswer);
+    fixture.detectChanges();
+
+    // default values
+    expect(component.sortItem).toBe('date');
+    expect(component.sortDirection).toBe('desc');
+    expect(component.filesFiles.children[0].modifiedDate).toEqual(new Date(2));
+
+    // after a click, order should be inverted
+    component.toggleSort('date');
+    expect(component.sortItem).toBe('date');
+    expect(component.sortDirection).toBe('asc');
+    expect(component.filesFiles.children[0].modifiedDate).toEqual(new Date(1));
+
+    // after a click, order should be re-inverted
+    component.toggleSort('date');
+    expect(component.sortItem).toBe('date');
+    expect(component.sortDirection).toBe('desc');
+    expect(component.filesFiles.children[0].modifiedDate).toEqual(new Date(2));
+
+    // after a click on another button, order should be different
+    component.toggleSort('size');
+    expect(component.sortItem).toBe('size');
+    expect(component.sortDirection).toBe('desc');
+    expect(component.filesFiles.children[0].size).toBe(201000);
+    component.toggleSort('size');
+    expect(component.sortItem).toBe('size');
+    expect(component.sortDirection).toBe('asc');
+    expect(component.filesFiles.children[0].size).toBe(100000);
+
+    // after a click on another button, order should be different
+    component.toggleSort('progress');
+    expect(component.sortItem).toBe('progress');
+    expect(component.sortDirection).toBe('desc');
+    expect(component.filesFiles.children[0].downloaded).toBe(201000);
+    component.toggleSort('progress');
+    expect(component.sortItem).toBe('progress');
+    expect(component.sortDirection).toBe('asc');
+    expect(component.filesFiles.children[0].downloaded).toBe(10000);
+  });
 });
 
 class FilesFilesServiceMock {
