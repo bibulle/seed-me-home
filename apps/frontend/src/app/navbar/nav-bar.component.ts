@@ -7,8 +7,9 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatButtonModule, MatIconModule, MatToolbarModule, MatTooltipModule } from '@angular/material';
 import { CommonModule } from '@angular/common';
 import { AppRoutingModule } from '../app-routing.module';
-import { NotificationModule } from '../notification/notification.service';
+import { NotificationModule, NotificationService } from '../notification/notification.service';
 import { UserModule } from '../user/user.module';
+import { VersionService } from '../utils/version/version.service';
 
 @Component({
   selector: 'app-nav-bar',
@@ -24,8 +25,14 @@ export class NavBarComponent implements OnInit, OnDestroy {
 
   version = new Version().version;
   updateNeeded = false;
+  private _currentVersionChangedSubscription: Subscription;
 
-  constructor(private _router: Router, private _userService: UserService) {
+  constructor(
+    private _router: Router,
+    private _userService: UserService,
+    private _versionService: VersionService,
+    private _notificationService: NotificationService
+  ) {
     this._router.events.subscribe(data => {
       //console.log(data.constructor.name);
       if (data instanceof NavigationEnd) {
@@ -45,11 +52,22 @@ export class NavBarComponent implements OnInit, OnDestroy {
       this.user = user;
       this.calculateMenus();
     });
+    this._currentVersionChangedSubscription = this._versionService
+      .versionChangedObservable()
+      .subscribe(versionChanged => {
+        this.updateNeeded = versionChanged;
+        if (this.updateNeeded) {
+          this._notificationService.error('update-needed | translate');
+        }
+      });
   }
 
   ngOnDestroy(): void {
     if (this._currentUserSubscription) {
       this._currentUserSubscription.unsubscribe();
+    }
+    if (this._currentVersionChangedSubscription) {
+      this._currentVersionChangedSubscription.unsubscribe();
     }
   }
 

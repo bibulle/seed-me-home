@@ -50,6 +50,8 @@
   "ratio": "Ratio",
   "added": "Added",
 
+  "update-needed": "An update is available. You can refresh your page.",
+
   "Unauthorized": "Your are not authorized to use this application.",
   "Forbidden": "This action is forbidden.",
   "Internal Server Error": "Internal server error.",

@@ -26,6 +26,7 @@ import { environment } from '../environments/environment';
 import { UserService } from './user/user.service';
 import { JwtModule } from '@auth0/angular-jwt';
 import { RefreshTokenInterceptor } from './interceptors/refresh-token.interceptor';
+import { VersionInterceptor } from './interceptors/version.interceptor';
 
 export class MyMissingTranslationHandler implements MissingTranslationHandler {
   constructor(private readonly logger: NGXLogger) {}
@@ -81,7 +82,8 @@ registerLocaleData(localeEn, 'en');
     AuthGuard,
     AuthGuardAdmin,
     NotificationService,
-    { provide: HTTP_INTERCEPTORS, useClass: RefreshTokenInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: RefreshTokenInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: VersionInterceptor, multi: true }
   ],
   bootstrap: [AppComponent],
   exports: []
