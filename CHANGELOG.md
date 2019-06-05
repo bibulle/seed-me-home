@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.7.0"></a>
+# [0.7.0](https://github.com/bibulle/seed-me-home/compare/v0.6.0...v0.7.0) (2019-06-05)
+
+
+### Bug Fixes
+
+* add nas (development) to ignore file ([ae16766](https://github.com/bibulle/seed-me-home/commit/ae16766))
+* dot files shouldn't appear in lists ([781cd59](https://github.com/bibulle/seed-me-home/commit/781cd59))
+* files URL should be redirect to backend ([d93a00a](https://github.com/bibulle/seed-me-home/commit/d93a00a))
+* files urls should be reserved for front-end ([1bed6fa](https://github.com/bibulle/seed-me-home/commit/1bed6fa))
+* missing "Service unavailable" translation ([851cafd](https://github.com/bibulle/seed-me-home/commit/851cafd))
+* move file should work across file systems ([9bd9f23](https://github.com/bibulle/seed-me-home/commit/9bd9f23))
+* remove directory should work ([020aac0](https://github.com/bibulle/seed-me-home/commit/020aac0))
+
+
+### Features
+
+* add delete on files ([5c18846](https://github.com/bibulle/seed-me-home/commit/5c18846))
+* add move on files (backend part - 1) ([c272c8b](https://github.com/bibulle/seed-me-home/commit/c272c8b))
+* add move on files (frontend part) ([8e7b99b](https://github.com/bibulle/seed-me-home/commit/8e7b99b))
+* add sort on downloaded files ([61b700b](https://github.com/bibulle/seed-me-home/commit/61b700b))
+* change target path on ignore case existence ([7e0ac60](https://github.com/bibulle/seed-me-home/commit/7e0ac60))
+* change target path on ignore case existence ([fd547ab](https://github.com/bibulle/seed-me-home/commit/fd547ab))
+* some change in Frontend styling ([5eb446d](https://github.com/bibulle/seed-me-home/commit/5eb446d))
+
+
+
 <a name="0.6.0"></a>
 # [0.6.0](https://github.com/bibulle/seed-me-home/compare/v0.5.0...v0.6.0) (2019-05-24)
 
