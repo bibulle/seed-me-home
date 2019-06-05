@@ -24,8 +24,9 @@ export class AuthGuard implements CanActivate {
             // this.logger.debug('then OK');
             resolve(true);
           })
-          .catch(() => {
-            // this.logger.warn(reason);
+          .catch(reason => {
+            this.logger.warn('Cannot log to Google');
+            this.logger.warn(reason);
             resolve(false);
           });
       }
@@ -35,18 +36,42 @@ export class AuthGuard implements CanActivate {
 
 @Injectable()
 export class AuthGuardAdmin implements CanActivate {
-  constructor(private _userService: UserService, private readonly _notificationService: NotificationService) {}
+  constructor(
+    private _userService: UserService,
+    private readonly _notificationService: NotificationService,
+    private readonly logger: NGXLogger
+  ) {}
 
   canActivate(): Promise<boolean> {
     // console.log('canActivate AuthGuardAdmin');
 
     return new Promise<boolean>(resolve => {
-      if (this._userService.isAdminAuthenticate()) {
-        // console.log('canActivate true');
-        resolve(true);
+      if (!this._userService.isAuthenticate()) {
+        // not logged in so try to login
+        this._userService
+          .startLoginGoogle()
+          .then(() => {
+            if (this._userService.isAdminAuthenticate()) {
+              // console.log('canActivate true');
+              resolve(true);
+            } else {
+              this._notificationService.error('You are not an administrator');
+              resolve(false);
+            }
+          })
+          .catch(reason => {
+            this.logger.warn('Cannot log to Google');
+            this.logger.warn(reason);
+            resolve(false);
+          });
       } else {
-        this._notificationService.error('You are not an administrator');
-        resolve(false);
+        if (this._userService.isAdminAuthenticate()) {
+          // console.log('canActivate true');
+          resolve(true);
+        } else {
+          this._notificationService.error('You are not an administrator');
+          resolve(false);
+        }
       }
     });
   }

@@ -56,28 +56,29 @@ export class NavBarComponent implements OnInit, OnDestroy {
   private calculateMenus() {
     const newLinksLeft: { path: string; label: string; icon: string; iconType: string; selected: boolean }[] = [];
     const newLinksRight: { path: string; label: string; icon: string; iconType: string; selected: boolean }[] = [];
-    this._router.config.forEach(obj => {
-      //console.log(this.user);
-      if (!obj.redirectTo && obj.data && obj.data['menu'] && (!obj.data['onlyAdmin'] || this.user.isAdmin)) {
-        if (obj.data['right']) {
-          newLinksRight.push({
-            path: obj.path,
-            label: obj.data['label'],
-            icon: obj.data['icon'],
-            iconType: obj.data['iconType'],
-            selected: false
-          });
-        } else {
-          newLinksLeft.push({
-            path: obj.path,
-            label: obj.data['label'],
-            icon: obj.data['icon'],
-            iconType: obj.data['iconType'],
-            selected: false
-          });
+    if (this._userService.isAuthenticate()) {
+      this._router.config.forEach(obj => {
+        if (!obj.redirectTo && obj.data && obj.data['menu'] && (!obj.data['onlyAdmin'] || this.user.isAdmin)) {
+          if (obj.data['right']) {
+            newLinksRight.push({
+              path: obj.path,
+              label: obj.data['label'],
+              icon: obj.data['icon'],
+              iconType: obj.data['iconType'],
+              selected: false
+            });
+          } else {
+            newLinksLeft.push({
+              path: obj.path,
+              label: obj.data['label'],
+              icon: obj.data['icon'],
+              iconType: obj.data['iconType'],
+              selected: false
+            });
+          }
         }
-      }
-    });
+      });
+    }
     this.linksLeft = newLinksLeft;
     this.linksRight = newLinksRight;
   }

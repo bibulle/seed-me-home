@@ -30,7 +30,7 @@ export class UserComponent implements OnInit {
   logout() {
     this._userService.logout();
 
-    this._router.navigate(['']).catch();
+    // this._router.navigate(['']).catch();
   }
 
   toggleLang(lang: string) {

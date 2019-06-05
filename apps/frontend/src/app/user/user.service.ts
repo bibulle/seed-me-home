@@ -159,7 +159,7 @@ export class UserService {
   /**
    * Is logged ?
    */
-  isAuthenticate(): Boolean {
+  isAuthenticate(): boolean {
     // this.logger.debug('isAuthenticate');
 
     this.checkAuthentication();

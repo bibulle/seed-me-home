@@ -1,2 +1,2 @@
 <app-nav-bar class="mat-elevation-z6"></app-nav-bar>
-<router-outlet></router-outlet>
+<router-outlet *ngIf="isAuthenticated"></router-outlet>
