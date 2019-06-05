@@ -115,7 +115,7 @@ describe('FilesService', () => {
     jest.spyOn(fs, 'readdirSync').mockImplementation(path => {
       switch (path) {
         case 'dir1':
-          return ['file1', 'dir2'];
+          return ['file1', 'dir2', '.ignore'];
         case 'dir1/dir2':
           return ['file2_1', 'file2_2'];
         default:
@@ -283,6 +283,106 @@ describe('FilesService', () => {
 
     const result = await service.getFilesLocal().catch(reason => {
       expect(reason).toBeTruthy();
+    });
+
+    expect(result).toBeFalsy();
+  });
+
+  it('getFilesLocal should return error if too many levels', async () => {
+    jest.spyOn(fs, 'stat').mockImplementation((path: string, callback) => {
+      switch (path) {
+        case 'dir1':
+          //@ts-ignore
+          return callback(null, {
+            isDirectory: () => true,
+            mtime: new Date(0)
+          });
+        case 'dir1/dir2':
+          //@ts-ignore
+          return callback(null, {
+            isDirectory: () => true,
+            mtime: new Date(1)
+          });
+        case 'dir1/file1':
+          //@ts-ignore
+          return callback(null, {
+            isDirectory: () => false,
+            mtime: new Date(2)
+          });
+        case 'dir1/dir2/file2_1':
+          //@ts-ignore
+          return callback(null, {
+            isDirectory: () => false,
+            mtime: new Date(3)
+          });
+        case 'dir1/dir2/file2_2':
+          //@ts-ignore
+          return callback(null, {
+            isDirectory: () => false,
+            size: 1000,
+            mtime: new Date(4)
+          });
+        default:
+          if (path.endsWith('/dir3')) {
+            //@ts-ignore
+            return callback(null, {
+              isDirectory: () => true,
+              mtime: new Date(1)
+            });
+          } else {
+            //console.log(path+' NOT FOUND');
+            //@ts-ignore
+            return callback(path + ' NOT FOUND');
+          }
+      }
+    });
+    jest.spyOn(fs, 'realpathSync').mockImplementation(path => {
+      return 'downloaded_test/' + path;
+    });
+    jest.spyOn(fs, 'readdirSync').mockImplementation((path: string) => {
+      switch (path) {
+        case 'dir1':
+          return ['file1', 'dir2', '.ignore'];
+        case 'dir1/dir2':
+          return ['file2_1', 'file2_2', 'dir3'];
+        default:
+          if (path.endsWith('/dir3')) {
+            return ['dir3'];
+          } else {
+            console.log(path + ' NOT FOUND');
+          }
+      }
+    });
+    jest.spyOn(ftpSeedService, 'getProgression').mockImplementation(path => {
+      switch (path) {
+        case 'downloaded_test/dir1/file1':
+          return {
+            fullPath: path,
+            size: 100000,
+            value: 10000,
+            progress: 10,
+            shouldDownload: true
+          };
+        case 'downloaded_test/dir1/dir2/file2_1':
+          return {
+            fullPath: path,
+            size: 200000,
+            value: 200000,
+            progress: 100,
+            shouldDownload: true
+          };
+        case 'downloaded_test/dir1/dir2/file2_2':
+          return null;
+        default:
+          console.log(path + ' NOT FOUND');
+          return null;
+      }
+    });
+    jest.spyOn(ftpSeedService, 'getPathLocal').mockImplementation(() => 'dir1');
+
+    const result = await service.getFilesLocal().catch(reason => {
+      expect(reason).toBeTruthy();
+      expect(reason).toBe('Too many levels');
     });
 
     expect(result).toBeFalsy();

@@ -95,7 +95,9 @@ export class FilesService {
           const promises = [];
           fs.readdirSync(filePath).forEach(child => {
             //console.log(path.join(root, child));
-            promises.push(this._getFiles(path.join(filePath, child), level + 1));
+            if (!child.startsWith('.')) {
+              promises.push(this._getFiles(path.join(filePath, child), level + 1));
+            }
           });
           Promise.all(promises)
             .then(children => {
