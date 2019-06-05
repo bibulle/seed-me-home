@@ -40,6 +40,9 @@ export class FilesFilesItemComponent implements OnInit {
   @Input()
   sortDirection: string;
 
+  @Input()
+  removeEnable: boolean;
+
   @Output()
   toggleSortEvent = new EventEmitter<string>();
 

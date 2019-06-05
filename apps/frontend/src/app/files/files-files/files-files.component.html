@@ -10,6 +10,7 @@
         [sortDirection]="sortDirection"
         (toggleSortEvent)="toggleSort($event)"
         (removeFileEvent)="removeFile($event)"
+        [removeEnable]="filePath !== filePathTypes.Nas"
     ></app-files-files-item>
     <div class='empty' *ngIf="filesFiles.children.length === 0">{{'label.files.empty' | translate}}</div>
   </mat-card-content>
