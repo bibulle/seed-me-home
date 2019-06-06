@@ -85,7 +85,9 @@ export class FilesFilesItemComponent implements OnInit {
         this.file.downloadStarted.getTime() +
         (this.file.size * (new Date().getTime() - this.file.downloadStarted.getTime())) / this.file.downloaded;
 
-      return this.formatDate(new Date(dateMilli));
+      moment.locale(this._translateService.currentLang);
+
+      return moment.utc(dateMilli).fromNow();
     } else {
       return '';
     }
