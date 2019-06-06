@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.8.0"></a>
+# [0.8.0](https://github.com/bibulle/seed-me-home/compare/v0.7.0...v0.8.0) (2019-06-06)
+
+
+### Bug Fixes
+
+* logout should be ok ([f0de4f1](https://github.com/bibulle/seed-me-home/commit/f0de4f1))
+* remove on NAs should disappear ([938b06e](https://github.com/bibulle/seed-me-home/commit/938b06e))
+
+
+### Features
+
+* on version change user should be aware ([41095f0](https://github.com/bibulle/seed-me-home/commit/41095f0))
+
+
+
 <a name="0.7.0"></a>
 # [0.7.0](https://github.com/bibulle/seed-me-home/compare/v0.6.0...v0.7.0) (2019-06-05)
 
