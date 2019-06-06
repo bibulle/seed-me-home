@@ -15,12 +15,16 @@ import { User } from '@seed-me-home/models';
 import { MatIconRegistry } from '@angular/material';
 import { DomSanitizer, HAMMER_LOADER } from '@angular/platform-browser';
 import { Config } from 'codelyzer';
+import { VersionService } from '../utils/version/version.service';
+import { NotificationService } from '../notification/notification.service';
 
 describe('NavBarComponent', () => {
   let component: NavBarComponent;
   let fixture: ComponentFixture<NavBarComponent>;
   let authGard: AuthGuard;
   let userService: UserServiceMock;
+  let versionService: VersionServiceMock;
+  let notificationService: NotificationService;
 
   beforeEach(() => {
     //noinspection JSIgnoredPromiseFromCall
@@ -33,6 +37,8 @@ describe('NavBarComponent', () => {
         { provide: TranslateService, useClass: TranslateServiceStub },
         { provide: NGXLogger, useClass: NGXLoggerMock },
         { provide: UserService, useClass: UserServiceMock },
+        { provide: VersionService, useClass: VersionServiceMock },
+        { provide: NotificationService, useClass: NotificationServiceMock },
         AuthGuard
       ]
     }).compileComponents();
@@ -45,6 +51,8 @@ describe('NavBarComponent', () => {
 
     authGard = TestBed.get(AuthGuard);
     userService = TestBed.get(UserService);
+    versionService = TestBed.get(VersionService);
+    notificationService = TestBed.get(NotificationService);
     jest.spyOn(authGard, 'canActivate').mockImplementation(() => {
       return new Promise<boolean>(resolve => {
         resolve(true);
@@ -145,11 +153,13 @@ describe('NavBarComponent', () => {
     const compiled = fixture.debugElement.nativeElement;
 
     expect(compiled.querySelectorAll('#nav-bar-reload').length).toEqual(0);
+    expect(jest.spyOn(notificationService, 'error')).toHaveBeenCalledTimes(0);
 
-    component.updateNeeded = true;
+    versionService.versionChanged$.next(true);
     fixture.detectChanges();
 
     expect(compiled.querySelectorAll('#nav-bar-reload').length).toEqual(1);
+    expect(jest.spyOn(notificationService, 'error')).toHaveBeenCalledTimes(1);
 
     const spyNavigation = jest.spyOn(location, 'reload').mockReturnThis();
 
@@ -171,6 +181,19 @@ class UserServiceMock {
   configObservable(): Observable<Config> {
     return this.config$;
   }
+  isAuthenticate() {
+    return true;
+  }
+}
+class VersionServiceMock {
+  versionChanged$: Subject<boolean> = new Subject<boolean>();
+  //noinspection JSUnusedGlobalSymbols
+  versionChangedObservable(): Observable<boolean> {
+    return this.versionChanged$;
+  }
+}
+class NotificationServiceMock {
+  error() {}
 }
 class TranslateServiceStub {
   //noinspection JSUnusedGlobalSymbols

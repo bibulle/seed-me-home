@@ -249,6 +249,7 @@ describe('FilesFilesItemComponent', () => {
     });
 
     component.file = files1;
+    component.removeEnable = true;
     fixture.detectChanges();
 
     // action menu
@@ -270,13 +271,14 @@ describe('FilesFilesItemComponent', () => {
     expect.assertions(4);
 
     component.file = files1;
+    component.removeEnable = false;
     fixture.detectChanges();
 
     // action menu
     component.menuTrigger.openMenu();
     expect(fixture.debugElement.queryAll(By.css('.mat-menu-content')).length).toBe(1);
     const menuContent = fixture.debugElement.queryAll(By.css('.mat-menu-content'))[0];
-    expect(menuContent.queryAll(By.css('button')).length).toBe(2);
+    expect(menuContent.queryAll(By.css('button')).length).toBe(1);
     expect(menuContent.queryAll(By.css('button'))[0].nativeElement.textContent).toBe(
       'save_alt[this is a fake translation of file.move]'
     );

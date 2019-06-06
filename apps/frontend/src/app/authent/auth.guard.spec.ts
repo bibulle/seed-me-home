@@ -89,8 +89,9 @@ describe('AuthGuardAdmin', () => {
     expect(service).toBeDefined();
   });
 
-  it('can activate ok if already authenticate', () => {
+  it('can activate ok if already authenticate and admin', () => {
     jest.spyOn(userService, 'isAdminAuthenticate').mockImplementation(() => true);
+    jest.spyOn(userService, 'isAuthenticate').mockImplementation(() => true);
 
     expect.assertions(1);
     service.canActivate().then(value => {
@@ -98,17 +99,64 @@ describe('AuthGuardAdmin', () => {
     });
   });
 
-  it('can activate KO if not already authenticate', () => {
+  it('can activate KO if already authenticate and not admin', () => {
     jest.spyOn(userService, 'isAdminAuthenticate').mockImplementation(() => false);
+    jest.spyOn(userService, 'isAuthenticate').mockImplementation(() => true);
 
-    expect.assertions(3);
+    expect.assertions(1);
+    service.canActivate().then(value => {
+      expect(value).toEqual(false);
+    });
+  });
 
-    expect(jest.spyOn(notificationService, 'error')).toHaveBeenCalledTimes(0);
+  it('can activate OK if not already authenticate and google logging do work', () => {
+    jest.spyOn(userService, 'isAuthenticate').mockImplementation(() => false);
+    jest.spyOn(userService, 'isAdminAuthenticate').mockImplementation(() => true);
+    jest.spyOn(userService, 'startLoginGoogle').mockImplementation(
+      () =>
+        new Promise<void>(resolve => {
+          resolve();
+        })
+    );
+
+    expect.assertions(1);
+
+    service.canActivate().then(ret => {
+      expect(ret).toEqual(true);
+    });
+  });
+
+  it('can activate KO if not already authenticate and google logging do work and not administrator', () => {
+    jest.spyOn(userService, 'isAuthenticate').mockImplementation(() => false);
+    jest.spyOn(userService, 'isAdminAuthenticate').mockImplementation(() => false);
+    jest.spyOn(userService, 'startLoginGoogle').mockImplementation(
+      () =>
+        new Promise<void>(resolve => {
+          resolve();
+        })
+    );
+
+    expect.assertions(1);
 
     service.canActivate().then(ret => {
       expect(ret).toEqual(false);
     });
-    expect(jest.spyOn(notificationService, 'error')).toHaveBeenCalledTimes(1);
+  });
+
+  it('can activate KO if not already authenticate and google logging do not work', () => {
+    jest.spyOn(userService, 'isAdminAuthenticate').mockImplementation(() => false);
+    jest.spyOn(userService, 'isAuthenticate').mockImplementation(() => false);
+    jest.spyOn(userService, 'startLoginGoogle').mockImplementation(
+      () =>
+        new Promise<void>((resolve, reject) => {
+          reject('login error');
+        })
+    );
+
+    expect.assertions(1);
+    service.canActivate().then(ret => {
+      expect(ret).toEqual(false);
+    });
   });
 });
 

@@ -21,7 +21,7 @@ describe('RefreshTokenInterceptor', () => {
     expect(interceptor).toBeTruthy();
   });
 
-  it('should set the token and check authent if response contains refreshtoken', async () => {
+  it('should set the token if response contains refreshtoken', async () => {
     jest.spyOn(UserService, 'tokenSetter').mockImplementation(() => {});
     jest.spyOn(userService, 'checkAuthentication');
 
@@ -39,8 +39,6 @@ describe('RefreshTokenInterceptor', () => {
 
     expect(jest.spyOn(UserService, 'tokenSetter')).toHaveBeenCalledTimes(1);
     expect(jest.spyOn(UserService, 'tokenSetter')).toBeCalledWith('a refreshToken');
-
-    expect(jest.spyOn(userService, 'checkAuthentication')).toHaveBeenCalledTimes(1);
   });
 });
 
