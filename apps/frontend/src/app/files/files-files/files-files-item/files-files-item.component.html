@@ -43,7 +43,7 @@
     <button mat-menu-item *ngIf="removeEnable" (click)="remove()"><mat-icon>delete_forever</mat-icon>{{ 'file.erase' | translate}}</button>
   </mat-menu>
 </div>
-<div class="progress" title="{{(100 * file?.downloaded/file?.size).toFixed(0) + '%'}}">
+<div class="progress" title="{{(100 * file?.downloaded/file?.size).toFixed(0) + '% ' + getEta()}}">
   <mat-progress-bar mode="determinate" value="{{100 * file?.downloaded/file?.size}}" color="{{file?.downloaded === file?.size ? 'primary' : 'warn'}}"></mat-progress-bar>
 </div>
 <div class="info">

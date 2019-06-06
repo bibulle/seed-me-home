@@ -71,6 +71,7 @@ export class FilesService {
         //this.logger.debug(stats);
 
         const result: FilesFile = {
+          downloadStarted: undefined,
           path: path.basename(filePath),
           fullpath: fs.realpathSync(filePath),
           size: stats.size,
@@ -86,6 +87,7 @@ export class FilesService {
             //this.logger.debug(progress);
             result.size = +progress.size;
             result.downloaded = progress.value;
+            result.downloadStarted = progress.downloadStarted;
           }
           //this.logger.debug(result);
           resolve(result);
@@ -106,6 +108,12 @@ export class FilesService {
               result.children.forEach(child => {
                 result.size += child.size;
                 result.downloaded += child.downloaded;
+                if (
+                  !result.downloadStarted ||
+                  (child.downloadStarted && child.downloadStarted.getTime() < result.downloadStarted.getTime())
+                ) {
+                  result.downloadStarted = child.downloadStarted;
+                }
               });
               //console.log(children);
               //this.logger.debug(result);

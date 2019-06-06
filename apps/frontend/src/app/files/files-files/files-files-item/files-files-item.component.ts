@@ -72,6 +72,25 @@ export class FilesFilesItemComponent implements OnInit {
     return moment.utc(dateMilli.getTime()).format('lll');
   }
 
+  getEta(): string {
+    if (
+      this.file &&
+      this.file.downloadStarted &&
+      this.file.downloaded !== 0 &&
+      this.file.downloaded !== this.file.size
+    ) {
+      this.file.downloadStarted = new Date(this.file.downloadStarted);
+
+      const dateMilli =
+        this.file.downloadStarted.getTime() +
+        (this.file.size * (new Date().getTime() - this.file.downloadStarted.getTime())) / this.file.downloaded;
+
+      return this.formatDate(new Date(dateMilli));
+    } else {
+      return '';
+    }
+  }
+
   toggleOpen() {
     this.open = !this.open;
   }

@@ -18,6 +18,7 @@ export interface RtorrentTorrent {
   shouldDownload: boolean;
   active: boolean;
   open: boolean;
+  downloadStarted: Date;
   files: RTorrentFile[];
 }
 
@@ -27,4 +28,5 @@ export interface RTorrentFile {
   size: number;
   downloaded: number;
   shouldDownload: boolean;
+  downloadStarted: Date;
 }

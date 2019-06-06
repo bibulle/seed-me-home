@@ -42,6 +42,7 @@ const files1: FilesFile = {
   downloaded: 210000,
   isDirectory: true,
   modifiedDate: new Date(0),
+  downloadStarted: undefined,
   children: [
     {
       path: 'file1',
@@ -50,6 +51,7 @@ const files1: FilesFile = {
       downloaded: 10000,
       isDirectory: false,
       modifiedDate: new Date(2),
+      downloadStarted: undefined,
       children: []
     },
     {
@@ -59,6 +61,7 @@ const files1: FilesFile = {
       downloaded: 0,
       isDirectory: true,
       modifiedDate: new Date(1),
+      downloadStarted: undefined,
       children: [
         {
           path: 'file2_1',
@@ -67,6 +70,7 @@ const files1: FilesFile = {
           downloaded: 0,
           isDirectory: false,
           modifiedDate: new Date(4),
+          downloadStarted: undefined,
           children: []
         }
       ]

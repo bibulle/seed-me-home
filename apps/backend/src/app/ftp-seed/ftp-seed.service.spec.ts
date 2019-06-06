@@ -109,19 +109,19 @@ describe('FtpSeedService', () => {
     service.Client.errorToSendOnFastGet = null;
     service.Client.stopFastGetAfterPercent = 100;
 
-    expect.assertions(2);
-    service.setProgression('/torrents/toto/titi_1/tutu\\testFile.txt', 0, 12345678);
+    expect.assertions(7);
+    service.setProgression('/torrents/toto/titi_1/tutu\\testFile.txt', 0, 12345678, undefined);
 
     await service.intervalJob_FtpSeedService();
 
     expect(service.Client.isEnded).toBeTruthy();
-    expect(service.getProgression('toto/titi_1/tutu\\testFile.txt')).toEqual({
-      fullPath: 'toto/titi_1/tutu\\testFile.txt',
-      progress: 100,
-      size: 12345678,
-      value: 12345678,
-      shouldDownload: true
-    });
+    expect(service.getProgression('toto/titi_1/tutu\\testFile.txt')).toBeDefined();
+    expect(service.getProgression('toto/titi_1/tutu\\testFile.txt').fullPath).toEqual('toto/titi_1/tutu\\testFile.txt');
+    expect(service.getProgression('toto/titi_1/tutu\\testFile.txt').progress).toEqual(100);
+    expect(service.getProgression('toto/titi_1/tutu\\testFile.txt').size).toEqual(12345678);
+    expect(service.getProgression('toto/titi_1/tutu\\testFile.txt').value).toEqual(12345678);
+    expect(service.getProgression('toto/titi_1/tutu\\testFile.txt').shouldDownload).toBeDefined();
+
     clearAProgressAndDownload(1);
   });
 
@@ -133,7 +133,7 @@ describe('FtpSeedService', () => {
     expect.assertions(2);
     ftpServiceLoggerErrorMock.mockClear();
 
-    service.setProgression('/torrents/toto/titi_2/tutu\\testFile.txt', 0, 12345678);
+    service.setProgression('/torrents/toto/titi_2/tutu\\testFile.txt', 0, 12345678, undefined);
     await service.intervalJob_FtpSeedService();
 
     expect(service.Client.isEnded).toBeTruthy();
@@ -149,7 +149,7 @@ describe('FtpSeedService', () => {
     expect.assertions(2);
     ftpServiceLoggerErrorMock.mockClear();
 
-    service.setProgression('/torrents/toto/titi_3/tutu\\testFile.txt', 0, 12345678);
+    service.setProgression('/torrents/toto/titi_3/tutu\\testFile.txt', 0, 12345678, undefined);
     await service.intervalJob_FtpSeedService();
 
     expect(service.Client.isEnded).toBeTruthy();
@@ -163,19 +163,18 @@ describe('FtpSeedService', () => {
     service.Client.errorToSendOnFastGet = null;
     service.Client.stopFastGetAfterPercent = 43;
 
-    expect.assertions(2);
+    expect.assertions(7);
 
-    service.setProgression('/torrents/toto/titi_4/tutu\\testFile.txt', 0, 12345678);
+    service.setProgression('/torrents/toto/titi_4/tutu\\testFile.txt', 0, 12345678, undefined);
     await service.intervalJob_FtpSeedService();
 
     expect(service.Client.isEnded).toBeTruthy();
-    expect(service.getProgression('toto/titi_4/tutu\\testFile.txt')).toEqual({
-      fullPath: 'toto/titi_4/tutu\\testFile.txt',
-      progress: 43,
-      size: 12345678,
-      value: 5308642,
-      shouldDownload: true
-    });
+    expect(service.getProgression('toto/titi_4/tutu\\testFile.txt')).toBeDefined();
+    expect(service.getProgression('toto/titi_4/tutu\\testFile.txt').fullPath).toEqual('toto/titi_4/tutu\\testFile.txt');
+    expect(service.getProgression('toto/titi_4/tutu\\testFile.txt').progress).toEqual(43);
+    expect(service.getProgression('toto/titi_4/tutu\\testFile.txt').size).toEqual(12345678);
+    expect(service.getProgression('toto/titi_4/tutu\\testFile.txt').value).toEqual(5308642);
+    expect(service.getProgression('toto/titi_4/tutu\\testFile.txt').shouldDownload).toBeDefined();
     clearAProgressAndDownload(4);
   });
 
@@ -193,8 +192,8 @@ describe('FtpSeedService', () => {
 
     expect.assertions(11);
 
-    service.setProgression('toto/titi_5/tutu\\testFile1.txt', 0, 12345678);
-    service.setProgression('toto/titi_5/tutu\\testFile2.txt', 0, 12345678);
+    service.setProgression('toto/titi_5/tutu\\testFile1.txt', 0, 12345678, undefined);
+    service.setProgression('toto/titi_5/tutu\\testFile2.txt', 0, 12345678, undefined);
 
     await service.intervalJob_FtpSeedService();
 

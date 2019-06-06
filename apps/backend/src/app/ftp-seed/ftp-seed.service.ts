@@ -79,7 +79,7 @@ export class FtpSeedService extends NestSchedule {
 
     let data = this.getProgression(fullPath);
     if (!data) {
-      this.setProgression(fullPath, 0, size);
+      this.setProgression(fullPath, 0, size, undefined);
       data = this.getProgression(fullPath);
     }
 
@@ -87,7 +87,7 @@ export class FtpSeedService extends NestSchedule {
     this._saveProgression(fullPath, data);
   }
 
-  setProgression(fullPath: string, value: number, size: number) {
+  setProgression(fullPath: string, value: number, size: number, downloadStarted: Date) {
     this._initialize();
 
     const previous = this.getProgression(fullPath);
@@ -97,7 +97,8 @@ export class FtpSeedService extends NestSchedule {
       size: size,
       progress: Math.round((100 * value) / Math.max(1, size)),
       shouldDownload: previous ? previous.shouldDownload : size < FtpSeedService.SIZE_LIMIT_DOWNLOAD,
-      fullPath: fullPath
+      fullPath: fullPath,
+      downloadStarted: downloadStarted
     };
 
     this._saveProgression(fullPath, obj);
@@ -272,6 +273,8 @@ export class FtpSeedService extends NestSchedule {
             }
           });
 
+          const downloadStarted = new Date();
+
           sftp.fastGet(
             fileSrc,
             fileTrg,
@@ -284,9 +287,10 @@ export class FtpSeedService extends NestSchedule {
                 const progress = that.getProgression(fullPath);
                 if (!progress.shouldDownload) {
                   FtpSeedService.logger.log('Asked to stop downloading : ' + fullPath);
+                  that.setProgression(fullPath, 0, total, undefined);
                   sftp.end();
                 } else {
-                  that.setProgression(fullPath, total_transferred, total);
+                  that.setProgression(fullPath, total_transferred, total, downloadStarted);
                 }
               }
             },
@@ -318,6 +322,11 @@ export class FtpSeedService extends NestSchedule {
       // connect
       if (this._configService.getSeedboxFtpDisabled()) {
         FtpSeedService.logger.warn('SeedBox downloading disabled ');
+        //        const progress = that.getProgression(fullPath);
+        //        FtpSeedService.logger.debug(progress);
+        //        if (progress) {
+        //          that.setProgression(fullPath, progress.size*0.1, progress.size, new Date())
+        //        }
         return collect();
       }
       conn.connect(this._ftpConfig);
@@ -331,4 +340,5 @@ export class Progression {
   progress: number;
   shouldDownload: boolean;
   fullPath: string;
+  downloadStarted: Date;
 }

@@ -6,4 +6,5 @@ export interface FilesFile {
   isDirectory: boolean;
   modifiedDate: Date;
   children: FilesFile[];
+  downloadStarted: Date;
 }

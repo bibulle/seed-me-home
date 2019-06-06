@@ -127,17 +127,25 @@ export class RtorrentService extends NestSchedule {
               //this.logger.debug(torrent.active+' '+torrent.complete+' '+torrent.open+' '+torrent.name);
               let total_downloaded = 0;
               let total_shouldDownload = false;
+              let total_downloadStarted: Date;
               torrent.files.forEach(file => {
                 const progress = this._ftpSeedService.getProgression(file.fullpath);
                 if (progress) {
                   file.shouldDownload = progress.shouldDownload;
                   file.downloaded = progress.value;
+                  file.downloadStarted = progress.downloadStarted;
                   total_downloaded += progress.value;
                   total_shouldDownload = total_shouldDownload || progress.shouldDownload;
+                  if (
+                    !total_downloadStarted ||
+                    (file.downloadStarted && file.downloadStarted.getTime() < total_downloadStarted.getTime())
+                  ) {
+                    total_downloadStarted = file.downloadStarted;
+                  }
                 } else {
                   file.downloaded = 0;
                   if (file['completed_chunks'] === file['chunks']) {
-                    this._ftpSeedService.setProgression(file.fullpath, 0, file.size);
+                    this._ftpSeedService.setProgression(file.fullpath, 0, file.size, undefined);
                   }
                 }
                 this._ftpSeedService.tellProgressionUseful(file.fullpath);
@@ -145,12 +153,8 @@ export class RtorrentService extends NestSchedule {
 
               torrent.downloaded = total_downloaded;
               torrent.shouldDownload = total_shouldDownload;
-              //              if (torrent.name.startsWith('Game.of.Thrones.S08E03')) {
-              //                this.logger.debug(torrent);
-              //              }
-              //              if (torrent.name.startsWith('La Symphonie')) {
-              //                this.logger.debug(torrent);
-              //              }
+              //noinspection JSUnusedAssignment
+              torrent.downloadStarted = total_downloadStarted;
             });
           }
 
