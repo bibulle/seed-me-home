@@ -68,7 +68,13 @@ export class FtpSeedService extends NestSchedule {
 
     try {
       const data = fs.readFileSync(fileTrg, { encoding: 'utf8' });
-      return JSON.parse(data);
+
+      const progress = JSON.parse(data) as Progression;
+      if (progress.downloadStarted) {
+        progress.downloadStarted = new Date(progress.downloadStarted);
+      }
+
+      return progress;
     } catch (e) {
       return null;
     }
