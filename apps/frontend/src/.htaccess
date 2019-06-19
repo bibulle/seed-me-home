@@ -9,18 +9,18 @@
    RewriteRule ^.*$ - [NC,L]
 
    RewriteCond %{REQUEST_URI} /api
-   RewriteRule ^(.*)$ http://localhost:4000/$1 [P]
+   RewriteRule ^(.*)$ http://localhost:4002/$1 [P]
 
    RewriteCond %{REQUEST_URI} /rtorrent
-   RewriteRule ^(.*)$ http://localhost:4000/$1 [P]
+   RewriteRule ^(.*)$ http://localhost:4002/$1 [P]
 
    RewriteCond %{REQUEST_URI} /files_api
-   RewriteRule ^(.*)$ http://localhost:4000/$1 [P]
+   RewriteRule ^(.*)$ http://localhost:4002/$1 [P]
 
    RewriteCond %{REQUEST_URI} /authentication
-   RewriteRule ^(.*)$ http://localhost:4000/$1 [P]
+   RewriteRule ^(.*)$ http://localhost:4002/$1 [P]
 
    # otherwise forward it to index.html
-   RewriteRule ^(.*) /index.html [NC,L]
+   RewriteRule ^(.*) /seeds/index.html [NC,L]
 
 </IfModule>

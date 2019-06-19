@@ -49,7 +49,7 @@ registerLocaleData(localeEn, 'en');
     JwtModule.forRoot({
       config: {
         tokenGetter: UserService.tokenGetter,
-        whitelistedDomains: ['localhost:4000' as string | RegExp, 'seeds.bibulle.fr', new RegExp('^null$')]
+        whitelistedDomains: ['localhost:4002' as string | RegExp, 'seeds.bibulle.fr', new RegExp('^null$')]
         //        whitelistedDomains: new Array(new RegExp('^null$'))
       }
     }),

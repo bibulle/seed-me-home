@@ -33,7 +33,7 @@ async function bootstrap() {
   );
   // start the main server
   //app.setGlobalPrefix(``);
-  const port = process.env.port || 4000;
+  const port = process.env.port || 4002;
   await app
     .listen(port, () => {
       Logger.log(`Listening at http://localhost:${port}`);
