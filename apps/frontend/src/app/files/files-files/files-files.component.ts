@@ -37,6 +37,7 @@ export class FilesFilesComponent implements OnInit, OnDestroy {
       case FilePath.Nas:
         observable = this._filesFilesService.currentFilesObservableNas();
         this.sortItem = 'name';
+        this.sortDirection = 'asc';
         break;
     }
     if (observable) {
