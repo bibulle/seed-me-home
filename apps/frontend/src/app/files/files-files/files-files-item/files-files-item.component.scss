@@ -55,6 +55,10 @@
     }
   }
 
+  .name {
+    flex: auto;
+    padding-left: 2em;
+  }
   .size {
     width: 8em;
   }

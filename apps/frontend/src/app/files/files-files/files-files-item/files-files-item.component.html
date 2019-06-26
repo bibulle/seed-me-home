@@ -1,4 +1,9 @@
 <div *ngIf="index==0" class="header">
+  <span class="name" (click)="toggleSort('name')" [class.unselected]="(sortItem!=='name')">
+    <mat-icon *ngIf="(sortItem!=='name') || (sortDirection!=='asc')">keyboard_arrow_down</mat-icon>
+    <mat-icon *ngIf="(sortItem==='name') && (sortDirection==='asc')">keyboard_arrow_up</mat-icon>
+    {{'name' | translate}}
+  </span>
   <span class="done" (click)="toggleSort('progress')" [class.unselected]="(sortItem!=='progress')">
     <mat-icon *ngIf="(sortItem!=='progress') || (sortDirection!=='asc')">keyboard_arrow_down</mat-icon>
     <mat-icon *ngIf="(sortItem==='progress') && (sortDirection==='asc')">keyboard_arrow_up</mat-icon>

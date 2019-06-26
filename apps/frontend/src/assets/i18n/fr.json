@@ -43,6 +43,7 @@
   "file.move.movie": "films",
   "file.move.series": "series",
   "file.erase": "Supprime",
+  "name": "Nom",
   "progress": "Avancement",
   "size": "Taille",
   "down": "Down",

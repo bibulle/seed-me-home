@@ -32,9 +32,11 @@ export class FilesFilesComponent implements OnInit, OnDestroy {
     switch (this.filePath) {
       case FilePath.Local:
         observable = this._filesFilesService.currentFilesObservableLocal();
+        this.sortItem = 'date';
         break;
       case FilePath.Nas:
         observable = this._filesFilesService.currentFilesObservableNas();
+        this.sortItem = 'name';
         break;
     }
     if (observable) {
@@ -125,6 +127,9 @@ export class FilesFilesComponent implements OnInit, OnDestroy {
       files.children.sort((f1: FilesFile, f2: FilesFile) => {
         let ret = 0;
         switch (this.sortItem) {
+          case 'name':
+            ret = f1.path.localeCompare(f2.path);
+            break;
           case 'date':
             ret = new Date(f1.modifiedDate).getTime() - new Date(f2.modifiedDate).getTime();
             break;
