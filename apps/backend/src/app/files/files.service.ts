@@ -248,14 +248,25 @@ export class FilesService {
 
       // Move it
       const that = this;
+      let mvDone = false;
       mv(fileMove.sourceFullPath, fullPathTarget, { mkdirp: true }, function(err) {
         if (err) {
           that.logger.error('cannot move "' + fileMove.sourceFullPath + '" to "' + fullPathTarget + '"');
           that.logger.error(err);
+          mvDone = true;
           return reject(new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR));
         }
-        resolve();
+        if (!mvDone) {
+          mvDone = true;
+          resolve();
+        }
       });
+      setTimeout(() => {
+        if (!mvDone) {
+          mvDone = true;
+          resolve();
+        }
+      }, 2000);
     });
   }
 
