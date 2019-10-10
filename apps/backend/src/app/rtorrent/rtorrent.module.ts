@@ -9,6 +9,6 @@ import { ScheduleModule } from 'nest-schedule';
   imports: [ScheduleModule],
   controllers: [RtorrentController],
   providers: [RtorrentService, ConfigService, FtpSeedService],
-  exports: []
+  exports: [RtorrentService]
 })
 export class RtorrentModule {}

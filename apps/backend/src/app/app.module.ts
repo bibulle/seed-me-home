@@ -7,9 +7,10 @@ import { AuthenticationModule } from './authentication/authentication.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { RefreshTokenInterceptor } from './interceptors/refresh-token.interceptor';
 import { FilesModule } from './files/files.module';
+import { HealthModule } from './health/health.module';
 
 @Module({
-  imports: [RtorrentModule, AuthenticationModule, FilesModule],
+  imports: [RtorrentModule, AuthenticationModule, FilesModule, HealthModule],
   controllers: [AppController],
   providers: [
     AppService,

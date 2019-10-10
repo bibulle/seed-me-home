@@ -8,6 +8,6 @@ import { FilesService } from './files.service';
   imports: [],
   controllers: [FilesController],
   providers: [FilesService, ConfigService, FtpSeedService],
-  exports: []
+  exports: [FilesService]
 })
 export class FilesModule {}
