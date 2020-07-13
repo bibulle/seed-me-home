@@ -127,7 +127,7 @@
     "prettier": "1.15.2",
     "replace": "^1.1.0",
     "rxjs-marbles": "^5.0.2",
-    "standard-version": "^5.0.2",
+    "standard-version": "^8.0.1",
     "ts-jest": "24.0.0",
     "ts-node": "~7.0.0",
     "tslint": "~5.11.0",
