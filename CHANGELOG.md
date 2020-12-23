@@ -1,6 +1,24 @@
-# Change Log
+# Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+### [0.8.1](https://github.com/bibulle/seed-me-home/compare/v0.8.0...v0.8.1) (2020-12-23)
+
+
+### Features
+
+* add downloaded ETA ([98992f9](https://github.com/bibulle/seed-me-home/commit/98992f9ee35d840005560e29eb22bf476bb71e06))
+* add health endpoint ([4bcb385](https://github.com/bibulle/seed-me-home/commit/4bcb385cab0e3ace1f9c9e9bf38760dc9902f969))
+* add name sort in files ([e2baa51](https://github.com/bibulle/seed-me-home/commit/e2baa5174fadcdfdbc254e576b4da3b5fab20575))
+* tell ETA from now (nor date anymore) ([e53eccd](https://github.com/bibulle/seed-me-home/commit/e53eccd4253243016f797e38c4ac06bbde7228c0))
+
+
+### Bug Fixes
+
+* default sort should be asc ([6cdb01f](https://github.com/bibulle/seed-me-home/commit/6cdb01fa69f41c0d4601d8246eba37cd1e4ef9c9))
+* do not wait too long on file move ([f78926e](https://github.com/bibulle/seed-me-home/commit/f78926e8c9d9217f056ac84ac29445be843f5472))
+* download started must be a date ([e2e44e5](https://github.com/bibulle/seed-me-home/commit/e2e44e5c707ceaab2d1267698a25e1d620b98664))
+* nav bar spacing ([78d6a84](https://github.com/bibulle/seed-me-home/commit/78d6a849cb7fa1502c3970592f08f4e82a9ef6cf))
 
 <a name="0.8.0"></a>
 # [0.8.0](https://github.com/bibulle/seed-me-home/compare/v0.7.0...v0.8.0) (2019-06-06)
