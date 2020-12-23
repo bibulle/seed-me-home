@@ -2,12 +2,19 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { RtorrentTorrentsComponent } from './rtorrent-torrents.component';
 import { RtorrentTorrentsService } from './rtorrent-torrents.service';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from '@angular/common/http/testing';
 import { Observable, Subject } from 'rxjs';
 import { RtorrentTorrent } from '@seed-me-home/models';
 import { RtorrentTorrentItemComponent } from './rtorrent-torrent-item/rtorrent-torrent-item.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatCardModule, MatDialogModule, MatIconModule, MatMenuModule, MatProgressBarModule } from '@angular/material';
+import { MatCardModule } from '@angular/material/card';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { BytesSizePipe } from '../../utils/pipes/bytes-size.pipe';
 
 //noinspection SpellCheckingInspection
@@ -35,12 +42,15 @@ const goodAnswer: RtorrentTorrent[] = [
     files: [
       {
         size: 1999503360,
-        fullpath: '/home/14user/rutorrent/torrents/ubuntu-18.10-desktop-amd64.iso',
+        fullpath:
+          '/home/14user/rutorrent/torrents/ubuntu-18.10-desktop-amd64.iso',
         path: 'ubuntu-18.10-desktop-amd64.iso',
         downloaded: 0,
-        shouldDownload: false
-      }
-    ]
+        shouldDownload: false,
+        downloadStarted: new Date(3),
+      },
+    ],
+    downloadStarted: new Date(3),
   },
   {
     hash: '4A03DA39750C4BDD0FEBB66D8B138CEEA5993FAA',
@@ -65,13 +75,16 @@ const goodAnswer: RtorrentTorrent[] = [
     files: [
       {
         size: 1157627904,
-        fullpath: '/home/14user/rutorrent/torrents/ubuntu-14.04.6-desktop-amd64.iso',
+        fullpath:
+          '/home/14user/rutorrent/torrents/ubuntu-14.04.6-desktop-amd64.iso',
         path: 'ubuntu-14.04.6-desktop-amd64.iso',
         downloaded: 0,
-        shouldDownload: false
-      }
-    ]
-  }
+        shouldDownload: false,
+        downloadStarted: new Date(3),
+      },
+    ],
+    downloadStarted: new Date(3),
+  },
 ];
 
 describe('RtorrentTorrentsComponent', () => {
@@ -90,10 +103,19 @@ describe('RtorrentTorrentsComponent', () => {
         MatIconModule,
         MatProgressBarModule,
         MatMenuModule,
-        MatDialogModule
+        MatDialogModule,
       ],
-      declarations: [RtorrentTorrentsComponent, RtorrentTorrentItemComponent, BytesSizePipe],
-      providers: [{ provide: RtorrentTorrentsService, useClass: RtorrentTorrentsServiceMock }]
+      declarations: [
+        RtorrentTorrentsComponent,
+        RtorrentTorrentItemComponent,
+        BytesSizePipe,
+      ],
+      providers: [
+        {
+          provide: RtorrentTorrentsService,
+          useClass: RtorrentTorrentsServiceMock,
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(RtorrentTorrentsComponent);

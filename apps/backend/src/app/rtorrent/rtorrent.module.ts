@@ -3,12 +3,12 @@ import { RtorrentController } from './rtorrent.controller';
 import { RtorrentService } from './rtorrent.service';
 import { ConfigService } from '../../services/config/config.service';
 import { FtpSeedService } from '../ftp-seed/ftp-seed.service';
-import { ScheduleModule } from 'nest-schedule';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
-  imports: [ScheduleModule],
+  imports: [ScheduleModule.forRoot()],
   controllers: [RtorrentController],
   providers: [RtorrentService, ConfigService, FtpSeedService],
-  exports: [RtorrentService]
+  exports: [RtorrentService],
 })
 export class RtorrentModule {}

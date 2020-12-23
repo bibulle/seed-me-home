@@ -1,6 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { NotFoundComponent, NotFoundModule } from './not-found/not-found.component';
+import {
+  NotFoundComponent,
+  NotFoundModule,
+} from './not-found/not-found.component';
 import { FilesComponent, FilesModule } from './files/files.component';
 import { SeedsComponent, SeedsModule } from './seeds/seeds.component';
 import { AuthGuard, AuthGuardAdmin } from './authent/auth.guard';
@@ -10,7 +13,7 @@ const routes: Routes = [
   {
     path: '',
     redirectTo: '/files',
-    pathMatch: 'full'
+    pathMatch: 'full',
   },
   {
     path: 'seeds',
@@ -21,8 +24,8 @@ const routes: Routes = [
       menu: true,
       iconType: 'icon',
       icon: 'home',
-      onlyAdmin: true
-    }
+      onlyAdmin: true,
+    },
   },
   {
     path: 'files',
@@ -32,8 +35,8 @@ const routes: Routes = [
       label: 'label.files',
       menu: true,
       iconType: 'icon',
-      icon: 'folder'
-    }
+      icon: 'folder',
+    },
   },
   // Show the 404 page for any routes that don't exist.
   {
@@ -41,14 +44,19 @@ const routes: Routes = [
     component: NotFoundComponent,
     data: {
       label: 'route.not-found',
-      menu: false
-    }
-  }
+      menu: false,
+    },
+  },
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes), SeedsModule, FilesModule, NotFoundModule],
+  imports: [
+    RouterModule.forRoot(routes),
+    SeedsModule,
+    FilesModule,
+    NotFoundModule,
+  ],
   exports: [RouterModule],
-  providers: [WindowService]
+  providers: [WindowService],
 })
 export class AppRoutingModule {}

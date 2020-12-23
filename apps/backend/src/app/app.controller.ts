@@ -6,6 +6,7 @@ import { MessageLog, MessageLogLevel } from '@seed-me-home/models';
 export class AppController {
   readonly logger = new Logger('FrontEnd');
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   constructor() {}
 
   @Post('/logs')
@@ -20,15 +21,21 @@ export class AppController {
       case MessageLogLevel.DEBUG:
       case MessageLogLevel.INFO:
       case MessageLogLevel.LOG:
-        this.logger.debug(mess + ' (' + message.fileName + message.lineNumber + ')');
+        this.logger.debug(
+          mess + ' (' + message.fileName + message.lineNumber + ')'
+        );
         break;
       case MessageLogLevel.WARN:
-        this.logger.warn(mess + ' (' + message.fileName + message.lineNumber + ')');
+        this.logger.warn(
+          mess + ' (' + message.fileName + message.lineNumber + ')'
+        );
         break;
       case MessageLogLevel.ERROR:
       case MessageLogLevel.FATAL:
       default:
-        this.logger.error(mess + ' (' + message.fileName + message.lineNumber + ')');
+        this.logger.error(
+          mess + ' (' + message.fileName + message.lineNumber + ')'
+        );
         break;
     }
 

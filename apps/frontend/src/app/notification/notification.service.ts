@@ -1,12 +1,17 @@
 import { Injectable, NgModule } from '@angular/core';
-import { MatSnackBar, MatSnackBarConfig, MatSnackBarModule } from '@angular/material';
+import {
+  MatSnackBar,
+  MatSnackBarConfig,
+  MatSnackBarModule,
+} from '@angular/material/snack-bar';
 import { HttpClientModule, HttpErrorResponse } from '@angular/common/http';
 import { throwError } from 'rxjs';
-import { NGXLogger, NGXLoggerMock } from 'ngx-logger';
+import { NGXLogger } from 'ngx-logger';
+import { NGXLoggerMock } from 'ngx-logger/testing';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class NotificationService {
   constructor(
@@ -18,7 +23,7 @@ export class NotificationService {
   error(err: string, ...args: any[]) {
     this.logger.error(err);
 
-    this._prepareMessage(err, ...args).then(mess => {
+    this._prepareMessage(err, ...args).then((mess) => {
       this._display(mess, 5000, ['error']);
     });
   }
@@ -40,7 +45,10 @@ export class NotificationService {
     } else {
       // The backend returned an unsuccessful response code.
       // The response body may contain clues as to what went wrong,
-      this.logger.error(`Backend returned code ${error.status}, ` + `body was: ${JSON.stringify(error.error)}`);
+      this.logger.error(
+        `Backend returned code ${error.status}, ` +
+          `body was: ${JSON.stringify(error.error)}`
+      );
 
       if (error && error.error && error.error.message) {
         message = error.error.message + ' | translate';
@@ -55,17 +63,17 @@ export class NotificationService {
   }
 
   private _prepareMessage(mess: string, ...args: any[]): Promise<string> {
-    return new Promise<string>(resolve => {
+    return new Promise<string>((resolve) => {
       if (mess.match('.* [|] translate')) {
         const key = mess.replace(' | translate', '');
-        this._translateService.get(key, args).subscribe(translated => {
+        this._translateService.get(key, args).subscribe((translated) => {
           resolve(translated);
         });
       } else {
         let output = mess;
 
         if (args && args.length > 0) {
-          args.forEach(arg => {
+          args.forEach((arg) => {
             output += ' - ' + JSON.stringify(arg);
           });
         }
@@ -80,6 +88,12 @@ export class NotificationService {
   imports: [HttpClientModule, MatSnackBarModule, TranslateModule],
   declarations: [],
   exports: [],
-  providers: [NotificationService, { provide: NGXLogger, useClass: NGXLoggerMock }]
+  providers: [
+    NotificationService,
+    { provide: NGXLogger, useClass: NGXLoggerMock },
+  ],
 })
 export class NotificationModule {}
+
+import { HttpHeaders, HttpParams } from '@angular/common/http';
+import { LoggerConfig, NGXLoggerMonitor } from 'ngx-logger';

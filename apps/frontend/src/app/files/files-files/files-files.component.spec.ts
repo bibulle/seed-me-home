@@ -2,14 +2,19 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FilePath, FilesFilesComponent } from './files-files.component';
 import { FilesFilesService } from './files-files.service';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from '@angular/common/http/testing';
 import { Observable, Subject } from 'rxjs';
 import { FilesFile } from '@seed-me-home/models';
-import { MatCardModule, MatIconModule } from '@angular/material';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
 import { BytesSizeModule } from '../../utils/pipes/bytes-size.pipe';
 import { FilesFilesItemModule } from './files-files-item/files-files-item.component';
-import { NGXLogger, NGXLoggerMock } from 'ngx-logger';
+import { NGXLogger } from 'ngx-logger';
+import { NGXLoggerMock } from 'ngx-logger/testing';
 
 describe('FilesFilesComponent', () => {
   let component: FilesFilesComponent;
@@ -26,13 +31,13 @@ describe('FilesFilesComponent', () => {
         MatCardModule,
         TranslateModule.forRoot(),
         BytesSizeModule,
-        FilesFilesItemModule
+        FilesFilesItemModule,
       ],
       declarations: [FilesFilesComponent],
       providers: [
         { provide: FilesFilesService, useClass: FilesFilesServiceMock },
-        { provide: NGXLogger, useClass: NGXLoggerMock }
-      ]
+        { provide: NGXLogger, useClass: NGXLoggerMock },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FilesFilesComponent);
@@ -62,7 +67,8 @@ describe('FilesFilesComponent', () => {
           downloaded: 10000,
           isDirectory: false,
           modifiedDate: new Date(2),
-          children: []
+          children: [],
+          downloadStarted: new Date(3),
         },
         {
           path: 'dir1/dir2',
@@ -79,7 +85,8 @@ describe('FilesFilesComponent', () => {
               downloaded: 200000,
               isDirectory: false,
               modifiedDate: new Date(3),
-              children: []
+              children: [],
+              downloadStarted: new Date(3),
             },
             {
               path: 'dir1/dir2/file2_2',
@@ -88,7 +95,8 @@ describe('FilesFilesComponent', () => {
               downloaded: 1000,
               isDirectory: false,
               modifiedDate: new Date(4),
-              children: []
+              children: [],
+              downloadStarted: new Date(3),
             },
             {
               path: 'dir1/dir2/error_file',
@@ -97,11 +105,14 @@ describe('FilesFilesComponent', () => {
               downloaded: 0,
               isDirectory: false,
               modifiedDate: null,
-              children: []
-            }
-          ]
-        }
-      ]
+              children: [],
+              downloadStarted: new Date(3),
+            },
+          ],
+          downloadStarted: new Date(3),
+        },
+      ],
+      downloadStarted: new Date(3),
     };
 
     component.filePath = FilePath.Local;
@@ -138,7 +149,8 @@ describe('FilesFilesComponent', () => {
           downloaded: 10000,
           isDirectory: false,
           modifiedDate: new Date(2),
-          children: []
+          children: [],
+          downloadStarted: new Date(3),
         },
         {
           path: 'dir1/dir2',
@@ -155,11 +167,14 @@ describe('FilesFilesComponent', () => {
               downloaded: 200000,
               isDirectory: false,
               modifiedDate: new Date(3),
-              children: []
-            }
-          ]
-        }
-      ]
+              children: [],
+              downloadStarted: new Date(3),
+            },
+          ],
+          downloadStarted: new Date(3),
+        },
+      ],
+      downloadStarted: new Date(3),
     };
     const goodAnswer2: FilesFile = {
       path: 'dir1',
@@ -176,7 +191,8 @@ describe('FilesFilesComponent', () => {
           downloaded: 10000,
           isDirectory: false,
           modifiedDate: new Date(2),
-          children: []
+          children: [],
+          downloadStarted: new Date(3),
         },
         {
           path: 'dir1/dir2',
@@ -193,7 +209,8 @@ describe('FilesFilesComponent', () => {
               downloaded: 200000,
               isDirectory: false,
               modifiedDate: new Date(3),
-              children: []
+              children: [],
+              downloadStarted: new Date(3),
             },
             {
               path: 'dir1/dir2/file2_2',
@@ -202,7 +219,8 @@ describe('FilesFilesComponent', () => {
               downloaded: 1000,
               isDirectory: false,
               modifiedDate: new Date(4),
-              children: []
+              children: [],
+              downloadStarted: new Date(3),
             },
             {
               path: 'dir1/dir2/error_file',
@@ -211,11 +229,14 @@ describe('FilesFilesComponent', () => {
               downloaded: 0,
               isDirectory: false,
               modifiedDate: null,
-              children: []
-            }
-          ]
-        }
-      ]
+              children: [],
+              downloadStarted: new Date(3),
+            },
+          ],
+          downloadStarted: new Date(3),
+        },
+      ],
+      downloadStarted: new Date(3),
     };
     const goodAnswer3: FilesFile = {
       path: 'dir1',
@@ -232,7 +253,8 @@ describe('FilesFilesComponent', () => {
           downloaded: 10000,
           isDirectory: false,
           modifiedDate: new Date(2),
-          children: []
+          children: [],
+          downloadStarted: new Date(3),
         },
         {
           path: 'dir1/dir2',
@@ -249,11 +271,14 @@ describe('FilesFilesComponent', () => {
               downloaded: 200000,
               isDirectory: false,
               modifiedDate: new Date(3),
-              children: []
-            }
-          ]
-        }
-      ]
+              children: [],
+              downloadStarted: new Date(3),
+            },
+          ],
+          downloadStarted: new Date(3),
+        },
+      ],
+      downloadStarted: new Date(3),
     };
 
     component.filePath = FilePath.Nas;
@@ -284,7 +309,7 @@ describe('FilesFilesComponent', () => {
 
   it('should remove file if service OK', async () => {
     jest.spyOn(filesFilesService, 'removeFile').mockImplementation(() => {
-      return new Promise(resolve => {
+      return new Promise<void>((resolve) => {
         resolve();
       });
     });
@@ -298,7 +323,8 @@ describe('FilesFilesComponent', () => {
       downloaded: 200000,
       isDirectory: false,
       modifiedDate: new Date(3),
-      children: []
+      children: [],
+      downloadStarted: new Date(3),
     });
 
     // File should be removed if OK
@@ -317,7 +343,8 @@ describe('FilesFilesComponent', () => {
           downloaded: 10000,
           isDirectory: false,
           modifiedDate: new Date(2),
-          children: []
+          children: [],
+          downloadStarted: new Date(3),
         },
         {
           path: 'dir1/dir2',
@@ -334,7 +361,8 @@ describe('FilesFilesComponent', () => {
               downloaded: 200000,
               isDirectory: false,
               modifiedDate: new Date(3),
-              children: []
+              children: [],
+              downloadStarted: new Date(3),
             },
             {
               path: 'dir1/dir2/file2_2',
@@ -343,7 +371,8 @@ describe('FilesFilesComponent', () => {
               downloaded: 1000,
               isDirectory: false,
               modifiedDate: new Date(4),
-              children: []
+              children: [],
+              downloadStarted: new Date(3),
             },
             {
               path: 'dir1/dir2/error_file',
@@ -352,17 +381,22 @@ describe('FilesFilesComponent', () => {
               downloaded: 0,
               isDirectory: false,
               modifiedDate: null,
-              children: []
-            }
-          ]
-        }
-      ]
+              children: [],
+              downloadStarted: new Date(3),
+            },
+          ],
+          downloadStarted: new Date(3),
+        },
+      ],
+      downloadStarted: new Date(3),
     };
 
     expect(component.filesFiles).toBeTruthy();
     expect(component.filesFiles.children.length).toBe(2);
     expect(component.filesFiles.children[1].children.length).toBe(3);
-    expect(component.filesFiles.children[1].children[0].path).toBe('dir1/dir2/file2_1');
+    expect(component.filesFiles.children[1].children[0].path).toBe(
+      'dir1/dir2/file2_1'
+    );
 
     await component.removeFile({
       path: 'dir1/dir2/file2_1',
@@ -371,13 +405,16 @@ describe('FilesFilesComponent', () => {
       downloaded: 200000,
       isDirectory: false,
       modifiedDate: new Date(3),
-      children: []
+      children: [],
+      downloadStarted: new Date(3),
     });
 
     expect(component.filesFiles).toBeTruthy();
     expect(component.filesFiles.children.length).toBe(2);
     expect(component.filesFiles.children[1].children.length).toBe(2);
-    expect(component.filesFiles.children[1].children[0].path).toBe('dir1/dir2/file2_2');
+    expect(component.filesFiles.children[1].children[0].path).toBe(
+      'dir1/dir2/file2_2'
+    );
   });
 
   it('should not remove file if service KO', async () => {
@@ -403,7 +440,8 @@ describe('FilesFilesComponent', () => {
           downloaded: 10000,
           isDirectory: false,
           modifiedDate: new Date(2),
-          children: []
+          children: [],
+          downloadStarted: new Date(3),
         },
         {
           path: 'dir1/dir2',
@@ -420,7 +458,8 @@ describe('FilesFilesComponent', () => {
               downloaded: 200000,
               isDirectory: false,
               modifiedDate: new Date(3),
-              children: []
+              children: [],
+              downloadStarted: new Date(3),
             },
             {
               path: 'dir1/dir2/file2_2',
@@ -429,7 +468,8 @@ describe('FilesFilesComponent', () => {
               downloaded: 1000,
               isDirectory: false,
               modifiedDate: new Date(4),
-              children: []
+              children: [],
+              downloadStarted: new Date(3),
             },
             {
               path: 'dir1/dir2/error_file',
@@ -438,17 +478,22 @@ describe('FilesFilesComponent', () => {
               downloaded: 0,
               isDirectory: false,
               modifiedDate: null,
-              children: []
-            }
-          ]
-        }
-      ]
+              children: [],
+              downloadStarted: new Date(3),
+            },
+          ],
+          downloadStarted: new Date(3),
+        },
+      ],
+      downloadStarted: new Date(3),
     };
 
     expect(component.filesFiles).toBeTruthy();
     expect(component.filesFiles.children.length).toBe(2);
     expect(component.filesFiles.children[1].children.length).toBe(3);
-    expect(component.filesFiles.children[1].children[0].path).toBe('dir1/dir2/file2_1');
+    expect(component.filesFiles.children[1].children[0].path).toBe(
+      'dir1/dir2/file2_1'
+    );
 
     await component.removeFile({
       path: 'dir1/dir2/file2_1',
@@ -457,13 +502,16 @@ describe('FilesFilesComponent', () => {
       downloaded: 200000,
       isDirectory: false,
       modifiedDate: new Date(3),
-      children: []
+      children: [],
+      downloadStarted: new Date(3),
     });
 
     expect(component.filesFiles).toBeTruthy();
     expect(component.filesFiles.children.length).toBe(2);
     expect(component.filesFiles.children[1].children.length).toBe(3);
-    expect(component.filesFiles.children[1].children[0].path).toBe('dir1/dir2/file2_1');
+    expect(component.filesFiles.children[1].children[0].path).toBe(
+      'dir1/dir2/file2_1'
+    );
   });
 
   it('toggle sort should do the job', () => {
@@ -482,7 +530,8 @@ describe('FilesFilesComponent', () => {
           downloaded: 10000,
           isDirectory: false,
           modifiedDate: new Date(2),
-          children: []
+          children: [],
+          downloadStarted: new Date(3),
         },
         {
           path: 'dir1/dir2',
@@ -499,7 +548,8 @@ describe('FilesFilesComponent', () => {
               downloaded: 200000,
               isDirectory: false,
               modifiedDate: new Date(3),
-              children: []
+              children: [],
+              downloadStarted: new Date(3),
             },
             {
               path: 'dir1/dir2/file2_2',
@@ -508,7 +558,8 @@ describe('FilesFilesComponent', () => {
               downloaded: 1000,
               isDirectory: false,
               modifiedDate: new Date(4),
-              children: []
+              children: [],
+              downloadStarted: new Date(3),
             },
             {
               path: 'dir1/dir2/error_file',
@@ -517,11 +568,14 @@ describe('FilesFilesComponent', () => {
               downloaded: 0,
               isDirectory: false,
               modifiedDate: null,
-              children: []
-            }
-          ]
-        }
-      ]
+              children: [],
+              downloadStarted: new Date(3),
+            },
+          ],
+          downloadStarted: new Date(3),
+        },
+      ],
+      downloadStarted: new Date(3),
     };
 
     component.filePath = FilePath.Local;

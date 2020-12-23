@@ -1,24 +1,26 @@
 import { NgModule } from '@angular/core';
 
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
+import { MatMenuModule } from '@angular/material/menu';
+import {
+  MatProgressBarModule,
+  // MatCardModule
+} from '@angular/material/progress-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import {
   // MatButtonModule,
   // MatMenuModule,
   MatToolbarModule,
-  MatIconModule,
-  MatListModule,
-  MatSidenavModule,
-  MatSnackBarModule,
-  MatCardModule,
-  MatMenuModule,
-  MatButtonModule,
-  MatProgressSpinnerModule,
-  MatCheckboxModule,
-  MatTooltipModule,
-  MatFormFieldModule,
-  MatInputModule,
-  MatProgressBarModule
-  // MatCardModule
-} from '@angular/material';
+} from '@angular/material/toolbar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
@@ -36,7 +38,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     MatProgressBarModule,
     MatCheckboxModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
   ],
   exports: [
     MatButtonModule,
@@ -52,7 +54,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     MatCheckboxModule,
     MatTooltipModule,
     MatFormFieldModule,
-    MatInputModule
-  ]
+    MatInputModule,
+  ],
 })
 export class MaterialModule {}

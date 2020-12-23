@@ -1,11 +1,11 @@
 <mat-card>
   <mat-card-title>{{'title.rtorrent.torrents' | translate}}</mat-card-title>
   <mat-card-content>
-    <app-rtorrent-torrent-item *ngFor="let torrent of rtorrentTorrents; let i = index"
+    <seed-me-home2-rtorrent-torrent-item *ngFor="let torrent of rtorrentTorrents; let i = index"
                                [index]="i"
                                [torrent]="torrent"
                                [sortItem]="sortItem"
                                [sortDirection]="sortDirection"
-                               (toggleSortEvent)="toggleSort($event)"></app-rtorrent-torrent-item>
+                               (toggleSortEvent)="toggleSort($event)"></seed-me-home2-rtorrent-torrent-item>
   </mat-card-content>
 </mat-card>

@@ -1,4 +1,9 @@
-import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing';
+import {
+  async,
+  ComponentFixture,
+  inject,
+  TestBed,
+} from '@angular/core/testing';
 
 import { UserComponent } from './user.component';
 import {
@@ -6,11 +11,14 @@ import {
   LangChangeEvent,
   TranslateModule,
   TranslateService,
-  TranslationChangeEvent
+  TranslationChangeEvent,
 } from '@ngx-translate/core';
 import { UserModule } from './user.module';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MatButtonModule, MatIconModule, MatIconRegistry, MatMenuModule, MatToolbarModule } from '@angular/material';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { DomSanitizer } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Config, UserService } from './user.service';
@@ -33,27 +41,36 @@ describe('UserComponent', () => {
         MatButtonModule,
         TranslateModule,
         RouterTestingModule,
-        UserModule
+        UserModule,
       ],
       declarations: [],
       providers: [
         { provide: TranslateService, useClass: TranslateServiceStub },
-        { provide: UserService, useClass: MockUserService }
-      ]
+        { provide: UserService, useClass: MockUserService },
+      ],
     }).compileComponents();
   }));
 
-  beforeEach(inject([MatIconRegistry, DomSanitizer], (matIconRegistry: MatIconRegistry, domSanitizer: DomSanitizer) => {
-    matIconRegistry
-      .addSvgIcon('flag_fr', domSanitizer.bypassSecurityTrustResourceUrl('/assets/images/fr.svg'))
-      .addSvgIcon('flag_us', domSanitizer.bypassSecurityTrustResourceUrl('/assets/images/us.svg'));
+  beforeEach(inject(
+    [MatIconRegistry, DomSanitizer],
+    (matIconRegistry: MatIconRegistry, domSanitizer: DomSanitizer) => {
+      matIconRegistry
+        .addSvgIcon(
+          'flag_fr',
+          domSanitizer.bypassSecurityTrustResourceUrl('/assets/images/fr.svg')
+        )
+        .addSvgIcon(
+          'flag_us',
+          domSanitizer.bypassSecurityTrustResourceUrl('/assets/images/us.svg')
+        );
 
-    fixture = TestBed.createComponent(UserComponent);
-    fixture.autoDetectChanges(true);
-    component = fixture.componentInstance;
+      fixture = TestBed.createComponent(UserComponent);
+      fixture.autoDetectChanges(true);
+      component = fixture.componentInstance;
 
-    mockUserService = TestBed.get(UserService);
-  }));
+      mockUserService = TestBed.get(UserService);
+    }
+  ));
 
   it('should create', () => {
     expect(component).toBeTruthy();
@@ -68,10 +85,18 @@ describe('UserComponent', () => {
     expect(compiled.querySelectorAll('.identity').length).toBe(0);
 
     expect(compiled.querySelectorAll('.login a').length).toBe(1);
-    expect(compiled.querySelector('.login a').textContent).toContain('[this is a fake translation of label.login]');
+    expect(compiled.querySelector('.login a').textContent).toContain(
+      '[this is a fake translation of label.login]'
+    );
 
     // if clicked, only reload
-    window.location.reload = jest.fn();
+    const location: Location = window.location;
+    delete window.location;
+    window.location = {
+      ...location,
+      reload: jest.fn(),
+    };
+    // window.location.reload = jest.fn();
     expect(window.location.reload).not.toHaveBeenCalled();
     fixture.ngZone.run(() => {
       compiled.parentNode.querySelectorAll('.login a')[0].click();
@@ -90,7 +115,7 @@ describe('UserComponent', () => {
       picture: 'picture_url',
       provider: 'google',
       providerId: '12345678',
-      isAdmin: true
+      isAdmin: true,
     };
 
     fixture.detectChanges();
@@ -99,22 +124,32 @@ describe('UserComponent', () => {
     expect(compiled.querySelectorAll('.identity').length).toBe(1);
 
     expect(compiled.querySelectorAll('.identity img').length).toBe(1);
-    expect(compiled.querySelector('.identity img').src).toBe('http://localhost/picture_url');
+    expect(compiled.querySelector('.identity img').src).toBe(
+      'http://localhost/picture_url'
+    );
 
     expect(compiled.querySelectorAll('.identity .name').length).toBe(1);
-    expect(compiled.querySelector('.identity .name').textContent).toContain('a display name');
+    expect(compiled.querySelector('.identity .name').textContent).toContain(
+      'a display name'
+    );
 
     expect(compiled.querySelectorAll('.identity button').length).toBe(1);
 
     // for now, no menu
-    expect(compiled.parentNode.querySelectorAll('.mat-menu-panel').length).toBe(0);
+    expect(compiled.parentNode.querySelectorAll('.mat-menu-panel').length).toBe(
+      0
+    );
     // click
     fixture.ngZone.run(() => {
       compiled.querySelector('.identity button').click();
     });
     // menu should be shown
-    expect(compiled.parentNode.querySelectorAll('.mat-menu-panel').length).toBe(1);
-    expect(compiled.parentNode.querySelectorAll('.mat-menu-panel button').length).toBe(2);
+    expect(compiled.parentNode.querySelectorAll('.mat-menu-panel').length).toBe(
+      1
+    );
+    expect(
+      compiled.parentNode.querySelectorAll('.mat-menu-panel button').length
+    ).toBe(2);
 
     // click on change langue should do the job
     let spy = spyOn(mockUserService, 'changeLanguage');
@@ -136,11 +171,15 @@ describe('UserComponent', () => {
 
 class TranslateServiceStub {
   //noinspection JSUnusedGlobalSymbols
-  public onTranslationChange: EventEmitter<TranslationChangeEvent> = new EventEmitter();
+  public onTranslationChange: EventEmitter<
+    TranslationChangeEvent
+  > = new EventEmitter();
   //noinspection JSUnusedGlobalSymbols
   public onLangChange: EventEmitter<LangChangeEvent> = new EventEmitter();
   //noinspection JSUnusedGlobalSymbols
-  public onDefaultLangChange: EventEmitter<DefaultLangChangeEvent> = new EventEmitter();
+  public onDefaultLangChange: EventEmitter<
+    DefaultLangChangeEvent
+  > = new EventEmitter();
   public use() {}
   //noinspection JSMethodCanBeStatic
   public get(key: any): any {

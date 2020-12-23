@@ -2,10 +2,14 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FilesStatusComponent } from './files-status.component';
 import { FilesStatusService } from './files-status.service';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from '@angular/common/http/testing';
 import { Observable, Subject } from 'rxjs';
 import { FilesStatus } from '@seed-me-home/models';
-import { MatCardModule, MatIconModule } from '@angular/material';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
 import { BytesSizeModule } from '../../utils/pipes/bytes-size.pipe';
 
@@ -18,9 +22,17 @@ describe('FilesStatusComponent', () => {
   beforeEach(() => {
     //noinspection JSIgnoredPromiseFromCall
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, MatIconModule, MatCardModule, TranslateModule.forRoot(), BytesSizeModule],
+      imports: [
+        HttpClientTestingModule,
+        MatIconModule,
+        MatCardModule,
+        TranslateModule.forRoot(),
+        BytesSizeModule,
+      ],
       declarations: [FilesStatusComponent],
-      providers: [{ provide: FilesStatusService, useClass: FilesStatusServiceMock }]
+      providers: [
+        { provide: FilesStatusService, useClass: FilesStatusServiceMock },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FilesStatusComponent);
@@ -39,7 +51,7 @@ describe('FilesStatusComponent', () => {
       free_disk_space_local: 12346,
       free_disk_space_nas: 1234567,
       total_disk_space_local: 1234560,
-      total_disk_space_nas: 12345670
+      total_disk_space_nas: 12345670,
     };
 
     component.ngOnInit();

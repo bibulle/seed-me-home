@@ -14,8 +14,13 @@ describe('FilesComponent', () => {
   beforeEach(async(() => {
     //noinspection JSIgnoredPromiseFromCall
     TestBed.configureTestingModule({
-      imports: [TranslateModule.forRoot(), NotificationModule, FilesStatusModule, FilesFilesModule],
-      declarations: [FilesComponent]
+      imports: [
+        TranslateModule.forRoot(),
+        NotificationModule,
+        FilesStatusModule,
+        FilesFilesModule,
+      ],
+      declarations: [FilesComponent],
     }).compileComponents();
   }));
 
@@ -30,8 +35,12 @@ describe('FilesComponent', () => {
   });
 
   it('should have one status and 2 file lists', () => {
-    expect(fixture.debugElement.queryAll(By.css('app-files-status')).length).toBe(1);
+    expect(
+      fixture.debugElement.queryAll(By.css('seed-me-home2-files-status')).length
+    ).toBe(1);
 
-    expect(fixture.debugElement.queryAll(By.css('app-files-files')).length).toBe(2);
+    expect(
+      fixture.debugElement.queryAll(By.css('seed-me-home2-files-files')).length
+    ).toBe(2);
   });
 });

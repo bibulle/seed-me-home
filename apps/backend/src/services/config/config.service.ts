@@ -57,9 +57,15 @@ export class ConfigService {
       // Check the user env
       if (!fs.existsSync(__dirname + '/' + this._configFile)) {
         this.logger.error(
-          "ERROR : Your environment is not set, create the '" + __dirname + '/' + this._configFile + "' file."
+          "ERROR : Your environment is not set, create the '" +
+            __dirname +
+            '/' +
+            this._configFile +
+            "' file."
         );
-        this.logger.error("          you can copy it from the 'config/env-model.json' file.");
+        this.logger.error(
+          "          you can copy it from the 'config/env-model.json' file."
+        );
         process.exit(1);
       } else {
         // read it
@@ -67,6 +73,7 @@ export class ConfigService {
         const env = JSON.parse(rawData.toString());
 
         for (const attrName in env[this._config.node_env]) {
+          // eslint-disable-next-line no-prototype-builtins
           if (env[this._config.node_env].hasOwnProperty(attrName)) {
             this._config[attrName] = env[this._config.node_env][attrName];
           }

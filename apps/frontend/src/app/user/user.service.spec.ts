@@ -1,10 +1,22 @@
 import { JwtHelperServiceService, UserService } from './user.service';
-import { discardPeriodicTasks, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import {
+  discardPeriodicTasks,
+  fakeAsync,
+  TestBed,
+  tick,
+} from '@angular/core/testing';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from '@angular/common/http/testing';
 import { environment } from '../../environments/environment';
-import { NotificationModule, NotificationService } from '../notification/notification.service';
-import { NGXLogger, NGXLoggerMock } from 'ngx-logger';
+import {
+  NotificationModule,
+  NotificationService,
+} from '../notification/notification.service';
+import { NGXLogger } from 'ngx-logger';
+import { NGXLoggerMock } from 'ngx-logger/testing';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 describe('UserService', () => {
@@ -16,8 +28,16 @@ describe('UserService', () => {
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, NotificationModule, TranslateModule.forRoot()],
-      providers: [UserService, NotificationService, { provide: NGXLogger, useClass: NGXLoggerMock }]
+      imports: [
+        HttpClientTestingModule,
+        NotificationModule,
+        TranslateModule.forRoot(),
+      ],
+      providers: [
+        UserService,
+        NotificationService,
+        { provide: NGXLogger, useClass: NGXLoggerMock },
+      ],
     });
 
     // use to test what append iif config saved is KO
@@ -29,16 +49,21 @@ describe('UserService', () => {
     translateService = TestBed.get(TranslateService);
 
     // spy on jwtHelperService
-    jest.spyOn(jwtHelper, 'isTokenExpired').mockImplementation(token => {
+    jest.spyOn(jwtHelper, 'isTokenExpired').mockImplementation((token) => {
       // console.log('JwtHelperService isTokenExpired');
       return token !== 'not-expired' && token !== 'not-expired-admin';
     });
-    jest.spyOn(jwtHelper, 'decodeToken').mockImplementation(token => {
+    jest.spyOn(jwtHelper, 'decodeToken').mockImplementation((token) => {
       // console.log('JwtHelperService decodeToken');
       if (token === 'not-expired') {
         return { firstName: 'not', lastName: 'expired', providerId: 'foo bar' };
       } else if (token === 'not-expired-admin') {
-        return { firstName: 'not', lastName: 'expired', providerId: 'foo bar', isAdmin: true };
+        return {
+          firstName: 'not',
+          lastName: 'expired',
+          providerId: 'foo bar',
+          isAdmin: true,
+        };
       } else {
         return { firstName: 'is', lastName: 'expired' };
       }
@@ -57,11 +82,11 @@ describe('UserService', () => {
   });
 
   describe('Authentication', () => {
-    it('check authentication should change user', done => {
+    it('check authentication should change user', (done) => {
       service = TestBed.get(UserService);
 
       let user = null;
-      service.userObservable().subscribe(userReceived => {
+      service.userObservable().subscribe((userReceived) => {
         // console.log(userReceived);
         user = userReceived;
       });
@@ -74,16 +99,20 @@ describe('UserService', () => {
 
       // call the checkAuthentication method, and it should change the user
       expect(service.checkAuthentication()).toEqual(true);
-      expect(user).toEqual({ firstName: 'not', lastName: 'expired', providerId: 'foo bar' });
+      expect(user).toEqual({
+        firstName: 'not',
+        lastName: 'expired',
+        providerId: 'foo bar',
+      });
 
       done();
     });
 
-    it('check authentication should not change user with notEmit param', done => {
+    it('check authentication should not change user with notEmit param', (done) => {
       service = TestBed.get(UserService);
 
       let user = null;
-      service.userObservable().subscribe(userReceived => {
+      service.userObservable().subscribe((userReceived) => {
         // console.log(userReceived);
         user = userReceived;
       });
@@ -106,7 +135,7 @@ describe('UserService', () => {
       service = TestBed.get(UserService);
 
       let user = null;
-      service.userObservable().subscribe(userReceived => {
+      service.userObservable().subscribe((userReceived) => {
         // console.log(userReceived);
         user = userReceived;
       });
@@ -122,12 +151,20 @@ describe('UserService', () => {
       tick(3000);
 
       // After 3 seconds, user has changed (and we are authenticated)
-      expect(user).toEqual({ firstName: 'not', lastName: 'expired', providerId: 'foo bar' });
+      expect(user).toEqual({
+        firstName: 'not',
+        lastName: 'expired',
+        providerId: 'foo bar',
+      });
       expect(service.isAuthenticate()).toEqual(true);
 
       // Alter the local storage (nothing change)
       localStorage.setItem('id_token', 'is-expired');
-      expect(user).toEqual({ firstName: 'not', lastName: 'expired', providerId: 'foo bar' });
+      expect(user).toEqual({
+        firstName: 'not',
+        lastName: 'expired',
+        providerId: 'foo bar',
+      });
 
       // Call the isAuthenticate method, everything should have changed
       expect(service.isAuthenticate()).toEqual(false);
@@ -143,7 +180,7 @@ describe('UserService', () => {
       service = TestBed.get(UserService);
 
       let user = null;
-      service.userObservable().subscribe(userReceived => {
+      service.userObservable().subscribe((userReceived) => {
         // console.log(userReceived);
         user = userReceived;
       });
@@ -152,12 +189,12 @@ describe('UserService', () => {
 
       let urlWindowOpen = null;
       let newWindow = null;
-      jest.spyOn(window, 'open').mockImplementation(url => {
+      jest.spyOn(window, 'open').mockImplementation((url) => {
         //console.log('window.open ' + url);
         urlWindowOpen = url;
 
         newWindow = {
-          close: () => {}
+          close: () => {},
         };
 
         return newWindow;
@@ -168,33 +205,42 @@ describe('UserService', () => {
         .then(() => {
           // console.log('expect');
         })
-        .catch(err => {
+        .catch((err) => {
           // console.log('catch');
           expect(err).toBeNull();
         });
 
       tick();
 
-      expect(urlWindowOpen).toEqual(`${environment.serverUrl}authentication/google`);
+      expect(urlWindowOpen).toEqual(
+        `${environment.serverUrl}authentication/google`
+      );
 
       jest.advanceTimersByTime(200);
 
       // the url change to be google answer
       Object.defineProperty(newWindow, 'location', {
         value: {
-          href: '/assets/logged.html?code=google-token'
-        }
+          href: '/assets/logged.html?code=google-token',
+        },
       });
 
       jest.advanceTimersByTime(200);
 
-      const req = httpMock.expectOne(environment.serverUrl + 'authentication/google/callback?code=google-token');
+      const req = httpMock.expectOne(
+        environment.serverUrl +
+          'authentication/google/callback?code=google-token'
+      );
       expect(req.request.method).toBe('GET');
       req.flush({ data: { id_token: 'not-expired' } });
 
       tick();
 
-      expect(user).toEqual({ firstName: 'not', lastName: 'expired', providerId: 'foo bar' });
+      expect(user).toEqual({
+        firstName: 'not',
+        lastName: 'expired',
+        providerId: 'foo bar',
+      });
       expect(service.isAuthenticate()).toEqual(true);
     }));
 
@@ -202,19 +248,19 @@ describe('UserService', () => {
       service = TestBed.get(UserService);
 
       let user = null;
-      service.userObservable().subscribe(userReceived => {
+      service.userObservable().subscribe((userReceived) => {
         // console.log(userReceived);
         user = userReceived;
       });
 
       let urlWindowOpen = null;
       let newWindow = null;
-      jest.spyOn(window, 'open').mockImplementation(url => {
+      jest.spyOn(window, 'open').mockImplementation((url) => {
         // console.log('window.open ' + url);
         urlWindowOpen = url;
 
         newWindow = {
-          close: () => {}
+          close: () => {},
         };
 
         return newWindow;
@@ -228,12 +274,14 @@ describe('UserService', () => {
         .then(() => {
           // console.log('expect');
         })
-        .catch(err => {
+        .catch((err) => {
           expect(err).toEqual('Time out');
           discardPeriodicTasks();
         });
 
-      expect(urlWindowOpen).toEqual(`${environment.serverUrl}authentication/google`);
+      expect(urlWindowOpen).toEqual(
+        `${environment.serverUrl}authentication/google`
+      );
 
       tick(200);
 
@@ -251,19 +299,19 @@ describe('UserService', () => {
       service = TestBed.get(UserService);
 
       let user = null;
-      service.userObservable().subscribe(userReceived => {
+      service.userObservable().subscribe((userReceived) => {
         // console.log(userReceived);
         user = userReceived;
       });
 
       let urlWindowOpen = null;
       let newWindow = null;
-      jest.spyOn(window, 'open').mockImplementation(url => {
+      jest.spyOn(window, 'open').mockImplementation((url) => {
         // console.log('window.open ' + url);
         urlWindowOpen = url;
 
         newWindow = {
-          close: () => {}
+          close: () => {},
         };
 
         return newWindow;
@@ -277,20 +325,22 @@ describe('UserService', () => {
         .then(() => {
           // console.log('expect');
         })
-        .catch(err => {
+        .catch((err) => {
           expect(err).toEqual('Something go wrong');
           discardPeriodicTasks();
         });
 
-      expect(urlWindowOpen).toEqual(`${environment.serverUrl}authentication/google`);
+      expect(urlWindowOpen).toEqual(
+        `${environment.serverUrl}authentication/google`
+      );
 
       tick(200);
 
       // the url change to be google answer
       Object.defineProperty(newWindow, 'location', {
         value: {
-          href: '/assets/logged.html?error_message=Something+go+wrong'
-        }
+          href: '/assets/logged.html?error_message=Something+go+wrong',
+        },
       });
 
       tick(500);
@@ -300,24 +350,24 @@ describe('UserService', () => {
       service = TestBed.get(UserService);
 
       // Just test the error content
-      jest.spyOn(notificationService, 'error').mockImplementation(message => {
+      jest.spyOn(notificationService, 'error').mockImplementation((message) => {
         expect(message).toEqual('callback error');
       });
 
       let user = null;
-      service.userObservable().subscribe(userReceived => {
+      service.userObservable().subscribe((userReceived) => {
         // console.log(userReceived);
         user = userReceived;
       });
 
       let urlWindowOpen = null;
       let newWindow = null;
-      jest.spyOn(window, 'open').mockImplementation(url => {
+      jest.spyOn(window, 'open').mockImplementation((url) => {
         // console.log('window.open ' + url);
         urlWindowOpen = url;
 
         newWindow = {
-          close: () => {}
+          close: () => {},
         };
 
         return newWindow;
@@ -336,31 +386,38 @@ describe('UserService', () => {
           discardPeriodicTasks();
         });
 
-      expect(urlWindowOpen).toEqual(`${environment.serverUrl}authentication/google`);
+      expect(urlWindowOpen).toEqual(
+        `${environment.serverUrl}authentication/google`
+      );
 
       tick(200);
 
       // the url change to be google answer
       Object.defineProperty(newWindow, 'location', {
         value: {
-          href: '/assets/logged.html?code=google-token'
-        }
+          href: '/assets/logged.html?code=google-token',
+        },
       });
 
       tick(200);
 
-      const req = httpMock.expectOne(environment.serverUrl + 'authentication/google/callback?code=google-token');
+      const req = httpMock.expectOne(
+        environment.serverUrl +
+          'authentication/google/callback?code=google-token'
+      );
       expect(req.request.method).toBe('GET');
-      req.error(new ErrorEvent('callback error', { message: 'callback error' }));
+      req.error(
+        new ErrorEvent('callback error', { message: 'callback error' })
+      );
     }));
   });
 
   describe('other methods : logout, admin, ...', () => {
-    it('should logout when called', done => {
+    it('should logout when called', (done) => {
       service = TestBed.get(UserService);
 
       let user = null;
-      service.userObservable().subscribe(userReceived => {
+      service.userObservable().subscribe((userReceived) => {
         // console.log(userReceived);
         user = userReceived;
       });
@@ -368,7 +425,11 @@ describe('UserService', () => {
       // change the local storage and check authent, we should be logged
       localStorage.setItem('id_token', 'not-expired');
       expect(service.checkAuthentication()).toEqual(true);
-      expect(user).toEqual({ firstName: 'not', lastName: 'expired', providerId: 'foo bar' });
+      expect(user).toEqual({
+        firstName: 'not',
+        lastName: 'expired',
+        providerId: 'foo bar',
+      });
 
       // then logout
       service.logout();
@@ -379,11 +440,11 @@ describe('UserService', () => {
       done();
     });
 
-    it("should tell whether it's an logged admin or not", done => {
+    it("should tell whether it's an logged admin or not", (done) => {
       service = TestBed.get(UserService);
 
       let user = null;
-      service.userObservable().subscribe(userReceived => {
+      service.userObservable().subscribe((userReceived) => {
         // console.log(userReceived);
         user = userReceived;
       });
@@ -395,13 +456,22 @@ describe('UserService', () => {
       // change the local storage and check authent, we should be logged but not admin
       localStorage.setItem('id_token', 'not-expired');
       expect(service.checkAuthentication()).toEqual(true);
-      expect(user).toEqual({ firstName: 'not', lastName: 'expired', providerId: 'foo bar' });
+      expect(user).toEqual({
+        firstName: 'not',
+        lastName: 'expired',
+        providerId: 'foo bar',
+      });
       expect(service.isAdminAuthenticate()).toBe(false);
 
       // change the local storage and check authent, we should be logged but not admin
       localStorage.setItem('id_token', 'not-expired-admin');
       expect(service.checkAuthentication()).toEqual(true);
-      expect(user).toEqual({ firstName: 'not', lastName: 'expired', providerId: 'foo bar', isAdmin: true });
+      expect(user).toEqual({
+        firstName: 'not',
+        lastName: 'expired',
+        providerId: 'foo bar',
+        isAdmin: true,
+      });
       expect(service.isAdminAuthenticate()).toBe(true);
 
       // then logout
@@ -416,18 +486,20 @@ describe('UserService', () => {
   });
 
   describe('config management', () => {
-    it('language change should change language and saved config', done => {
+    it('language change should change language and saved config', (done) => {
       service = TestBed.get(UserService);
 
       let config = null;
-      service.configObservable().subscribe(configReceived => {
+      service.configObservable().subscribe((configReceived) => {
         // console.log(userReceived);
         config = configReceived;
       });
 
       // for now, config.language should be default value 'en'
       expect(config).toBeDefined();
-      expect(config).toMatchObject(expect.objectContaining({ language: expect.any(String) }));
+      expect(config).toMatchObject(
+        expect.objectContaining({ language: expect.any(String) })
+      );
       expect(config.language).toBe('en');
       expect(translateService.currentLang).toBe('en');
 

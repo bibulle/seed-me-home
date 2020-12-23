@@ -3,27 +3,27 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import {
   FilesFilesItemComponent,
   FilesFilesItemDialogMoveComponent,
-  FilesFilesItemDialogRemoveComponent
+  FilesFilesItemDialogRemoveComponent,
 } from './files-files-item.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import {
   MAT_DIALOG_DATA,
-  MatCheckboxModule,
   MatDialog,
   MatDialogModule,
   MatDialogRef,
-  MatFormFieldModule,
-  MatIconModule,
-  MatInputModule,
-  MatMenuModule,
-  MatProgressBarModule,
-  MatRadioModule
-} from '@angular/material';
+} from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatRadioModule } from '@angular/material/radio';
 import {
   DefaultLangChangeEvent,
   LangChangeEvent,
   TranslateModule,
   TranslateService,
-  TranslationChangeEvent
+  TranslationChangeEvent,
 } from '@ngx-translate/core';
 import { BytesSizeModule } from '../../../utils/pipes/bytes-size.pipe';
 import { BrowserModule, By } from '@angular/platform-browser';
@@ -52,7 +52,7 @@ const files1: FilesFile = {
       isDirectory: false,
       modifiedDate: new Date(2),
       downloadStarted: undefined,
-      children: []
+      children: [],
     },
     {
       path: 'dir2',
@@ -71,11 +71,11 @@ const files1: FilesFile = {
           isDirectory: false,
           modifiedDate: new Date(4),
           downloadStarted: undefined,
-          children: []
-        }
-      ]
-    }
-  ]
+          children: [],
+        },
+      ],
+    },
+  ],
 };
 
 describe('FilesFilesItemComponent', () => {
@@ -95,14 +95,14 @@ describe('FilesFilesItemComponent', () => {
         MatDialogModule,
         BytesSizeModule,
         BrowserAnimationsModule,
-        BrowserModule
+        BrowserModule,
       ],
       declarations: [FilesFilesItemComponent],
       providers: [
         { provide: FilesFilesService, useClass: FilesFilesServiceMock },
         { provide: TranslateService, useClass: TranslateServiceStub },
-        { provide: MatDialog, useClass: MdDialogMock }
-      ]
+        { provide: MatDialog, useClass: MdDialogMock },
+      ],
     }).compileComponents();
   }));
 
@@ -125,31 +125,38 @@ describe('FilesFilesItemComponent', () => {
   it('should display items value', () => {
     component.file = files1;
     //@ts-ignore : Test on rest API get string instead of Dates
-    component.file.children[1].children[0].modifiedDate = '2019-05-24T11:34:35.159Z';
+    component.file.children[1].children[0].modifiedDate =
+      '2019-05-24T11:34:35.159Z';
 
     fixture.detectChanges();
 
     expect(fixture.debugElement.queryAll(By.css('.title')).length).toBe(4);
-    expect(fixture.debugElement.queryAll(By.css('.title span'))[0].nativeElement.textContent).toBe(files1.path);
-    expect(fixture.debugElement.queryAll(By.css('.title span'))[1].nativeElement.textContent).toBe(
-      files1.children[0].path
-    );
-    expect(fixture.debugElement.queryAll(By.css('.title span'))[2].nativeElement.textContent).toBe(
-      files1.children[1].path
-    );
-    expect(fixture.debugElement.queryAll(By.css('.title span'))[3].nativeElement.textContent).toBe(
-      files1.children[1].children[0].path
-    );
+    expect(
+      fixture.debugElement.queryAll(By.css('.title span'))[0].nativeElement
+        .textContent
+    ).toBe(files1.path);
+    expect(
+      fixture.debugElement.queryAll(By.css('.title span'))[1].nativeElement
+        .textContent
+    ).toBe(files1.children[0].path);
+    expect(
+      fixture.debugElement.queryAll(By.css('.title span'))[2].nativeElement
+        .textContent
+    ).toBe(files1.children[1].path);
+    expect(
+      fixture.debugElement.queryAll(By.css('.title span'))[3].nativeElement
+        .textContent
+    ).toBe(files1.children[1].children[0].path);
 
     expect(fixture.debugElement.queryAll(By.css('.size')).length).toBe(4);
-    expect(fixture.debugElement.query(By.css('.size')).nativeElement.textContent).toBe(
-      (files1.size / 1024).toFixed(2) + ' KB'
-    );
+    expect(
+      fixture.debugElement.query(By.css('.size')).nativeElement.textContent
+    ).toBe((files1.size / 1024).toFixed(2) + ' KB');
 
     expect(fixture.debugElement.queryAll(By.css('.date')).length).toBe(4);
-    expect(fixture.debugElement.query(By.css('.date')).nativeElement.textContent).toBe(
-      moment.utc(files1.modifiedDate).format('lll')
-    );
+    expect(
+      fixture.debugElement.query(By.css('.date')).nativeElement.textContent
+    ).toBe(moment.utc(files1.modifiedDate).format('lll'));
   });
 
   it('should display directory closed and open it on click', () => {
@@ -157,30 +164,70 @@ describe('FilesFilesItemComponent', () => {
 
     fixture.detectChanges();
 
-    expect(fixture.debugElement.queryAll(By.css('.title mat-icon')).length).toBe(8);
-    expect(fixture.debugElement.queryAll(By.css('.title mat-icon'))[0].nativeElement.textContent).toBe('chevron_right');
-    expect(fixture.debugElement.queryAll(By.css('.title mat-icon'))[4].nativeElement.textContent).toBe('chevron_right');
+    expect(
+      fixture.debugElement.queryAll(By.css('.title mat-icon')).length
+    ).toBe(8);
+    expect(
+      fixture.debugElement.queryAll(By.css('.title mat-icon'))[0].nativeElement
+        .textContent
+    ).toBe('chevron_right');
+    expect(
+      fixture.debugElement.queryAll(By.css('.title mat-icon'))[4].nativeElement
+        .textContent
+    ).toBe('chevron_right');
 
     expect(fixture.debugElement.queryAll(By.css('.children')).length).toBe(2);
-    expect(fixture.debugElement.queryAll(By.css('.children.open')).length).toBe(0);
+    expect(fixture.debugElement.queryAll(By.css('.children.open')).length).toBe(
+      0
+    );
 
-    fixture.debugElement.queryAll(By.css('.title mat-icon'))[0].nativeElement.click();
+    fixture.debugElement
+      .queryAll(By.css('.title mat-icon'))[0]
+      .nativeElement.click();
     fixture.detectChanges();
-    expect(fixture.debugElement.queryAll(By.css('.children.open')).length).toBe(1);
-    expect(fixture.debugElement.queryAll(By.css('.title mat-icon'))[0].nativeElement.textContent).toBe('expand_more');
-    expect(fixture.debugElement.queryAll(By.css('.title mat-icon'))[4].nativeElement.textContent).toBe('chevron_right');
+    expect(fixture.debugElement.queryAll(By.css('.children.open')).length).toBe(
+      1
+    );
+    expect(
+      fixture.debugElement.queryAll(By.css('.title mat-icon'))[0].nativeElement
+        .textContent
+    ).toBe('expand_more');
+    expect(
+      fixture.debugElement.queryAll(By.css('.title mat-icon'))[4].nativeElement
+        .textContent
+    ).toBe('chevron_right');
 
-    fixture.debugElement.queryAll(By.css('.title mat-icon'))[4].nativeElement.click();
+    fixture.debugElement
+      .queryAll(By.css('.title mat-icon'))[4]
+      .nativeElement.click();
     fixture.detectChanges();
-    expect(fixture.debugElement.queryAll(By.css('.children.open')).length).toBe(2);
-    expect(fixture.debugElement.queryAll(By.css('.title mat-icon'))[0].nativeElement.textContent).toBe('expand_more');
-    expect(fixture.debugElement.queryAll(By.css('.title mat-icon'))[4].nativeElement.textContent).toBe('expand_more');
+    expect(fixture.debugElement.queryAll(By.css('.children.open')).length).toBe(
+      2
+    );
+    expect(
+      fixture.debugElement.queryAll(By.css('.title mat-icon'))[0].nativeElement
+        .textContent
+    ).toBe('expand_more');
+    expect(
+      fixture.debugElement.queryAll(By.css('.title mat-icon'))[4].nativeElement
+        .textContent
+    ).toBe('expand_more');
 
-    fixture.debugElement.queryAll(By.css('.title mat-icon'))[0].nativeElement.click();
+    fixture.debugElement
+      .queryAll(By.css('.title mat-icon'))[0]
+      .nativeElement.click();
     fixture.detectChanges();
-    expect(fixture.debugElement.queryAll(By.css('.children.open')).length).toBe(1);
-    expect(fixture.debugElement.queryAll(By.css('.title mat-icon'))[0].nativeElement.textContent).toBe('chevron_right');
-    expect(fixture.debugElement.queryAll(By.css('.title mat-icon'))[4].nativeElement.textContent).toBe('expand_more');
+    expect(fixture.debugElement.queryAll(By.css('.children.open')).length).toBe(
+      1
+    );
+    expect(
+      fixture.debugElement.queryAll(By.css('.title mat-icon'))[0].nativeElement
+        .textContent
+    ).toBe('chevron_right');
+    expect(
+      fixture.debugElement.queryAll(By.css('.title mat-icon'))[4].nativeElement
+        .textContent
+    ).toBe('expand_more');
   });
 
   it('icon before name should be the right one', () => {
@@ -188,67 +235,129 @@ describe('FilesFilesItemComponent', () => {
 
     // directory downloaded => warn chevron_right
     fixture.detectChanges();
-    expect(fixture.debugElement.queryAll(By.css('.title mat-icon')).length).toBe(8);
-    expect(fixture.debugElement.queryAll(By.css('.title mat-icon'))[4].nativeElement.textContent).toBe('chevron_right');
-    expect(fixture.debugElement.queryAll(By.css('.title mat-icon'))[4].attributes['ng-reflect-color']).toBe('warn');
-    expect(fixture.debugElement.queryAll(By.css('.progress mat-progress-bar'))[2].attributes['ng-reflect-value']).toBe(
-      '0'
-    );
+    expect(
+      fixture.debugElement.queryAll(By.css('.title mat-icon')).length
+    ).toBe(8);
+    expect(
+      fixture.debugElement.queryAll(By.css('.title mat-icon'))[4].nativeElement
+        .textContent
+    ).toBe('chevron_right');
+    expect(
+      fixture.debugElement.queryAll(By.css('.title mat-icon'))[4].attributes[
+        'ng-reflect-color'
+      ]
+    ).toBe('warn');
+    expect(
+      fixture.debugElement.queryAll(By.css('.progress mat-progress-bar'))[2]
+        .attributes['ng-reflect-value']
+    ).toBe('0');
 
     // file not downloaded => warn save_alt
     fixture.detectChanges();
-    expect(fixture.debugElement.queryAll(By.css('.title mat-icon')).length).toBe(8);
-    expect(fixture.debugElement.queryAll(By.css('.title mat-icon'))[6].nativeElement.textContent).toBe('save_alt');
-    expect(fixture.debugElement.queryAll(By.css('.title mat-icon'))[6].attributes['ng-reflect-color']).toBe('warn');
-    expect(fixture.debugElement.queryAll(By.css('.progress mat-progress-bar'))[3].attributes['ng-reflect-value']).toBe(
-      '0'
-    );
+    expect(
+      fixture.debugElement.queryAll(By.css('.title mat-icon')).length
+    ).toBe(8);
+    expect(
+      fixture.debugElement.queryAll(By.css('.title mat-icon'))[6].nativeElement
+        .textContent
+    ).toBe('save_alt');
+    expect(
+      fixture.debugElement.queryAll(By.css('.title mat-icon'))[6].attributes[
+        'ng-reflect-color'
+      ]
+    ).toBe('warn');
+    expect(
+      fixture.debugElement.queryAll(By.css('.progress mat-progress-bar'))[3]
+        .attributes['ng-reflect-value']
+    ).toBe('0');
 
     // file started downloaded => primary save_alt
-    component.file.children[1].children[0].downloaded = component.file.children[1].children[0].size / 4;
+    component.file.children[1].children[0].downloaded =
+      component.file.children[1].children[0].size / 4;
     fixture.detectChanges();
-    expect(fixture.debugElement.queryAll(By.css('.title mat-icon')).length).toBe(8);
-    expect(fixture.debugElement.queryAll(By.css('.title mat-icon'))[6].nativeElement.textContent).toBe('save_alt');
-    expect(fixture.debugElement.queryAll(By.css('.title mat-icon'))[6].attributes['ng-reflect-color']).toBe('primary');
-    expect(fixture.debugElement.queryAll(By.css('.progress mat-progress-bar'))[3].attributes['ng-reflect-value']).toBe(
-      '25'
-    );
+    expect(
+      fixture.debugElement.queryAll(By.css('.title mat-icon')).length
+    ).toBe(8);
+    expect(
+      fixture.debugElement.queryAll(By.css('.title mat-icon'))[6].nativeElement
+        .textContent
+    ).toBe('save_alt');
+    expect(
+      fixture.debugElement.queryAll(By.css('.title mat-icon'))[6].attributes[
+        'ng-reflect-color'
+      ]
+    ).toBe('primary');
+    expect(
+      fixture.debugElement.queryAll(By.css('.progress mat-progress-bar'))[3]
+        .attributes['ng-reflect-value']
+    ).toBe('25');
 
     // file finished downloaded => primary done
-    component.file.children[1].children[0].downloaded = component.file.children[1].children[0].size;
+    component.file.children[1].children[0].downloaded =
+      component.file.children[1].children[0].size;
     fixture.detectChanges();
-    expect(fixture.debugElement.queryAll(By.css('.title mat-icon')).length).toBe(8);
-    expect(fixture.debugElement.queryAll(By.css('.title mat-icon'))[6].nativeElement.textContent).toBe('done');
-    expect(fixture.debugElement.queryAll(By.css('.title mat-icon'))[6].attributes['ng-reflect-color']).toBe('primary');
-    expect(fixture.debugElement.queryAll(By.css('.progress mat-progress-bar'))[3].attributes['ng-reflect-value']).toBe(
-      '100'
-    );
+    expect(
+      fixture.debugElement.queryAll(By.css('.title mat-icon')).length
+    ).toBe(8);
+    expect(
+      fixture.debugElement.queryAll(By.css('.title mat-icon'))[6].nativeElement
+        .textContent
+    ).toBe('done');
+    expect(
+      fixture.debugElement.queryAll(By.css('.title mat-icon'))[6].attributes[
+        'ng-reflect-color'
+      ]
+    ).toBe('primary');
+    expect(
+      fixture.debugElement.queryAll(By.css('.progress mat-progress-bar'))[3]
+        .attributes['ng-reflect-value']
+    ).toBe('100');
 
     // directory started downloaded => primary chevron_right
     component.file.children[1].downloaded = component.file.children[1].size / 4;
     fixture.detectChanges();
-    expect(fixture.debugElement.queryAll(By.css('.title mat-icon')).length).toBe(8);
-    expect(fixture.debugElement.queryAll(By.css('.title mat-icon'))[4].nativeElement.textContent).toBe('chevron_right');
-    expect(fixture.debugElement.queryAll(By.css('.title mat-icon'))[4].attributes['ng-reflect-color']).toBe('warn');
-    expect(fixture.debugElement.queryAll(By.css('.progress mat-progress-bar'))[2].attributes['ng-reflect-value']).toBe(
-      '25'
-    );
+    expect(
+      fixture.debugElement.queryAll(By.css('.title mat-icon')).length
+    ).toBe(8);
+    expect(
+      fixture.debugElement.queryAll(By.css('.title mat-icon'))[4].nativeElement
+        .textContent
+    ).toBe('chevron_right');
+    expect(
+      fixture.debugElement.queryAll(By.css('.title mat-icon'))[4].attributes[
+        'ng-reflect-color'
+      ]
+    ).toBe('warn');
+    expect(
+      fixture.debugElement.queryAll(By.css('.progress mat-progress-bar'))[2]
+        .attributes['ng-reflect-value']
+    ).toBe('25');
 
     // directory finished downloaded => primary chevron_right
     component.file.children[1].downloaded = component.file.children[1].size;
     fixture.detectChanges();
-    expect(fixture.debugElement.queryAll(By.css('.title mat-icon')).length).toBe(8);
-    expect(fixture.debugElement.queryAll(By.css('.title mat-icon'))[4].nativeElement.textContent).toBe('chevron_right');
-    expect(fixture.debugElement.queryAll(By.css('.title mat-icon'))[4].attributes['ng-reflect-color']).toBe('primary');
-    expect(fixture.debugElement.queryAll(By.css('.progress mat-progress-bar'))[2].attributes['ng-reflect-value']).toBe(
-      '100'
-    );
+    expect(
+      fixture.debugElement.queryAll(By.css('.title mat-icon')).length
+    ).toBe(8);
+    expect(
+      fixture.debugElement.queryAll(By.css('.title mat-icon'))[4].nativeElement
+        .textContent
+    ).toBe('chevron_right');
+    expect(
+      fixture.debugElement.queryAll(By.css('.title mat-icon'))[4].attributes[
+        'ng-reflect-color'
+      ]
+    ).toBe('primary');
+    expect(
+      fixture.debugElement.queryAll(By.css('.progress mat-progress-bar'))[2]
+        .attributes['ng-reflect-value']
+    ).toBe('100');
   });
 
   it('should delete file on click', () => {
     expect.assertions(5);
 
-    component.removeFileEvent.subscribe(event => {
+    component.removeFileEvent.subscribe((event) => {
       expect(event).toBe(files1);
     });
 
@@ -258,12 +367,16 @@ describe('FilesFilesItemComponent', () => {
 
     // action menu
     component.menuTrigger.openMenu();
-    expect(fixture.debugElement.queryAll(By.css('.mat-menu-content')).length).toBe(1);
-    const menuContent = fixture.debugElement.queryAll(By.css('.mat-menu-content'))[0];
+    expect(
+      fixture.debugElement.queryAll(By.css('.mat-menu-content')).length
+    ).toBe(1);
+    const menuContent = fixture.debugElement.queryAll(
+      By.css('.mat-menu-content')
+    )[0];
     expect(menuContent.queryAll(By.css('button')).length).toBe(2);
-    expect(menuContent.queryAll(By.css('button'))[1].nativeElement.textContent).toBe(
-      'delete_forever[this is a fake translation of file.erase]'
-    );
+    expect(
+      menuContent.queryAll(By.css('button'))[1].nativeElement.textContent
+    ).toBe('delete_forever[this is a fake translation of file.erase]');
     // remove the file
     menuContent.queryAll(By.css('button'))[1].nativeElement.click();
 
@@ -280,12 +393,16 @@ describe('FilesFilesItemComponent', () => {
 
     // action menu
     component.menuTrigger.openMenu();
-    expect(fixture.debugElement.queryAll(By.css('.mat-menu-content')).length).toBe(1);
-    const menuContent = fixture.debugElement.queryAll(By.css('.mat-menu-content'))[0];
+    expect(
+      fixture.debugElement.queryAll(By.css('.mat-menu-content')).length
+    ).toBe(1);
+    const menuContent = fixture.debugElement.queryAll(
+      By.css('.mat-menu-content')
+    )[0];
     expect(menuContent.queryAll(By.css('button')).length).toBe(1);
-    expect(menuContent.queryAll(By.css('button'))[0].nativeElement.textContent).toBe(
-      'save_alt[this is a fake translation of file.move]'
-    );
+    expect(
+      menuContent.queryAll(By.css('button'))[0].nativeElement.textContent
+    ).toBe('save_alt[this is a fake translation of file.move]');
     // move the file
     menuContent.queryAll(By.css('button'))[0].nativeElement.click();
 
@@ -297,19 +414,27 @@ describe('FilesFilesItemComponent', () => {
     component.index = 0;
 
     let selected = '';
-    component.toggleSortEvent.subscribe(value => (selected = value));
+    component.toggleSortEvent.subscribe((value) => (selected = value));
     fixture.detectChanges();
 
-    fixture.debugElement.query(By.css('.header .size')).triggerEventHandler('click', null);
+    fixture.debugElement
+      .query(By.css('.header .size'))
+      .triggerEventHandler('click', null);
     expect(selected).toBe('size');
 
-    fixture.debugElement.query(By.css('.header .size')).triggerEventHandler('click', null);
+    fixture.debugElement
+      .query(By.css('.header .size'))
+      .triggerEventHandler('click', null);
     expect(selected).toBe('size');
 
-    fixture.debugElement.query(By.css('.header .done')).triggerEventHandler('click', null);
+    fixture.debugElement
+      .query(By.css('.header .done'))
+      .triggerEventHandler('click', null);
     expect(selected).toBe('progress');
 
-    fixture.debugElement.query(By.css('.header .date')).triggerEventHandler('click', null);
+    fixture.debugElement
+      .query(By.css('.header .date'))
+      .triggerEventHandler('click', null);
     expect(selected).toBe('date');
   });
 });
@@ -322,14 +447,19 @@ describe('FilesFilesItemDialogRemoveComponent', () => {
   beforeEach(async(() => {
     //noinspection JSIgnoredPromiseFromCall
     TestBed.configureTestingModule({
-      imports: [MatDialogModule, BrowserAnimationsModule, BrowserModule, TranslateModule],
+      imports: [
+        MatDialogModule,
+        BrowserAnimationsModule,
+        BrowserModule,
+        TranslateModule,
+      ],
       declarations: [FilesFilesItemDialogRemoveComponent],
       providers: [
         { provide: FilesFilesService, useClass: FilesFilesServiceMock },
         { provide: MAT_DIALOG_DATA, useValue: {} },
         { provide: MatDialogRef, useClass: MatDialogRefMock },
-        { provide: TranslateService, useClass: TranslateServiceStub }
-      ]
+        { provide: TranslateService, useClass: TranslateServiceStub },
+      ],
     }).compileComponents();
   }));
 
@@ -349,7 +479,9 @@ describe('FilesFilesItemDialogRemoveComponent', () => {
     spyOn(dialogRef, 'close').and.callThrough();
 
     expect(fixture.debugElement.queryAll(By.css('button')).length).toBe(2);
-    fixture.debugElement.queryAll(By.css('button'))[0].triggerEventHandler('click', null);
+    fixture.debugElement
+      .queryAll(By.css('button'))[0]
+      .triggerEventHandler('click', null);
     expect(dialogRef.close).toHaveBeenCalled();
   });
 });
@@ -371,14 +503,14 @@ describe('FilesFilesItemDialogMoveComponent', () => {
         MatInputModule,
         FormsModule,
         MatRadioModule,
-        MatCheckboxModule
+        MatCheckboxModule,
       ],
       declarations: [FilesFilesItemDialogMoveComponent],
       providers: [
         { provide: MAT_DIALOG_DATA, useValue: {} },
         { provide: MatDialogRef, useClass: MatDialogRefMock },
-        { provide: TranslateService, useClass: TranslateServiceStub }
-      ]
+        { provide: TranslateService, useClass: TranslateServiceStub },
+      ],
     }).compileComponents();
   }));
 
@@ -398,7 +530,9 @@ describe('FilesFilesItemDialogMoveComponent', () => {
     spyOn(dialogRef, 'close').and.callThrough();
 
     expect(fixture.debugElement.queryAll(By.css('button')).length).toBe(2);
-    fixture.debugElement.queryAll(By.css('button'))[0].triggerEventHandler('click', null);
+    fixture.debugElement
+      .queryAll(By.css('button'))[0]
+      .triggerEventHandler('click', null);
     expect(dialogRef.close).toHaveBeenCalled();
   });
 });
@@ -406,7 +540,7 @@ describe('FilesFilesItemDialogMoveComponent', () => {
 class FilesFilesServiceMock {
   calculateTrgPath() {}
   moveFile(): Promise<void> {
-    return new Promise<void>(resolve => {
+    return new Promise<void>((resolve) => {
       resolve();
     });
   }
@@ -414,11 +548,15 @@ class FilesFilesServiceMock {
 
 class TranslateServiceStub {
   //noinspection JSUnusedGlobalSymbols
-  public onTranslationChange: EventEmitter<TranslationChangeEvent> = new EventEmitter();
+  public onTranslationChange: EventEmitter<
+    TranslationChangeEvent
+  > = new EventEmitter();
   //noinspection JSUnusedGlobalSymbols
   public onLangChange: EventEmitter<LangChangeEvent> = new EventEmitter();
   //noinspection JSUnusedGlobalSymbols
-  public onDefaultLangChange: EventEmitter<DefaultLangChangeEvent> = new EventEmitter();
+  public onDefaultLangChange: EventEmitter<
+    DefaultLangChangeEvent
+  > = new EventEmitter();
 
   public use() {}
 
@@ -433,7 +571,7 @@ export class MdDialogMock {
   // with an afterClosed method that allows to subscribe to the dialog result observable.
   open() {
     return {
-      afterClosed: () => of({})
+      afterClosed: () => of({}),
     };
   }
 }

@@ -1,16 +1,24 @@
-import { Component, EventEmitter, Inject, Input, NgModule, OnInit, Output, ViewChild } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Inject,
+  Input,
+  NgModule,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { RtorrentTorrent } from '@seed-me-home/models';
+import { MatButtonModule } from '@angular/material/button';
 import {
   MAT_DIALOG_DATA,
-  MatButtonModule,
   MatDialog,
   MatDialogModule,
   MatDialogRef,
-  MatIconModule,
-  MatMenuModule,
-  MatMenuTrigger,
-  MatProgressBarModule
-} from '@angular/material';
+} from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { BytesSizeModule } from '../../../utils/pipes/bytes-size.pipe';
 import { CommonModule } from '@angular/common';
@@ -18,9 +26,9 @@ import * as moment from 'moment';
 import { RtorrentTorrentsService } from '../rtorrent-torrents.service';
 
 @Component({
-  selector: 'app-rtorrent-torrent-item',
+  selector: 'seed-me-home2-rtorrent-torrent-item',
   templateUrl: './rtorrent-torrent-item.component.html',
-  styleUrls: ['./rtorrent-torrent-item.component.scss']
+  styleUrls: ['./rtorrent-torrent-item.component.scss'],
 })
 export class RtorrentTorrentItemComponent implements OnInit {
   @Input()
@@ -73,10 +81,10 @@ export class RtorrentTorrentItemComponent implements OnInit {
   remove() {
     const dialogRef = this.dialog.open(RtorrentTorrentItemDialogComponent, {
       width: '80%',
-      data: this.torrent.name
+      data: this.torrent.name,
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this._rtorrentTorrentsService.removeTorrent(this.torrent.hash);
       }
@@ -85,9 +93,9 @@ export class RtorrentTorrentItemComponent implements OnInit {
 }
 
 @Component({
-  selector: 'app-rtorrent-torrent-item-dialog',
+  selector: 'seed-me-home2-rtorrent-torrent-item-dialog',
   templateUrl: './rtorrent-torrent-item-dialog.component.html',
-  styleUrls: ['./rtorrent-torrent-item-dialog.component.scss']
+  styleUrls: ['./rtorrent-torrent-item-dialog.component.scss'],
 })
 export class RtorrentTorrentItemDialogComponent {
   constructor(
@@ -109,11 +117,14 @@ export class RtorrentTorrentItemDialogComponent {
     MatIconModule,
     MatProgressBarModule,
     MatDialogModule,
-    MatMenuModule
+    MatMenuModule,
   ],
   entryComponents: [RtorrentTorrentItemDialogComponent],
-  declarations: [RtorrentTorrentItemComponent, RtorrentTorrentItemDialogComponent],
+  declarations: [
+    RtorrentTorrentItemComponent,
+    RtorrentTorrentItemDialogComponent,
+  ],
   providers: [],
-  exports: [RtorrentTorrentItemComponent]
+  exports: [RtorrentTorrentItemComponent],
 })
 export class RtorrentTorrentItemModule {}

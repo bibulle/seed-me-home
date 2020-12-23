@@ -2,13 +2,13 @@
   display: flex;
   padding: 0.5em;
 
-  app-rtorrent-status {
+  seed-me-home2-rtorrent-status {
     padding: 0.5em;
     min-width: 16em;
     flex: 1 1 20%;
   }
 
-  app-rtorrent-torrents {
+  seed-me-home2-rtorrent-torrents {
     padding: 0.5em;
     min-width: 0;
     flex: 1 1 80%;
@@ -17,10 +17,10 @@
   @media only screen and (max-width: 800px) {
     flex-direction: column;
 
-    app-rtorrent-status {
+    seed-me-home2-rtorrent-status {
       flex: 1 1 100%;
     }
-    app-rtorrent-torrents {
+    seed-me-home2-rtorrent-torrents {
       flex: 1 1 100%;
     }
   }

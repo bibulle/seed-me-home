@@ -1,21 +1,29 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '../../services/config/config.service';
 import * as _ from 'lodash';
-import { RTorrentFile, RtorrentStatus, RtorrentTorrent } from '@seed-me-home/models';
+import {
+  RTorrentFile,
+  RtorrentStatus,
+  RtorrentTorrent,
+} from '@seed-me-home/models';
 import { FtpSeedService } from '../ftp-seed/ftp-seed.service';
-import { Interval, NestSchedule } from 'nest-schedule';
+import { Interval } from '@nestjs/schedule';
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const Rtorrent = require('@electorrent/node-rtorrent');
-const disk = require('diskusage');
+import * as disk from 'diskusage';
 
 @Injectable()
-export class RtorrentService extends NestSchedule {
+export class RtorrentService {
   readonly logger = new Logger(RtorrentService.name);
 
   private _rtorrent;
 
-  constructor(private _configService: ConfigService, private _ftpSeedService: FtpSeedService) {
-    super();
+  constructor(
+    private _configService: ConfigService,
+    private _ftpSeedService: FtpSeedService
+  ) {
+    //super();
   }
 
   private _initialize() {
@@ -26,7 +34,7 @@ export class RtorrentService extends NestSchedule {
         port: this._configService.getSeedboxPort(),
         path: this._configService.getSeedboxPath(),
         user: this._configService.getSeedboxUser(),
-        pass: this._configService.getSeedboxPass()
+        pass: this._configService.getSeedboxPass(),
       });
     }
   }
@@ -39,7 +47,12 @@ export class RtorrentService extends NestSchedule {
     this._initialize();
     this._rtorrent.getGlobals((err, status) => {
       if (status) {
-        status = _.pick(status, ['down_rate', 'down_total', 'up_rate', 'up_total']);
+        status = _.pick(status, [
+          'down_rate',
+          'down_total',
+          'up_rate',
+          'up_total',
+        ]);
       }
 
       //if (err) {
@@ -62,18 +75,24 @@ export class RtorrentService extends NestSchedule {
               reject1(err);
             } else {
               if (status) {
-                status = _.pick(status, ['down_rate', 'down_total', 'up_rate', 'up_total', 'free_disk_space']);
+                status = _.pick(status, [
+                  'down_rate',
+                  'down_total',
+                  'up_rate',
+                  'up_total',
+                  'free_disk_space',
+                ]);
               }
               resolve1(status);
             }
           });
         }),
         // get local disk status
-        disk.check(this._ftpSeedService.getPathLocal()).catch(reason => {
+        disk.check(this._ftpSeedService.getPathLocal()).catch((reason) => {
           this.logger.error(reason);
-        })
+        }),
       ])
-        .then(result => {
+        .then((result) => {
           // merge both
           const status: RtorrentStatus = (result[0] as unknown) as RtorrentStatus;
 
@@ -82,7 +101,7 @@ export class RtorrentService extends NestSchedule {
           }
           resolve(status);
         })
-        .catch(reason => {
+        .catch((reason) => {
           reject(reason);
         });
     });
@@ -118,34 +137,44 @@ export class RtorrentService extends NestSchedule {
                 'leechers',
                 'seeders',
                 'active',
-                'open'
+                'open',
               ])
             );
 
             // add download progression to files
-            torrents.forEach(torrent => {
+            torrents.forEach((torrent) => {
               //this.logger.debug(torrent.active+' '+torrent.complete+' '+torrent.open+' '+torrent.name);
               let total_downloaded = 0;
               let total_shouldDownload = false;
               let total_downloadStarted: Date;
-              torrent.files.forEach(file => {
-                const progress = this._ftpSeedService.getProgression(file.fullpath);
+              torrent.files.forEach((file) => {
+                const progress = this._ftpSeedService.getProgression(
+                  file.fullpath
+                );
                 if (progress) {
                   file.shouldDownload = progress.shouldDownload;
                   file.downloaded = progress.value;
                   file.downloadStarted = progress.downloadStarted;
                   total_downloaded += progress.value;
-                  total_shouldDownload = total_shouldDownload || progress.shouldDownload;
+                  total_shouldDownload =
+                    total_shouldDownload || progress.shouldDownload;
                   if (
                     !total_downloadStarted ||
-                    (file.downloadStarted && file.downloadStarted.getTime() < total_downloadStarted.getTime())
+                    (file.downloadStarted &&
+                      file.downloadStarted.getTime() <
+                        total_downloadStarted.getTime())
                   ) {
                     total_downloadStarted = file.downloadStarted;
                   }
                 } else {
                   file.downloaded = 0;
                   if (file['completed_chunks'] === file['chunks']) {
-                    this._ftpSeedService.setProgression(file.fullpath, 0, file.size, undefined);
+                    this._ftpSeedService.setProgression(
+                      file.fullpath,
+                      0,
+                      file.size,
+                      undefined
+                    );
                   }
                 }
                 this._ftpSeedService.tellProgressionUseful(file.fullpath);
@@ -189,15 +218,15 @@ export class RtorrentService extends NestSchedule {
     //this.logger.debug('pauseTorrent');
     this._initialize();
     return new Promise<RtorrentTorrent[]>((resolve, reject) => {
-      this._rtorrent.pause([hash], err => {
+      this._rtorrent.pause([hash], (err) => {
         if (err) {
           return reject(err);
         }
         this.getTorrents()
-          .then(torrents => {
+          .then((torrents) => {
             resolve(torrents);
           })
-          .catch(err1 => {
+          .catch((err1) => {
             reject(err1);
           });
       });
@@ -208,19 +237,19 @@ export class RtorrentService extends NestSchedule {
     this._initialize();
     //this.logger.debug('startTorrent');
     return new Promise<RtorrentTorrent[]>((resolve, reject) => {
-      this._rtorrent.stop([hash], err1 => {
+      this._rtorrent.stop([hash], (err1) => {
         if (err1) {
           return reject(err1);
         }
-        this._rtorrent.start([hash], err3 => {
+        this._rtorrent.start([hash], (err3) => {
           if (err3) {
             return reject(err3);
           }
           this.getTorrents()
-            .then(torrents => {
+            .then((torrents) => {
               resolve(torrents);
             })
-            .catch(err2 => {
+            .catch((err2) => {
               reject(err2);
             });
         });
@@ -232,15 +261,15 @@ export class RtorrentService extends NestSchedule {
     this._initialize();
     //this.logger.debug('removeTorrent');
     return new Promise<RtorrentTorrent[]>((resolve, reject) => {
-      this._rtorrent.removeAndErase([hash], err1 => {
+      this._rtorrent.removeAndErase([hash], (err1) => {
         if (err1) {
           return reject(err1);
         }
         this.getTorrents()
-          .then(torrents => {
+          .then((torrents) => {
             resolve(torrents);
           })
-          .catch(err2 => {
+          .catch((err2) => {
             reject(err2);
           });
       });
@@ -257,15 +286,15 @@ export class RtorrentService extends NestSchedule {
           return reject(err1);
         }
 
-        files.forEach(f => {
+        files.forEach((f) => {
           this._ftpSeedService.switchShouldDownload(f.fullpath, f.size, should);
         });
         //this.logger.debug(files);
         this.getTorrents()
-          .then(torrents => {
+          .then((torrents) => {
             resolve(torrents);
           })
-          .catch(err2 => {
+          .catch((err2) => {
             reject(err2);
           });
       });
@@ -296,7 +325,7 @@ export class RtorrentService extends NestSchedule {
   intervalJob_RtorrentService() {
     // this.logger.debug('intervalJob_RtorrentService');
 
-    this.getTorrents().catch(err => {
+    this.getTorrents().catch((err) => {
       this.logger.error('getTorrents error');
       this.logger.error(err);
     });

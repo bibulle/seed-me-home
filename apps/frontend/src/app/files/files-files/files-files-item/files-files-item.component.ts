@@ -1,20 +1,28 @@
-import { Component, EventEmitter, Inject, Input, NgModule, OnInit, Output, ViewChild } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Inject,
+  Input,
+  NgModule,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { FileMove, FilesFile, MoveType } from '@seed-me-home/models';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import {
   MAT_DIALOG_DATA,
-  MatButtonModule,
-  MatCheckboxModule,
   MatDialog,
   MatDialogModule,
   MatDialogRef,
-  MatFormFieldModule,
-  MatIconModule,
-  MatInputModule,
-  MatMenuModule,
-  MatMenuTrigger,
-  MatProgressBarModule,
-  MatRadioModule
-} from '@angular/material';
+} from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatRadioModule } from '@angular/material/radio';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { BytesSizeModule } from '../../../utils/pipes/bytes-size.pipe';
 import { CommonModule } from '@angular/common';
@@ -23,9 +31,9 @@ import { FilesFilesService } from '../files-files.service';
 import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-files-files-item',
+  selector: 'seed-me-home2-files-files-item',
   templateUrl: './files-files-item.component.html',
-  styleUrls: ['./files-files-item.component.scss']
+  styleUrls: ['./files-files-item.component.scss'],
 })
 export class FilesFilesItemComponent implements OnInit {
   @Input()
@@ -83,7 +91,9 @@ export class FilesFilesItemComponent implements OnInit {
 
       const dateMilli =
         this.file.downloadStarted.getTime() +
-        (this.file.size * (new Date().getTime() - this.file.downloadStarted.getTime())) / this.file.downloaded;
+        (this.file.size *
+          (new Date().getTime() - this.file.downloadStarted.getTime())) /
+          this.file.downloaded;
 
       moment.locale(this._translateService.currentLang);
 
@@ -104,10 +114,10 @@ export class FilesFilesItemComponent implements OnInit {
   remove() {
     const dialogRef = this.dialog.open(FilesFilesItemDialogRemoveComponent, {
       width: '80%',
-      data: this.file.path
+      data: this.file.path,
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.removeFileEvent.emit(this.file);
       }
@@ -115,10 +125,13 @@ export class FilesFilesItemComponent implements OnInit {
   }
 
   move() {
-    const fileMove: FileMove = this._filesFilesService.calculateTrgPath(this.file.path, this.file.fullpath);
+    const fileMove: FileMove = this._filesFilesService.calculateTrgPath(
+      this.file.path,
+      this.file.fullpath
+    );
     const dialogRef = this.dialog.open(FilesFilesItemDialogMoveComponent, {
       width: '80%',
-      data: fileMove
+      data: fileMove,
     });
 
     dialogRef.afterClosed().subscribe((result: FileMove) => {
@@ -131,9 +144,9 @@ export class FilesFilesItemComponent implements OnInit {
 }
 
 @Component({
-  selector: 'app-files-files-item-dialog-remove',
+  selector: 'seed-me-home2-files-files-item-dialog-remove',
   templateUrl: './files-files-item-dialog-remove.component.html',
-  styleUrls: ['./files-files-item-dialog-remove.component.scss']
+  styleUrls: ['./files-files-item-dialog-remove.component.scss'],
 })
 export class FilesFilesItemDialogRemoveComponent {
   constructor(
@@ -147,9 +160,9 @@ export class FilesFilesItemDialogRemoveComponent {
 }
 
 @Component({
-  selector: 'app-files-files-item-dialog-move',
+  selector: 'seed-me-home2-files-files-item-dialog-move',
   templateUrl: './files-files-item-dialog-move.component.html',
-  styleUrls: ['./files-files-item-dialog-move.component.scss']
+  styleUrls: ['./files-files-item-dialog-move.component.scss'],
 })
 export class FilesFilesItemDialogMoveComponent {
   moveType = MoveType;
@@ -178,11 +191,18 @@ export class FilesFilesItemDialogMoveComponent {
     MatInputModule,
     FormsModule,
     MatRadioModule,
-    MatCheckboxModule
+    MatCheckboxModule,
   ],
-  entryComponents: [FilesFilesItemDialogRemoveComponent, FilesFilesItemDialogMoveComponent],
-  declarations: [FilesFilesItemComponent, FilesFilesItemDialogRemoveComponent, FilesFilesItemDialogMoveComponent],
+  entryComponents: [
+    FilesFilesItemDialogRemoveComponent,
+    FilesFilesItemDialogMoveComponent,
+  ],
+  declarations: [
+    FilesFilesItemComponent,
+    FilesFilesItemDialogRemoveComponent,
+    FilesFilesItemDialogMoveComponent,
+  ],
   providers: [],
-  exports: [FilesFilesItemComponent]
+  exports: [FilesFilesItemComponent],
 })
 export class FilesFilesItemModule {}

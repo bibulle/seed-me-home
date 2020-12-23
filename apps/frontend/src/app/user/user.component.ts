@@ -5,22 +5,27 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-user',
+  selector: 'seed-me-home2-user',
   templateUrl: './user.component.html',
-  styleUrls: ['./user.component.scss']
+  styleUrls: ['./user.component.scss'],
 })
 export class UserComponent implements OnInit {
   @Input() user: User;
 
   private _currentConfigSubscription: Subscription;
-  private config: Config = new Config();
+  config: Config = new Config();
 
-  constructor(private _router: Router, private readonly _userService: UserService) {}
+  constructor(
+    private _router: Router,
+    private readonly _userService: UserService
+  ) {}
 
   ngOnInit() {
-    this._currentConfigSubscription = this._userService.configObservable().subscribe(rel => {
-      this.config = { ...this.config, ...rel };
-    });
+    this._currentConfigSubscription = this._userService
+      .configObservable()
+      .subscribe((rel) => {
+        this.config = { ...this.config, ...rel };
+      });
   }
 
   update() {

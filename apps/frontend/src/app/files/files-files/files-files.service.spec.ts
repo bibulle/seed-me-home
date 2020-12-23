@@ -1,14 +1,21 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClientModule } from '@angular/common/http';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { NotificationModule, NotificationService } from '../../notification/notification.service';
-import { NGXLogger, NGXLoggerMock } from 'ngx-logger';
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from '@angular/common/http/testing';
+import {
+  NotificationModule,
+  NotificationService,
+} from '../../notification/notification.service';
+import { NGXLogger } from 'ngx-logger';
+import { NGXLoggerMock } from 'ngx-logger/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { FilesFilesService } from './files-files.service';
 import { MoveType } from '@seed-me-home/models';
 
 const flushPromises = () => {
-  return new Promise(resolve => setImmediate(resolve));
+  return new Promise((resolve) => setImmediate(resolve));
 };
 
 describe('FilesFilesService', () => {
@@ -18,8 +25,16 @@ describe('FilesFilesService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientModule, HttpClientTestingModule, NotificationModule, TranslateModule.forRoot()],
-      providers: [NotificationService, { provide: NGXLogger, useClass: NGXLoggerMock }]
+      imports: [
+        HttpClientModule,
+        HttpClientTestingModule,
+        NotificationModule,
+        TranslateModule.forRoot(),
+      ],
+      providers: [
+        NotificationService,
+        { provide: NGXLogger, useClass: NGXLoggerMock },
+      ],
     });
     service = TestBed.get(FilesFilesService);
     notificationService = TestBed.get(NotificationService);
@@ -49,10 +64,10 @@ describe('FilesFilesService', () => {
             downloaded: 10000,
             isDirectory: false,
             modifiedDate: new Date(2),
-            children: []
-          }
-        ]
-      }
+            children: [],
+          },
+        ],
+      },
     };
     const goodAnswer2 = {
       data: {
@@ -70,10 +85,10 @@ describe('FilesFilesService', () => {
             downloaded: 50000,
             isDirectory: false,
             modifiedDate: new Date(5),
-            children: []
-          }
-        ]
-      }
+            children: [],
+          },
+        ],
+      },
     };
 
     it('should do nothing if none has subscribed to the event', () => {
@@ -88,7 +103,7 @@ describe('FilesFilesService', () => {
     it('should return a value if someone subscribe the local event and refresh 10 second later', async () => {
       // This should test the content of the service return
       let callCptLocal = 0;
-      service.currentFilesObservableLocal().subscribe(files => {
+      service.currentFilesObservableLocal().subscribe((files) => {
         if (callCptLocal % 2 === 0) {
           expect(files).toEqual(goodAnswer1.data);
         } else {
@@ -98,7 +113,7 @@ describe('FilesFilesService', () => {
       });
 
       let callCptNas = 0;
-      service.currentFilesObservableNas().subscribe(files => {
+      service.currentFilesObservableNas().subscribe((files) => {
         if (callCptNas % 2 === 0) {
           expect(files).toEqual(goodAnswer1.data);
         } else {
@@ -141,7 +156,7 @@ describe('FilesFilesService', () => {
 
     it('should manage error if http response is Ko (and update after a while)', async () => {
       // Just test the error content for local
-      jest.spyOn(notificationService, 'error').mockImplementation(message => {
+      jest.spyOn(notificationService, 'error').mockImplementation((message) => {
         expect(message).toBe('Local not found');
       });
 
@@ -157,7 +172,7 @@ describe('FilesFilesService', () => {
       req.error(
         new ErrorEvent('HTTP_ERROR', {
           error: new Error('Http error'),
-          message: 'File not found'
+          message: 'File not found',
         })
       );
       req = httpMock.expectOne(`${service.API_URL_NAS}`);
@@ -169,7 +184,7 @@ describe('FilesFilesService', () => {
       expect(setTimeout).toHaveBeenCalledTimes(1);
 
       // Just test the error content for Nas
-      jest.spyOn(notificationService, 'error').mockImplementation(message => {
+      jest.spyOn(notificationService, 'error').mockImplementation((message) => {
         expect(message).toBe('Nas not found');
       });
 
@@ -189,7 +204,7 @@ describe('FilesFilesService', () => {
       req.error(
         new ErrorEvent('HTTP_ERROR', {
           error: new Error('Http error'),
-          message: 'File not found'
+          message: 'File not found',
         })
       );
 
@@ -223,7 +238,7 @@ describe('FilesFilesService', () => {
     it('should say ko if http return ko', async () => {
       expect.assertions(4);
 
-      jest.spyOn(notificationService, 'error').mockImplementation(message => {
+      jest.spyOn(notificationService, 'error').mockImplementation((message) => {
         expect(message).toBe('Tested http error');
       });
 
@@ -242,7 +257,7 @@ describe('FilesFilesService', () => {
       req.error(
         new ErrorEvent('HTTP_ERROR', {
           error: new Error('Http error'),
-          message: 'Tested http error'
+          message: 'Tested http error',
         })
       );
 
@@ -260,7 +275,7 @@ describe('FilesFilesService', () => {
           sourceFullPath: '/toto/downloaded/path.mkv',
           sourcePath: 'path.mkv',
           targetPath: 'path.mkv',
-          targetType: MoveType.movies
+          targetType: MoveType.movies,
         })
         .then(() => {
           expect(true).toBe(true);
@@ -278,7 +293,7 @@ describe('FilesFilesService', () => {
     it('should say ko if http return ko', async () => {
       expect.assertions(4);
 
-      jest.spyOn(notificationService, 'error').mockImplementation(message => {
+      jest.spyOn(notificationService, 'error').mockImplementation((message) => {
         expect(message).toBe('Tested http error');
       });
 
@@ -287,7 +302,7 @@ describe('FilesFilesService', () => {
           sourceFullPath: '/toto/downloaded/path.mkv',
           sourcePath: 'path.mkv',
           targetPath: 'path.mkv',
-          targetType: MoveType.movies
+          targetType: MoveType.movies,
         })
         .then(() => {
           expect(true).toBe(false);
@@ -302,7 +317,7 @@ describe('FilesFilesService', () => {
       req.error(
         new ErrorEvent('HTTP_ERROR', {
           error: new Error('Http error'),
-          message: 'Tested http error'
+          message: 'Tested http error',
         })
       );
 
@@ -312,7 +327,7 @@ describe('FilesFilesService', () => {
   });
 
   describe('calculateTrgPath', () => {
-    it('should should transform movie name', function() {
+    it('should should transform movie name', function () {
       expect(
         service.calculateTrgPath(
           'Test.title.2010.BdRip MULTI-VOSTFR.mkv',
@@ -320,31 +335,45 @@ describe('FilesFilesService', () => {
         )
       ).toEqual({
         sourcePath: 'Test.title.2010.BdRip MULTI-VOSTFR.mkv',
-        sourceFullPath: 'downloaded/toto/Test.title.2010.BdRip MULTI-VOSTFR.mkv',
+        sourceFullPath:
+          'downloaded/toto/Test.title.2010.BdRip MULTI-VOSTFR.mkv',
         targetPath: 'Test title (2010).mkv',
-        targetType: 0
+        targetType: 0,
       });
     });
-    it('should should transform series name', function() {
+    it('should should transform series name', function () {
       expect(
-        service.calculateTrgPath('A series.s5e3-An.episode.mkv', 'downloaded/toto/A series.s5e3-An.episode.mkv')
+        service.calculateTrgPath(
+          'A series.s5e3-An.episode.mkv',
+          'downloaded/toto/A series.s5e3-An.episode.mkv'
+        )
       ).toEqual({
         sourcePath: 'A series.s5e3-An.episode.mkv',
         sourceFullPath: 'downloaded/toto/A series.s5e3-An.episode.mkv',
         targetPath: 'A series/Season 5/A series S05E03 An episode.mkv',
-        targetType: 1
+        targetType: 1,
       });
-      expect(service.calculateTrgPath('A series.s5e3.mkv', 'downloaded/toto/A series.s5e3.mkv')).toEqual({
+      expect(
+        service.calculateTrgPath(
+          'A series.s5e3.mkv',
+          'downloaded/toto/A series.s5e3.mkv'
+        )
+      ).toEqual({
         sourcePath: 'A series.s5e3.mkv',
         sourceFullPath: 'downloaded/toto/A series.s5e3.mkv',
         targetPath: 'A series/Season 5/A series S05E03.mkv',
-        targetType: 1
+        targetType: 1,
       });
-      expect(service.calculateTrgPath('A series 5x3.mkv', 'downloaded/toto/A series 5x3.mkv')).toEqual({
+      expect(
+        service.calculateTrgPath(
+          'A series 5x3.mkv',
+          'downloaded/toto/A series 5x3.mkv'
+        )
+      ).toEqual({
         sourcePath: 'A series 5x3.mkv',
         sourceFullPath: 'downloaded/toto/A series 5x3.mkv',
         targetPath: 'A series/Season 5/A series S05E03.mkv',
-        targetType: 1
+        targetType: 1,
       });
     });
   });

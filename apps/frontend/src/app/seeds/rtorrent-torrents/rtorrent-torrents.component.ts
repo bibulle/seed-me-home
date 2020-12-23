@@ -1,7 +1,8 @@
 import { Component, NgModule, OnDestroy, OnInit } from '@angular/core';
 import { RtorrentTorrentsService } from './rtorrent-torrents.service';
 import { Subscription } from 'rxjs';
-import { MatCardModule, MatIconModule } from '@angular/material';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
 import { BytesSizeModule } from '../../utils/pipes/bytes-size.pipe';
 import { RtorrentTorrent } from '@seed-me-home/models';
@@ -9,9 +10,9 @@ import { RtorrentTorrentItemModule } from './rtorrent-torrent-item/rtorrent-torr
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-rtorrent-torrents',
+  selector: 'seed-me-home2-rtorrent-torrents',
   templateUrl: './rtorrent-torrents.component.html',
-  styleUrls: ['./rtorrent-torrents.component.scss']
+  styleUrls: ['./rtorrent-torrents.component.scss'],
 })
 export class RtorrentTorrentsComponent implements OnInit, OnDestroy {
   rtorrentTorrents: RtorrentTorrent[];
@@ -87,9 +88,16 @@ export class RtorrentTorrentsComponent implements OnInit, OnDestroy {
 }
 
 @NgModule({
-  imports: [CommonModule, MatCardModule, TranslateModule, MatIconModule, BytesSizeModule, RtorrentTorrentItemModule],
+  imports: [
+    CommonModule,
+    MatCardModule,
+    TranslateModule,
+    MatIconModule,
+    BytesSizeModule,
+    RtorrentTorrentItemModule,
+  ],
   declarations: [RtorrentTorrentsComponent],
   providers: [RtorrentTorrentsService],
-  exports: [RtorrentTorrentsComponent]
+  exports: [RtorrentTorrentsComponent],
 })
 export class RtorrentTorrentsModule {}

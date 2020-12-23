@@ -1,5 +1,6 @@
 import { Component, NgModule, OnDestroy, OnInit } from '@angular/core';
-import { MatCardModule, MatIconModule } from '@angular/material';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
 import { BytesSizeModule } from '../../utils/pipes/bytes-size.pipe';
 import { FilesStatus } from '@seed-me-home/models';
@@ -7,9 +8,9 @@ import { Subscription } from 'rxjs';
 import { FilesStatusService } from './files-status.service';
 
 @Component({
-  selector: 'app-files-status',
+  selector: 'seed-me-home2-files-status',
   templateUrl: './files-status.component.html',
-  styleUrls: ['./files-status.component.scss']
+  styleUrls: ['./files-status.component.scss'],
 })
 export class FilesStatusComponent implements OnInit, OnDestroy {
   filesStatus: FilesStatus;
@@ -37,6 +38,6 @@ export class FilesStatusComponent implements OnInit, OnDestroy {
   imports: [MatCardModule, TranslateModule, MatIconModule, BytesSizeModule],
   declarations: [FilesStatusComponent],
   providers: [],
-  exports: [FilesStatusComponent]
+  exports: [FilesStatusComponent],
 })
 export class FilesStatusModule {}

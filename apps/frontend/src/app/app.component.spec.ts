@@ -1,7 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { RouterTestingModule } from '@angular/router/testing';
-import { NGXLogger, NGXLoggerMock } from 'ngx-logger';
+import { NGXLogger } from 'ngx-logger';
+import { NGXLoggerMock } from 'ngx-logger/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { Config, UserService } from './user/user.service';
 import { Observable, Subject } from 'rxjs';
@@ -17,9 +18,17 @@ let mockUserService: UserServiceMock;
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [MaterialModule, HttpClientTestingModule, RouterTestingModule, TranslateModule.forRoot()],
+      imports: [
+        MaterialModule,
+        HttpClientTestingModule,
+        RouterTestingModule,
+        TranslateModule.forRoot(),
+      ],
       declarations: [AppComponent, MockNavBarComponent],
-      providers: [{ provide: NGXLogger, useClass: NGXLoggerMock }, { provide: UserService, useClass: UserServiceMock }]
+      providers: [
+        { provide: NGXLogger, useClass: NGXLoggerMock },
+        { provide: UserService, useClass: UserServiceMock },
+      ],
     }).compileComponents();
 
     mockUserService = TestBed.get(UserService);
@@ -48,7 +57,7 @@ describe('AppComponent', () => {
       picture: 'picture_url',
       provider: 'google',
       providerId: '12345678',
-      isAdmin: true
+      isAdmin: true,
     });
     fixture.detectChanges();
     expect(compiled.querySelectorAll('router-outlet').length).toEqual(1);
@@ -76,7 +85,7 @@ class UserServiceMock {
 }
 
 @Component({
-  selector: 'app-nav-bar',
-  template: '<p>MockNavBarComponent</p>'
+  selector: 'seed-me-home2-nav-bar',
+  template: '<p>MockNavBarComponent</p>',
 })
 class MockNavBarComponent {}

@@ -2,7 +2,11 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
-import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
+import {
+  HTTP_INTERCEPTORS,
+  HttpClient,
+  HttpClientModule,
+} from '@angular/common/http';
 import { MaterialModule } from './material.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AuthGuard, AuthGuardAdmin } from './authent/auth.guard';
@@ -14,7 +18,7 @@ import {
   MissingTranslationHandler,
   MissingTranslationHandlerParams,
   TranslateLoader,
-  TranslateModule
+  TranslateModule,
 } from '@ngx-translate/core';
 import { CommonModule, registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
@@ -23,6 +27,7 @@ import { FilesModule } from './files/files.component';
 import { NotificationService } from './notification/notification.service';
 import { LoggerModule, NGXLogger, NgxLoggerLevel } from 'ngx-logger';
 import { environment } from '../environments/environment';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { UserService } from './user/user.service';
 import { JwtModule } from '@auth0/angular-jwt';
 import { RefreshTokenInterceptor } from './interceptors/refresh-token.interceptor';
@@ -49,11 +54,16 @@ registerLocaleData(localeEn, 'en');
     JwtModule.forRoot({
       config: {
         tokenGetter: UserService.tokenGetter,
-        whitelistedDomains: ['localhost:4002' as string | RegExp, 'seeds.bibulle.fr', new RegExp('^null$')]
-        //        whitelistedDomains: new Array(new RegExp('^null$'))
-      }
+        allowedDomains: [
+          ('localhost:4002' as string | 'localhost:4002') as string | RegExp,
+          'seeds.bibulle.fr',
+          new RegExp('^null$'),
+        ],
+        //        allowedDomains: new Array(new RegExp('^null$'))
+      },
     }),
     MaterialModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     NavBarModule,
     SeedsModule,
@@ -63,30 +73,34 @@ registerLocaleData(localeEn, 'en');
       loader: {
         provide: TranslateLoader,
         useFactory: HttpLoaderFactory,
-        deps: [HttpClient]
+        deps: [HttpClient],
       },
       missingTranslationHandler: {
         provide: MissingTranslationHandler,
         useClass: MyMissingTranslationHandler,
-        deps: [NGXLogger]
-      }
+        deps: [NGXLogger],
+      },
       // useDefaultLang: false
     }),
     LoggerModule.forRoot({
       serverLoggingUrl: environment.serverUrl + 'api/logs',
       level: NgxLoggerLevel.DEBUG,
-      serverLogLevel: NgxLoggerLevel.WARN
-    })
+      serverLogLevel: NgxLoggerLevel.WARN,
+    }),
   ],
   providers: [
     AuthGuard,
     AuthGuardAdmin,
     NotificationService,
-    { provide: HTTP_INTERCEPTORS, useClass: RefreshTokenInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: VersionInterceptor, multi: true }
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: RefreshTokenInterceptor,
+      multi: true,
+    },
+    { provide: HTTP_INTERCEPTORS, useClass: VersionInterceptor, multi: true },
   ],
   bootstrap: [AppComponent],
-  exports: []
+  exports: [],
 })
 export class AppModule {}
 

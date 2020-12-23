@@ -5,7 +5,9 @@ import { JwtHelperServiceService } from './user.service';
 import { UserComponent } from './user.component';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatButtonModule, MatIconModule, MatMenuModule } from '@angular/material';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 
 @NgModule({
   imports: [
@@ -15,10 +17,10 @@ import { MatButtonModule, MatIconModule, MatMenuModule } from '@angular/material
     CommonModule,
     MatButtonModule,
     MatIconModule,
-    MatMenuModule
+    MatMenuModule,
   ],
   declarations: [UserComponent],
   exports: [UserComponent],
-  providers: [JwtHelperServiceService]
+  providers: [JwtHelperServiceService],
 })
 export class UserModule {}

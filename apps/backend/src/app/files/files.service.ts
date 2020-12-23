@@ -1,31 +1,41 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
-import { FileMove, FilesFile, FilesStatus, MoveType } from '@seed-me-home/models';
+import {
+  FileMove,
+  FilesFile,
+  FilesStatus,
+  MoveType,
+} from '@seed-me-home/models';
 import { ConfigService } from '../../services/config/config.service';
 import { FtpSeedService } from '../ftp-seed/ftp-seed.service';
 import * as fs from 'fs';
 import * as path from 'path';
 
-const mv = require('mv');
-
-const disk = require('diskusage');
+import * as mv from 'mv';
+import * as disk from 'diskusage';
 
 @Injectable()
 export class FilesService {
   readonly logger = new Logger(FilesService.name);
 
-  constructor(private _configService: ConfigService, private _ftpSeedService: FtpSeedService) {}
+  constructor(
+    private _configService: ConfigService,
+    private _ftpSeedService: FtpSeedService
+  ) {}
 
   getStatus(): Promise<FilesStatus> {
     //noinspection JSUnusedLocalSymbols
     return new Promise<FilesStatus>((resolve, reject) => {
       Promise.all([
-        disk.check(this._ftpSeedService.getPathLocal()).catch(reason => {
+        disk.check(this._ftpSeedService.getPathLocal()).catch((reason) => {
           this.logger.error(reason);
         }),
-        disk.check(this._configService.getPathNas()).catch(reason => {
+        disk.check(this._configService.getPathNas()).catch((reason) => {
+          this.logger.error(
+            `Not found ${path.resolve(this._configService.getPathNas())}`
+          );
           this.logger.error(reason);
-        })
-      ]).then(infos => {
+        }),
+      ]).then((infos) => {
         const result = {} as FilesStatus;
 
         if (infos[0]) {
@@ -47,7 +57,12 @@ export class FilesService {
   }
 
   getFilesLocal(): Promise<FilesFile> {
-    return this._getFiles(path.join(this._ftpSeedService.getPathLocal(), this._configService.getPathDownload()));
+    return this._getFiles(
+      path.join(
+        this._ftpSeedService.getPathLocal(),
+        this._configService.getPathDownload()
+      )
+    );
   }
 
   getFilesNas(): Promise<FilesFile> {
@@ -65,7 +80,9 @@ export class FilesService {
       fs.stat(filePath, (err, stats) => {
         if (err) {
           this.logger.error(err);
-          return reject(new HttpException('File not found', HttpStatus.NOT_FOUND));
+          return reject(
+            new HttpException('File not found', HttpStatus.NOT_FOUND)
+          );
         }
 
         //this.logger.debug(stats);
@@ -78,7 +95,7 @@ export class FilesService {
           downloaded: stats.size,
           isDirectory: stats.isDirectory(),
           children: [],
-          modifiedDate: stats.mtime
+          modifiedDate: stats.mtime,
         };
 
         if (!result.isDirectory) {
@@ -95,22 +112,26 @@ export class FilesService {
           result.size = 0;
           result.downloaded = 0;
           const promises = [];
-          fs.readdirSync(filePath).forEach(child => {
+          fs.readdirSync(filePath).forEach((child) => {
             //console.log(path.join(root, child));
             if (!child.startsWith('.')) {
-              promises.push(this._getFiles(path.join(filePath, child), level + 1));
+              promises.push(
+                this._getFiles(path.join(filePath, child), level + 1)
+              );
             }
           });
           Promise.all(promises)
-            .then(children => {
+            .then((children) => {
               result.children = children;
 
-              result.children.forEach(child => {
+              result.children.forEach((child) => {
                 result.size += child.size;
                 result.downloaded += child.downloaded;
                 if (
                   !result.downloadStarted ||
-                  (child.downloadStarted && child.downloadStarted.getTime() < result.downloadStarted.getTime())
+                  (child.downloadStarted &&
+                    child.downloadStarted.getTime() <
+                      result.downloadStarted.getTime())
                 ) {
                   result.downloadStarted = child.downloadStarted;
                 }
@@ -119,7 +140,7 @@ export class FilesService {
               //this.logger.debug(result);
               resolve(result);
             })
-            .catch(raison => {
+            .catch((raison) => {
               reject(raison);
             });
         }
@@ -135,7 +156,9 @@ export class FilesService {
       try {
         fullPath = fs.realpathSync(fullPath);
       } catch (e) {
-        return reject(new HttpException('File not found', HttpStatus.NOT_FOUND));
+        return reject(
+          new HttpException('File not found', HttpStatus.NOT_FOUND)
+        );
       }
       //this.logger.debug(fullPath);
 
@@ -163,7 +186,7 @@ export class FilesService {
     if (fs.existsSync(fullPath)) {
       if (fs.lstatSync(fullPath).isDirectory()) {
         // Directory : remove the content
-        fs.readdirSync(fullPath).forEach(file => {
+        fs.readdirSync(fullPath).forEach((file) => {
           const curPath = path.join(fullPath, file);
           this._deleteFolderRecursive(curPath);
         });
@@ -194,11 +217,15 @@ export class FilesService {
       try {
         fileMove.sourceFullPath = fs.realpathSync(fileMove.sourceFullPath);
       } catch (e) {
-        return reject(new HttpException('File not found', HttpStatus.NOT_FOUND));
+        return reject(
+          new HttpException('File not found', HttpStatus.NOT_FOUND)
+        );
       }
       //this.logger.debug(fileMove.sourceFullPath);
 
-      const isAuthorized = this._fileModificationAuthorized(fileMove.sourceFullPath);
+      const isAuthorized = this._fileModificationAuthorized(
+        fileMove.sourceFullPath
+      );
       //this.logger.debug(isAuthorized);
       if (!isAuthorized) {
         return reject(new HttpException('Forbidden', HttpStatus.FORBIDDEN));
@@ -228,14 +255,16 @@ export class FilesService {
       let replaced = '';
       let replacer = '';
       let previousFound = true;
-      dirs.reverse().forEach(d0 => {
+      dirs.reverse().forEach((d0) => {
         if (previousFound) {
           const d = d0.replace(replaced, replacer);
           if (!fs.existsSync(d)) {
             // search in parent (with no case)
             previousFound = false;
-            fs.readdirSync(path.dirname(d)).forEach(f => {
-              if (path.join(path.dirname(d), f).toLowerCase() === d.toLowerCase()) {
+            fs.readdirSync(path.dirname(d)).forEach((f) => {
+              if (
+                path.join(path.dirname(d), f).toLowerCase() === d.toLowerCase()
+              ) {
                 previousFound = true;
                 replaced = d0;
                 replacer = path.join(path.dirname(d), f);
@@ -247,14 +276,25 @@ export class FilesService {
       fullPathTarget = fullPathTarget.replace(replaced, replacer);
 
       // Move it
+      // eslint-disable-next-line @typescript-eslint/no-this-alias
       const that = this;
       let mvDone = false;
-      mv(fileMove.sourceFullPath, fullPathTarget, { mkdirp: true }, function(err) {
+      mv(fileMove.sourceFullPath, fullPathTarget, { mkdirp: true }, function (
+        err
+      ) {
         if (err) {
-          that.logger.error('cannot move "' + fileMove.sourceFullPath + '" to "' + fullPathTarget + '"');
+          that.logger.error(
+            'cannot move "' +
+              fileMove.sourceFullPath +
+              '" to "' +
+              fullPathTarget +
+              '"'
+          );
           that.logger.error(err);
           mvDone = true;
-          return reject(new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR));
+          return reject(
+            new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR)
+          );
         }
         if (!mvDone) {
           mvDone = true;
@@ -275,11 +315,16 @@ export class FilesService {
     let path_local, path_nas;
     try {
       path_local = fs.realpathSync(
-        path.join(this._ftpSeedService.getPathLocal(), this._configService.getPathDownload())
+        path.join(
+          this._ftpSeedService.getPathLocal(),
+          this._configService.getPathDownload()
+        )
       );
+      // eslint-disable-next-line no-empty
     } catch (e) {}
     try {
       path_nas = fs.realpathSync(this._configService.getPathNas());
+      // eslint-disable-next-line no-empty
     } catch (e) {}
 
     //this.logger.debug(path_local);

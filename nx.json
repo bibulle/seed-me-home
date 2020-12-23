@@ -1,24 +1,40 @@
 {
-  "npmScope": "seed-me-home",
+  "npmScope": "seed-me-home2",
+  "affected": {
+    "defaultBase": "master"
+  },
   "implicitDependencies": {
     "angular.json": "*",
-    "package.json": "*",
-    "tsconfig.json": "*",
+    "package.json": {
+      "dependencies": "*",
+      "devDependencies": "*"
+    },
+    "tsconfig.base.json": "*",
     "tslint.json": "*",
+    ".eslintrc.json": "*",
     "nx.json": "*"
+  },
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "@nrwl/workspace/tasks-runners/default",
+      "options": {
+        "cacheableOperations": ["build", "lint", "test", "e2e"]
+      }
+    }
   },
   "projects": {
     "frontend": {
-      "tags": ["frontend"]
+      "tags": []
     },
     "frontend-e2e": {
-      "tags": []
+      "tags": [],
+      "implicitDependencies": ["frontend"]
     },
     "backend": {
       "tags": []
     },
     "models": {
-      "tags": ["shared"]
+      "tags": []
     }
   }
 }

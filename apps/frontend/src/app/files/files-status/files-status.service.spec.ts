@@ -1,13 +1,20 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClientModule } from '@angular/common/http';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { NotificationModule, NotificationService } from '../../notification/notification.service';
-import { NGXLogger, NGXLoggerMock } from 'ngx-logger';
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from '@angular/common/http/testing';
+import {
+  NotificationModule,
+  NotificationService,
+} from '../../notification/notification.service';
+import { NGXLogger } from 'ngx-logger';
+import { NGXLoggerMock } from 'ngx-logger/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { FilesStatusService } from './files-status.service';
 
 const flushPromises = () => {
-  return new Promise(resolve => setImmediate(resolve));
+  return new Promise((resolve) => setImmediate(resolve));
 };
 
 describe('FilesStatusService', () => {
@@ -17,8 +24,16 @@ describe('FilesStatusService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientModule, HttpClientTestingModule, NotificationModule, TranslateModule.forRoot()],
-      providers: [NotificationService, { provide: NGXLogger, useClass: NGXLoggerMock }]
+      imports: [
+        HttpClientModule,
+        HttpClientTestingModule,
+        NotificationModule,
+        TranslateModule.forRoot(),
+      ],
+      providers: [
+        NotificationService,
+        { provide: NGXLogger, useClass: NGXLoggerMock },
+      ],
     });
     service = TestBed.get(FilesStatusService);
     notificationService = TestBed.get(NotificationService);
@@ -38,8 +53,8 @@ describe('FilesStatusService', () => {
         down_total: '463360286085',
         up_rate: '191',
         up_total: '1293694778894',
-        free_disk_space: 24319991808
-      }
+        free_disk_space: 24319991808,
+      },
     };
     const goodAnswer2 = {
       data: {
@@ -47,8 +62,8 @@ describe('FilesStatusService', () => {
         down_total: '463360286085',
         up_rate: '191',
         up_total: '1293694778894',
-        free_disk_space: 24319991808
-      }
+        free_disk_space: 24319991808,
+      },
     };
 
     it('it should do nothing if none has subscribed to the event', () => {
@@ -62,7 +77,7 @@ describe('FilesStatusService', () => {
     it('it should return a value if someone subscribe the event and refresh 10 second later', async () => {
       // This should test the content of the service return
       let callCpt = 0;
-      service.currentStatusObservable().subscribe(status => {
+      service.currentStatusObservable().subscribe((status) => {
         if (callCpt % 2 === 0) {
           expect(status).toEqual(goodAnswer1.data);
         } else {
@@ -98,7 +113,7 @@ describe('FilesStatusService', () => {
 
     it('it should manage error if http response is Ko (and update after a while)', async () => {
       // Just test the error content
-      jest.spyOn(notificationService, 'error').mockImplementation(message => {
+      jest.spyOn(notificationService, 'error').mockImplementation((message) => {
         expect(message).toBe('Tested http error');
       });
 
@@ -114,7 +129,7 @@ describe('FilesStatusService', () => {
       req.error(
         new ErrorEvent('HTTP_ERROR', {
           error: new Error('Http error'),
-          message: 'Tested http error'
+          message: 'Tested http error',
         })
       );
 
@@ -134,7 +149,7 @@ describe('FilesStatusService', () => {
       req.error(
         new ErrorEvent('HTTP_ERROR', {
           error: new Error('Http error'),
-          message: 'Tested http error'
+          message: 'Tested http error',
         })
       );
 

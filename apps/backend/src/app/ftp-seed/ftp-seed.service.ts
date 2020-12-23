@@ -2,10 +2,10 @@ import { Injectable, Logger } from '@nestjs/common';
 import * as path from 'path';
 import { ConfigService } from '../../services/config/config.service';
 import * as fs from 'fs';
-import { Interval, NestSchedule } from 'nest-schedule';
+import { Interval } from '@nestjs/schedule';
 
 @Injectable()
-export class FtpSeedService extends NestSchedule {
+export class FtpSeedService {
   static readonly logger = new Logger(FtpSeedService.name);
 
   static readonly SIZE_LIMIT_DOWNLOAD = 5 * 1024 * 1024 * 1024;
@@ -29,7 +29,7 @@ export class FtpSeedService extends NestSchedule {
   private _pathProgress: string;
 
   constructor(private _configService: ConfigService) {
-    super();
+    //super();
   }
 
   private _initialize() {
@@ -39,12 +39,18 @@ export class FtpSeedService extends NestSchedule {
         host: this._configService.getSeedboxFtpHost(),
         port: this._configService.getSeedboxFtpPort(),
         username: this._configService.getSeedboxFtpUser(),
-        password: this._configService.getSeedboxFtpPass()
+        password: this._configService.getSeedboxFtpPass(),
         //debug: (m) => { FtpSeedService.logger.debug(m)}
       };
       this._pathFtp = this._configService.getSeedboxFtpPath();
-      this._pathDownload = path.join(this.getPathLocal(), this._configService.getPathDownload());
-      this._pathProgress = path.join(this.getPathLocal(), this._configService.getPathProgress());
+      this._pathDownload = path.join(
+        this.getPathLocal(),
+        this._configService.getPathDownload()
+      );
+      this._pathProgress = path.join(
+        this.getPathLocal(),
+        this._configService.getPathProgress()
+      );
       FtpSeedService.logger.log('Download to : ' + this._pathDownload);
       FtpSeedService.logger.log('Save progress to : ' + this._pathProgress);
 
@@ -93,7 +99,12 @@ export class FtpSeedService extends NestSchedule {
     this._saveProgression(fullPath, data);
   }
 
-  setProgression(fullPath: string, value: number, size: number, downloadStarted: Date) {
+  setProgression(
+    fullPath: string,
+    value: number,
+    size: number,
+    downloadStarted: Date
+  ) {
     this._initialize();
 
     const previous = this.getProgression(fullPath);
@@ -102,9 +113,11 @@ export class FtpSeedService extends NestSchedule {
       value: value,
       size: size,
       progress: Math.round((100 * value) / Math.max(1, size)),
-      shouldDownload: previous ? previous.shouldDownload : size < FtpSeedService.SIZE_LIMIT_DOWNLOAD,
+      shouldDownload: previous
+        ? previous.shouldDownload
+        : size < FtpSeedService.SIZE_LIMIT_DOWNLOAD,
       fullPath: fullPath,
-      downloadStarted: downloadStarted
+      downloadStarted: downloadStarted,
     };
 
     this._saveProgression(fullPath, obj);
@@ -116,7 +129,10 @@ export class FtpSeedService extends NestSchedule {
 
     const fileTrg = this._getProgressionFileName(fullPath);
 
-    fs.writeFileSync(fileTrg, JSON.stringify(data), { flag: 'w', encoding: 'utf8' });
+    fs.writeFileSync(fileTrg, JSON.stringify(data), {
+      flag: 'w',
+      encoding: 'utf8',
+    });
   }
 
   tellProgressionUseful(fullPath: string) {
@@ -136,11 +152,13 @@ export class FtpSeedService extends NestSchedule {
     let files = [];
     try {
       files = fs.readdirSync(this._pathProgress);
+      // eslint-disable-next-line no-empty
     } catch (e) {}
 
-    files.forEach(file => {
+    files.forEach((file) => {
       try {
-        const modifiedTime = fs.statSync(path.join(this._pathProgress, file)).mtimeMs;
+        const modifiedTime = fs.statSync(path.join(this._pathProgress, file))
+          .mtimeMs;
 
         if (modifiedTime < olderThan.getTime()) {
           fs.unlinkSync(path.join(this._pathProgress, file));
@@ -157,14 +175,22 @@ export class FtpSeedService extends NestSchedule {
     // remove the .progress if needed
     fullPath = fullPath.replace(/[.]progress$/, '');
 
-    return path.join(this._pathProgress, fullPath.replace(/[\\\/]/g, '_') + '.progress');
+    // eslint-disable-next-line no-useless-escape
+    return path.join(
+      this._pathProgress,
+      fullPath.replace(/[\\\/]/g, '_') + '.progress'
+    );
   }
 
   private _cleanFullFileName(fullPath: string): string {
     this._initialize();
 
     const regexp = new RegExp(
-      '.*(' + this._configService.getSeedboxFtpPath() + '|' + this._configService.getPathDownload() + ')/'
+      '.*(' +
+        this._configService.getSeedboxFtpPath() +
+        '|' +
+        this._configService.getPathDownload() +
+        ')/'
     );
 
     return fullPath.replace(regexp, '');
@@ -172,17 +198,19 @@ export class FtpSeedService extends NestSchedule {
 
   @Interval(40 * 1000)
   intervalJob_FtpSeedService() {
-    // FtpSeedService.logger.debug('intervalJob_FtpSeedService');
+    //FtpSeedService.logger.debug('intervalJob_FtpSeedService');
     const shouldDownload: Progression[] = [];
 
     // read all files
     this._initialize();
 
     const files = fs.readdirSync(this._pathProgress);
-    files.forEach(file => {
+    files.forEach((file) => {
       const progress = this.getProgression(file);
       if (!progress) {
-        FtpSeedService.logger.warn('Cannot read progression for file : ' + file);
+        FtpSeedService.logger.warn(
+          'Cannot read progression for file : ' + file
+        );
       } else {
         if (progress.shouldDownload && progress.progress !== 100) {
           // test if in currentDownload
@@ -219,7 +247,8 @@ export class FtpSeedService extends NestSchedule {
 
   private _startADownload() {
     if (
-      FtpSeedService.downloadCurrentList.length < FtpSeedService.PARALLELED_DOWNLOAD_MAX &&
+      FtpSeedService.downloadCurrentList.length <
+        FtpSeedService.PARALLELED_DOWNLOAD_MAX &&
       FtpSeedService.downloadWaitingList.length !== 0
     ) {
       const fullpath = FtpSeedService.downloadWaitingList[0].fullPath;
@@ -252,6 +281,7 @@ export class FtpSeedService extends NestSchedule {
     return new Promise<void>((collect, reject) => {
       this._initialize();
 
+      // eslint-disable-next-line @typescript-eslint/no-this-alias
       const that = this;
 
       FtpSeedService.logger.log('Downloading : ' + fullPath);
@@ -273,7 +303,7 @@ export class FtpSeedService extends NestSchedule {
           while (paths[0] !== '.' && paths[0] !== '/') {
             paths.unshift(path.dirname(paths[0]));
           }
-          paths.forEach(p => {
+          paths.forEach((p) => {
             if (!fs.existsSync(p)) {
               fs.mkdirSync(p);
             }
@@ -286,19 +316,30 @@ export class FtpSeedService extends NestSchedule {
             fileTrg,
             {
               //concurrency: 1,
-              debug: msg => {
+              debug: (msg) => {
                 FtpSeedService.logger.debug(msg);
               },
-              step: (total_transferred: number, chunk: number, total: number) => {
+              step: (
+                total_transferred: number,
+                chunk: number,
+                total: number
+              ) => {
                 const progress = that.getProgression(fullPath);
                 if (!progress.shouldDownload) {
-                  FtpSeedService.logger.log('Asked to stop downloading : ' + fullPath);
+                  FtpSeedService.logger.log(
+                    'Asked to stop downloading : ' + fullPath
+                  );
                   that.setProgression(fullPath, 0, total, undefined);
                   sftp.end();
                 } else {
-                  that.setProgression(fullPath, total_transferred, total, downloadStarted);
+                  that.setProgression(
+                    fullPath,
+                    total_transferred,
+                    total,
+                    downloadStarted
+                  );
                 }
-              }
+              },
             },
             (err2: Error) => {
               if (err2) {
@@ -313,7 +354,7 @@ export class FtpSeedService extends NestSchedule {
           );
         });
       });
-      conn.on('close', hadErr => {
+      conn.on('close', (hadErr) => {
         FtpSeedService.logger.debug('close (' + hadErr + ')');
       });
       conn.on('error', (err: Error) => {

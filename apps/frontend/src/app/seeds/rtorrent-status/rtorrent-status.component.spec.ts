@@ -2,10 +2,14 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { RtorrentStatusComponent } from './rtorrent-status.component';
 import { RtorrentStatusService } from './rtorrent-status.service';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from '@angular/common/http/testing';
 import { Observable, Subject } from 'rxjs';
 import { RtorrentStatus } from '@seed-me-home/models';
-import { MatCardModule, MatIconModule } from '@angular/material';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
 import { BytesSizeModule } from '../../utils/pipes/bytes-size.pipe';
 
@@ -18,9 +22,17 @@ describe('RtorrentStatusComponent', () => {
   beforeEach(() => {
     //noinspection JSIgnoredPromiseFromCall
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, MatIconModule, MatCardModule, TranslateModule.forRoot(), BytesSizeModule],
+      imports: [
+        HttpClientTestingModule,
+        MatIconModule,
+        MatCardModule,
+        TranslateModule.forRoot(),
+        BytesSizeModule,
+      ],
       declarations: [RtorrentStatusComponent],
-      providers: [{ provide: RtorrentStatusService, useClass: RtorrentStatusServiceMock }]
+      providers: [
+        { provide: RtorrentStatusService, useClass: RtorrentStatusServiceMock },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(RtorrentStatusComponent);
@@ -41,7 +53,7 @@ describe('RtorrentStatusComponent', () => {
       up_rate: 191,
       up_total: 1293694778894,
       free_disk_space: 24319991808,
-      free_disk_space_local: 24319991808
+      free_disk_space_local: 24319991808,
     };
 
     component.ngOnInit();

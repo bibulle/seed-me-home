@@ -1,11 +1,20 @@
 import { TestBed } from '@angular/core/testing';
 
 import { NotificationService } from './notification.service';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { HttpErrorResponse } from '@angular/common/http';
-import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { NGXLogger, NGXLoggerMock } from 'ngx-logger';
-import { DefaultLangChangeEvent, LangChangeEvent, TranslateService, TranslationChangeEvent } from '@ngx-translate/core';
+import {
+  BrowserAnimationsModule,
+  NoopAnimationsModule,
+} from '@angular/platform-browser/animations';
+import { NGXLogger } from 'ngx-logger';
+import { NGXLoggerMock } from 'ngx-logger/testing';
+import {
+  DefaultLangChangeEvent,
+  LangChangeEvent,
+  TranslateService,
+  TranslationChangeEvent,
+} from '@ngx-translate/core';
 import { EventEmitter } from '@angular/core';
 import { of } from 'rxjs';
 
@@ -15,11 +24,15 @@ describe('NotificationService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [MatSnackBarModule, BrowserAnimationsModule, NoopAnimationsModule],
+      imports: [
+        MatSnackBarModule,
+        BrowserAnimationsModule,
+        NoopAnimationsModule,
+      ],
       providers: [
         { provide: NGXLogger, useClass: NGXLoggerMock },
-        { provide: TranslateService, useClass: TranslateServiceStub }
-      ]
+        { provide: TranslateService, useClass: TranslateServiceStub },
+      ],
     });
     aSnackBar = TestBed.get(MatSnackBar);
     service = TestBed.get(NotificationService);
@@ -47,7 +60,9 @@ describe('NotificationService', () => {
     const _aSnackBarOpen = jest.spyOn(aSnackBar, 'open');
     _aSnackBarOpen.mockImplementationOnce((message, actions, config) => {
       expect(_aSnackBarOpen).toBeCalledTimes(1);
-      expect(message).toEqual('[this is a fake translation of This is a test message]');
+      expect(message).toEqual(
+        '[this is a fake translation of This is a test message]'
+      );
       expect(config).toBeDefined();
       expect(config.panelClass).toEqual(['error']);
 
@@ -61,7 +76,9 @@ describe('NotificationService', () => {
     const _aSnackBarOpen = jest.spyOn(aSnackBar, 'open');
     _aSnackBarOpen.mockImplementationOnce((message, actions, config) => {
       expect(_aSnackBarOpen).toBeCalledTimes(1);
-      expect(message).toEqual('This is a test message - {"1":1} - ["two","three"]');
+      expect(message).toEqual(
+        'This is a test message - {"1":1} - ["two","three"]'
+      );
       expect(config).toBeDefined();
       expect(config.panelClass).toEqual(['error']);
 
@@ -75,12 +92,12 @@ describe('NotificationService', () => {
     const errorEvent = new HttpErrorResponse({
       error: new ErrorEvent('HTTP_ERROR', {
         error: new Error('Http error'),
-        message: 'Tested http error (ErrorEvent)'
-      })
+        message: 'Tested http error (ErrorEvent)',
+      }),
     });
 
     const notificationServiceErrorMock = jest.spyOn(service, 'error');
-    notificationServiceErrorMock.mockImplementation(mess => {
+    notificationServiceErrorMock.mockImplementation((mess) => {
       expect(mess).toEqual('Tested http error (ErrorEvent)');
     });
 
@@ -96,10 +113,12 @@ describe('NotificationService', () => {
   });
 
   it('handleError should manage HttpErrorResponse not containing ErrorEvent and error message', async () => {
-    const errorEvent = new HttpErrorResponse({ statusText: 'Tested http error' });
+    const errorEvent = new HttpErrorResponse({
+      statusText: 'Tested http error',
+    });
 
     const notificationServiceErrorMock = jest.spyOn(service, 'error');
-    notificationServiceErrorMock.mockImplementation(mess => {
+    notificationServiceErrorMock.mockImplementation((mess) => {
       expect(mess).toEqual('Tested http error | translate');
     });
 
@@ -115,10 +134,13 @@ describe('NotificationService', () => {
   });
 
   it('handleError should manage HttpErrorResponse not containing ErrorEvent with error message', async () => {
-    const errorEvent = new HttpErrorResponse({ statusText: 'Tested http error', error: { message: 'Message' } });
+    const errorEvent = new HttpErrorResponse({
+      statusText: 'Tested http error',
+      error: { message: 'Message' },
+    });
 
     const notificationServiceErrorMock = jest.spyOn(service, 'error');
-    notificationServiceErrorMock.mockImplementation(mess => {
+    notificationServiceErrorMock.mockImplementation((mess) => {
       expect(mess).toEqual('Message | translate');
     });
 
@@ -135,11 +157,15 @@ describe('NotificationService', () => {
 });
 class TranslateServiceStub {
   //noinspection JSUnusedGlobalSymbols
-  public onTranslationChange: EventEmitter<TranslationChangeEvent> = new EventEmitter();
+  public onTranslationChange: EventEmitter<
+    TranslationChangeEvent
+  > = new EventEmitter();
   //noinspection JSUnusedGlobalSymbols
   public onLangChange: EventEmitter<LangChangeEvent> = new EventEmitter();
   //noinspection JSUnusedGlobalSymbols
-  public onDefaultLangChange: EventEmitter<DefaultLangChangeEvent> = new EventEmitter();
+  public onDefaultLangChange: EventEmitter<
+    DefaultLangChangeEvent
+  > = new EventEmitter();
   public use() {}
   //noinspection JSMethodCanBeStatic
   public get(key: any): any {

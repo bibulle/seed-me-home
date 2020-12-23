@@ -1,18 +1,29 @@
-import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing';
+import {
+  async,
+  ComponentFixture,
+  inject,
+  TestBed,
+} from '@angular/core/testing';
 
 import { NavBarComponent, NavBarModule } from './nav-bar.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { APP_BASE_HREF } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { DefaultLangChangeEvent, LangChangeEvent, TranslateService, TranslationChangeEvent } from '@ngx-translate/core';
+import {
+  DefaultLangChangeEvent,
+  LangChangeEvent,
+  TranslateService,
+  TranslationChangeEvent,
+} from '@ngx-translate/core';
 import { Observable, of, Subject } from 'rxjs';
 import { EventEmitter } from '@angular/core';
 import { AuthGuard } from '../authent/auth.guard';
-import { NGXLogger, NGXLoggerMock } from 'ngx-logger';
+import { NGXLogger } from 'ngx-logger';
+import { NGXLoggerMock } from 'ngx-logger/testing';
 import { UserService } from '../user/user.service';
 import { User } from '@seed-me-home/models';
-import { MatIconRegistry } from '@angular/material';
+import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer, HAMMER_LOADER } from '@angular/platform-browser';
 import { Config } from 'codelyzer';
 import { VersionService } from '../utils/version/version.service';
@@ -29,7 +40,12 @@ describe('NavBarComponent', () => {
   beforeEach(() => {
     //noinspection JSIgnoredPromiseFromCall
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule, NavBarModule, HttpClientModule, HttpClientTestingModule],
+      imports: [
+        RouterTestingModule,
+        NavBarModule,
+        HttpClientModule,
+        HttpClientTestingModule,
+      ],
       declarations: [],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },
@@ -39,31 +55,40 @@ describe('NavBarComponent', () => {
         { provide: UserService, useClass: UserServiceMock },
         { provide: VersionService, useClass: VersionServiceMock },
         { provide: NotificationService, useClass: NotificationServiceMock },
-        AuthGuard
-      ]
+        AuthGuard,
+      ],
     }).compileComponents();
   });
 
-  beforeEach(inject([MatIconRegistry, DomSanitizer], (matIconRegistry: MatIconRegistry, domSanitizer: DomSanitizer) => {
-    matIconRegistry
-      .addSvgIcon('flag_fr', domSanitizer.bypassSecurityTrustResourceUrl('/assets/images/fr.svg'))
-      .addSvgIcon('flag_us', domSanitizer.bypassSecurityTrustResourceUrl('/assets/images/us.svg'));
+  beforeEach(inject(
+    [MatIconRegistry, DomSanitizer],
+    (matIconRegistry: MatIconRegistry, domSanitizer: DomSanitizer) => {
+      matIconRegistry
+        .addSvgIcon(
+          'flag_fr',
+          domSanitizer.bypassSecurityTrustResourceUrl('/assets/images/fr.svg')
+        )
+        .addSvgIcon(
+          'flag_us',
+          domSanitizer.bypassSecurityTrustResourceUrl('/assets/images/us.svg')
+        );
 
-    authGard = TestBed.get(AuthGuard);
-    userService = TestBed.get(UserService);
-    versionService = TestBed.get(VersionService);
-    notificationService = TestBed.get(NotificationService);
-    jest.spyOn(authGard, 'canActivate').mockImplementation(() => {
-      return new Promise<boolean>(resolve => {
-        resolve(true);
+      authGard = TestBed.get(AuthGuard);
+      userService = TestBed.get(UserService);
+      versionService = TestBed.get(VersionService);
+      notificationService = TestBed.get(NotificationService);
+      jest.spyOn(authGard, 'canActivate').mockImplementation(() => {
+        return new Promise<boolean>((resolve) => {
+          resolve(true);
+        });
       });
-    });
 
-    fixture = TestBed.createComponent(NavBarComponent);
-    component = fixture.componentInstance;
+      fixture = TestBed.createComponent(NavBarComponent);
+      component = fixture.componentInstance;
 
-    fixture.detectChanges();
-  }));
+      fixture.detectChanges();
+    }
+  ));
 
   it('should create', () => {
     expect(component).toBeTruthy();
@@ -75,14 +100,16 @@ describe('NavBarComponent', () => {
     expect(compiled.querySelectorAll('.nav-bar-header a').length).toEqual(2);
 
     // first is title button
-    expect(compiled.querySelectorAll('.nav-bar-header a')[0].textContent).toContain(
+    expect(
+      compiled.querySelectorAll('.nav-bar-header a')[0].textContent
+    ).toContain(
       '[this is a fake translation of title][this is a fake translation of version]'
     );
 
     // face icon and login label
-    expect(compiled.querySelectorAll('.nav-bar-header a')[1].textContent).toContain(
-      'face[this is a fake translation of label.login]'
-    );
+    expect(
+      compiled.querySelectorAll('.nav-bar-header a')[1].textContent
+    ).toContain('face[this is a fake translation of label.login]');
   });
 
   it('should have Title, SEEDS and FILES button if user', () => {
@@ -96,7 +123,7 @@ describe('NavBarComponent', () => {
       picture: 'picture_url',
       provider: 'google',
       providerId: '12345678',
-      isAdmin: true
+      isAdmin: true,
     });
 
     fixture.detectChanges();
@@ -109,14 +136,14 @@ describe('NavBarComponent', () => {
     expect(compiled.querySelectorAll('.nav-bar-header a').length).toEqual(3);
 
     // home icon and seeds label
-    expect(compiled.querySelectorAll('.nav-bar-header a')[1].textContent).toContain(
-      'home[this is a fake translation of label.seeds]'
-    );
+    expect(
+      compiled.querySelectorAll('.nav-bar-header a')[1].textContent
+    ).toContain('home[this is a fake translation of label.seeds]');
 
     // folder icon and files label
-    expect(compiled.querySelectorAll('.nav-bar-header a')[2].textContent).toContain(
-      'folder[this is a fake translation of label.files]'
-    );
+    expect(
+      compiled.querySelectorAll('.nav-bar-header a')[2].textContent
+    ).toContain('folder[this is a fake translation of label.files]');
   });
 
   it('navigate to a button and it become accent', async(() => {
@@ -130,14 +157,16 @@ describe('NavBarComponent', () => {
       picture: 'picture_url',
       provider: 'google',
       providerId: '12345678',
-      isAdmin: true
+      isAdmin: true,
     });
 
     fixture.ngZone.run(() => {
       fixture.detectChanges();
 
       // for now, seeds shouldn't be selected
-      expect(compiled.querySelectorAll('.nav-bar-header a')[1].classList).not.toContain('mat-accent');
+      expect(
+        compiled.querySelectorAll('.nav-bar-header a')[1].classList
+      ).not.toContain('mat-accent');
 
       // click on the seeds button
       compiled.querySelectorAll('.nav-bar-header a')[2].click();
@@ -145,7 +174,9 @@ describe('NavBarComponent', () => {
       fixture.detectChanges();
 
       // now, seeds should be selected
-      expect(compiled.querySelectorAll('.nav-bar-header a')[2].classList).toContain('mat-accent');
+      expect(
+        compiled.querySelectorAll('.nav-bar-header a')[2].classList
+      ).toContain('mat-accent');
     });
   }));
 
@@ -161,12 +192,17 @@ describe('NavBarComponent', () => {
     expect(compiled.querySelectorAll('#nav-bar-reload').length).toEqual(1);
     expect(jest.spyOn(notificationService, 'error')).toHaveBeenCalledTimes(1);
 
-    const spyNavigation = jest.spyOn(location, 'reload').mockReturnThis();
+    const location: Location = window.location;
+    delete window.location;
+    window.location = {
+      ...location,
+      reload: jest.fn(),
+    };
 
     compiled.querySelector('#nav-bar-reload').click();
     fixture.detectChanges();
 
-    expect(spyNavigation).toHaveBeenCalledTimes(1);
+    expect(window.location.reload).toHaveBeenCalledTimes(1);
   });
 });
 
@@ -197,11 +233,15 @@ class NotificationServiceMock {
 }
 class TranslateServiceStub {
   //noinspection JSUnusedGlobalSymbols
-  public onTranslationChange: EventEmitter<TranslationChangeEvent> = new EventEmitter();
+  public onTranslationChange: EventEmitter<
+    TranslationChangeEvent
+  > = new EventEmitter();
   //noinspection JSUnusedGlobalSymbols
   public onLangChange: EventEmitter<LangChangeEvent> = new EventEmitter();
   //noinspection JSUnusedGlobalSymbols
-  public onDefaultLangChange: EventEmitter<DefaultLangChangeEvent> = new EventEmitter();
+  public onDefaultLangChange: EventEmitter<
+    DefaultLangChangeEvent
+  > = new EventEmitter();
   public use() {}
   //noinspection JSMethodCanBeStatic
   public get(key: any): any {

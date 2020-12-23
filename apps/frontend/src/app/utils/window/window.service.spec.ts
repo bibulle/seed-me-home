@@ -1,12 +1,11 @@
 import { WindowService } from './window.service';
 import { Test, TestingModule } from '@nestjs/testing';
+import { NGXLogger, NGXLoggerHttpService } from 'ngx-logger';
 import {
   LoggerTestingModule,
-  NGXLogger,
-  NGXLoggerHttpService,
   NGXLoggerHttpServiceMock,
-  NGXLoggerMock
-} from 'ngx-logger';
+  NGXLoggerMock,
+} from 'ngx-logger/testing';
 const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
 
@@ -19,8 +18,8 @@ describe('WindowService', () => {
       controllers: [WindowService],
       providers: [
         { provide: NGXLogger, useClass: NGXLoggerMock },
-        { provide: NGXLoggerHttpService, useClass: NGXLoggerHttpServiceMock }
-      ]
+        { provide: NGXLoggerHttpService, useClass: NGXLoggerHttpServiceMock },
+      ],
     }).compile();
 
     service = module.get<WindowService>(WindowService);
@@ -44,6 +43,13 @@ describe('WindowService', () => {
       return new JSDOM().window;
     });
 
-    expect(WindowService.createWindow('http://www.google.fr', 'A test window', 200, 300)).toBeDefined();
+    expect(
+      WindowService.createWindow(
+        'http://www.google.fr',
+        'A test window',
+        200,
+        300
+      )
+    ).toBeDefined();
   });
 });

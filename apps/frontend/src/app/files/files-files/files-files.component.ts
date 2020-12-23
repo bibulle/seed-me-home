@@ -1,5 +1,6 @@
 import { Component, Input, NgModule, OnDestroy, OnInit } from '@angular/core';
-import { MatCardModule, MatIconModule } from '@angular/material';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
 import { BytesSizeModule } from '../../utils/pipes/bytes-size.pipe';
 import { FilesFile } from '@seed-me-home/models';
@@ -9,9 +10,9 @@ import { CommonModule } from '@angular/common';
 import { FilesFilesItemModule } from './files-files-item/files-files-item.component';
 
 @Component({
-  selector: 'app-files-files',
+  selector: 'seed-me-home2-files-files',
   templateUrl: './files-files.component.html',
-  styleUrls: ['./files-files.component.scss']
+  styleUrls: ['./files-files.component.scss'],
 })
 export class FilesFilesComponent implements OnInit, OnDestroy {
   @Input()
@@ -41,15 +42,17 @@ export class FilesFilesComponent implements OnInit, OnDestroy {
         break;
     }
     if (observable) {
-      this._currentFilesFilesSubscription = observable.subscribe((files: FilesFile) => {
-        if (!this.filesFiles) {
-          this.filesFiles = files;
-          this._doSort();
-        } else {
-          this._doSort(files);
-          this.mergeFiles(this.filesFiles, files);
+      this._currentFilesFilesSubscription = observable.subscribe(
+        (files: FilesFile) => {
+          if (!this.filesFiles) {
+            this.filesFiles = files;
+            this._doSort();
+          } else {
+            this._doSort(files);
+            this.mergeFiles(this.filesFiles, files);
+          }
         }
-      });
+      );
     }
 
     this._filesFilesService.startLoadingStats();
@@ -81,7 +84,7 @@ export class FilesFilesComponent implements OnInit, OnDestroy {
       }
     }
 
-    toBeDeleted.reverse().forEach(i => {
+    toBeDeleted.reverse().forEach((i) => {
       trg.children.splice(i, 1);
     });
   }
@@ -100,11 +103,11 @@ export class FilesFilesComponent implements OnInit, OnDestroy {
     if (!file) {
       return false;
     } else {
-      file.children = file.children.filter(f => {
+      file.children = file.children.filter((f) => {
         found = f.fullpath === fullpath;
         return f.fullpath !== fullpath;
       });
-      file.children.forEach(f => {
+      file.children.forEach((f) => {
         if (!found) {
           found = this._removeFromFile(f, fullpath);
         }
@@ -132,25 +135,31 @@ export class FilesFilesComponent implements OnInit, OnDestroy {
             ret = f1.path.localeCompare(f2.path);
             break;
           case 'date':
-            ret = new Date(f1.modifiedDate).getTime() - new Date(f2.modifiedDate).getTime();
+            ret =
+              new Date(f1.modifiedDate).getTime() -
+              new Date(f2.modifiedDate).getTime();
             break;
           case 'size':
             ret = f1.size - f2.size;
             break;
           case 'progress':
-            ret = f1.downloaded / Math.max(1, f1.size) - f2.downloaded / Math.max(1, f2.size);
+            ret =
+              f1.downloaded / Math.max(1, f1.size) -
+              f2.downloaded / Math.max(1, f2.size);
             break;
         }
 
         if (ret === 0) {
-          ret = new Date(f1.modifiedDate).getTime() - new Date(f2.modifiedDate).getTime();
+          ret =
+            new Date(f1.modifiedDate).getTime() -
+            new Date(f2.modifiedDate).getTime();
         }
         return ret;
       });
       if (this.sortDirection === 'desc') {
         files.children.reverse();
       }
-      files.children.forEach(f => {
+      files.children.forEach((f) => {
         this._doSort(f);
       });
     }
@@ -159,13 +168,20 @@ export class FilesFilesComponent implements OnInit, OnDestroy {
 
 export enum FilePath {
   Local,
-  Nas
+  Nas,
 }
 
 @NgModule({
-  imports: [CommonModule, MatCardModule, TranslateModule, MatIconModule, BytesSizeModule, FilesFilesItemModule],
+  imports: [
+    CommonModule,
+    MatCardModule,
+    TranslateModule,
+    MatIconModule,
+    BytesSizeModule,
+    FilesFilesItemModule,
+  ],
   declarations: [FilesFilesComponent],
   providers: [],
-  exports: [FilesFilesComponent]
+  exports: [FilesFilesComponent],
 })
 export class FilesFilesModule {}

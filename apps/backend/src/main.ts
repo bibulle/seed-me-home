@@ -1,15 +1,10 @@
-/**
- * This is not a production server yet!
- * This is only a minimal backend to get started.
- **/
-
+import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import * as cors from 'cors';
 import * as expressSession from 'express-session';
 import * as passport from 'passport';
-import * as cors from 'cors';
 
 import { AppModule } from './app/app.module';
-import { Logger } from '@nestjs/common';
 import { LoggingInterceptor } from './app/interceptors/logging.interceptor';
 import { VersionInterceptor } from './app/interceptors/version.interceptor';
 
@@ -28,17 +23,18 @@ async function bootstrap() {
     expressSession({
       secret: 'SECRET_SESSION',
       resave: true,
-      saveUninitialized: true
+      saveUninitialized: true,
     })
   );
-  // start the main server
-  //app.setGlobalPrefix(``);
-  const port = process.env.port || 4002;
+
+  const globalPrefix = '';
+  app.setGlobalPrefix(globalPrefix);
+  const port = process.env.PORT || 4002;
   await app
     .listen(port, () => {
-      Logger.log(`Listening at http://localhost:${port}`);
+      Logger.log('Listening at http://localhost:' + port + '/' + globalPrefix);
     })
-    .catch(reason => {
+    .catch((reason) => {
       Logger.error('Error on serveur');
       Logger.error(reason);
     });

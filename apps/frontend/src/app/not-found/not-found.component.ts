@@ -1,9 +1,9 @@
 import { Component, NgModule, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-not-found',
+  selector: 'seed-me-home2-not-found',
   templateUrl: './not-found.component.html',
-  styleUrls: ['./not-found.component.scss']
+  styleUrls: ['./not-found.component.scss'],
 })
 export class NotFoundComponent implements OnInit {
   constructor() {}
@@ -13,6 +13,6 @@ export class NotFoundComponent implements OnInit {
 
 @NgModule({
   imports: [],
-  declarations: [NotFoundComponent]
+  declarations: [NotFoundComponent],
 })
 export class NotFoundModule {}

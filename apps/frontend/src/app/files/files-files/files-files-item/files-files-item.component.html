@@ -57,9 +57,9 @@
   <span class="date">{{formatDate(file?.modifiedDate)}}</span>
 </div>
 <div class="children" [class.open]="open" *ngIf="file?.children.length">
-  <app-files-files-item
+  <seed-me-home2-files-files-item
       *ngFor="let child of file?.children"
       [file]="child"
       (removeFileEvent)="removeFileEvent.emit($event)"
-  ></app-files-files-item>
+  ></seed-me-home2-files-files-item>
 </div>

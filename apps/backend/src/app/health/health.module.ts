@@ -5,6 +5,6 @@ import { RtorrentModule } from '../rtorrent/rtorrent.module';
 
 @Module({
   imports: [FilesModule, RtorrentModule],
-  controllers: [HealthController]
+  controllers: [HealthController],
 })
 export class HealthModule {}

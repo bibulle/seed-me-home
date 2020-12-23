@@ -2,7 +2,7 @@
   <mat-card-title *ngIf="filePath === filePathTypes.Local">{{'title.files.files_local' | translate}}</mat-card-title>
   <mat-card-title *ngIf="filePath === filePathTypes.Nas">{{'title.files.files_nas' | translate}}</mat-card-title>
   <mat-card-content *ngIf="filesFiles">
-    <app-files-files-item
+    <seed-me-home2-files-files-item
         *ngFor="let file of filesFiles.children; let i = index"
         [index]="i"
         [file]="file"
@@ -11,7 +11,7 @@
         (toggleSortEvent)="toggleSort($event)"
         (removeFileEvent)="removeFile($event)"
         [removeEnable]="filePath !== filePathTypes.Nas"
-    ></app-files-files-item>
+    ></seed-me-home2-files-files-item>
     <div class='empty' *ngIf="filesFiles.children.length === 0">{{'label.files.empty' | translate}}</div>
   </mat-card-content>
 </mat-card>

@@ -4,9 +4,9 @@ import { RtorrentStatusModule } from './rtorrent-status/rtorrent-status.componen
 import { RtorrentTorrentsModule } from './rtorrent-torrents/rtorrent-torrents.component';
 
 @Component({
-  selector: 'app-seeds',
+  selector: 'seed-me-home2-seeds',
   templateUrl: './seeds.component.html',
-  styleUrls: ['./seeds.component.scss']
+  styleUrls: ['./seeds.component.scss'],
 })
 export class SeedsComponent implements OnInit {
   constructor() {}
@@ -15,8 +15,12 @@ export class SeedsComponent implements OnInit {
 }
 
 @NgModule({
-  imports: [TranslateModule.forChild(), RtorrentStatusModule, RtorrentTorrentsModule],
+  imports: [
+    TranslateModule.forChild(),
+    RtorrentStatusModule,
+    RtorrentTorrentsModule,
+  ],
   declarations: [SeedsComponent],
-  exports: [SeedsComponent]
+  exports: [SeedsComponent],
 })
 export class SeedsModule {}
