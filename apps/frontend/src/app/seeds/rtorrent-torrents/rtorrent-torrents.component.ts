@@ -10,7 +10,7 @@ import { RtorrentTorrentItemModule } from './rtorrent-torrent-item/rtorrent-torr
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'seed-me-home2-rtorrent-torrents',
+  selector: 'seed-me-home-rtorrent-torrents',
   templateUrl: './rtorrent-torrents.component.html',
   styleUrls: ['./rtorrent-torrents.component.scss'],
 })

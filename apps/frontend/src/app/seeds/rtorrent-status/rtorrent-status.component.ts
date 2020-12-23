@@ -8,7 +8,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { BytesSizeModule } from '../../utils/pipes/bytes-size.pipe';
 
 @Component({
-  selector: 'seed-me-home2-rtorrent-status',
+  selector: 'seed-me-home-rtorrent-status',
   templateUrl: './rtorrent-status.component.html',
   styleUrls: ['./rtorrent-status.component.scss'],
 })

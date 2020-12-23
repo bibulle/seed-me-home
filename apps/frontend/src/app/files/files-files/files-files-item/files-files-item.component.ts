@@ -31,7 +31,7 @@ import { FilesFilesService } from '../files-files.service';
 import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'seed-me-home2-files-files-item',
+  selector: 'seed-me-home-files-files-item',
   templateUrl: './files-files-item.component.html',
   styleUrls: ['./files-files-item.component.scss'],
 })
@@ -144,7 +144,7 @@ export class FilesFilesItemComponent implements OnInit {
 }
 
 @Component({
-  selector: 'seed-me-home2-files-files-item-dialog-remove',
+  selector: 'seed-me-home-files-files-item-dialog-remove',
   templateUrl: './files-files-item-dialog-remove.component.html',
   styleUrls: ['./files-files-item-dialog-remove.component.scss'],
 })
@@ -160,7 +160,7 @@ export class FilesFilesItemDialogRemoveComponent {
 }
 
 @Component({
-  selector: 'seed-me-home2-files-files-item-dialog-move',
+  selector: 'seed-me-home-files-files-item-dialog-move',
   templateUrl: './files-files-item-dialog-move.component.html',
   styleUrls: ['./files-files-item-dialog-move.component.scss'],
 })

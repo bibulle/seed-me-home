@@ -7,7 +7,7 @@ import {
 } from './files-files/files-files.component';
 
 @Component({
-  selector: 'seed-me-home2-files',
+  selector: 'seed-me-home-files',
   templateUrl: './files.component.html',
   styleUrls: ['./files.component.scss'],
 })

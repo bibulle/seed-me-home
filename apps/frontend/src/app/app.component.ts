@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs';
 import { UserService } from './user/user.service';
 
 @Component({
-  selector: 'seed-me-home2-root',
+  selector: 'seed-me-home-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })

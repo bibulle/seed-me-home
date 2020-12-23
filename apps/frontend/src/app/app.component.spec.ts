@@ -85,7 +85,7 @@ class UserServiceMock {
 }
 
 @Component({
-  selector: 'seed-me-home2-nav-bar',
+  selector: 'seed-me-home-nav-bar',
   template: '<p>MockNavBarComponent</p>',
 })
 class MockNavBarComponent {}

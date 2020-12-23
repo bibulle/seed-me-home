@@ -5,7 +5,7 @@
   $background: map-get($theme, background);
   $foreground: map-get($theme, foreground);
 
-  seed-me-home2-nav-bar {
+  seed-me-home-nav-bar {
     color: mat-color($primary, default-contrast);
 
     .nav-bar,

@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
 import { FilesFilesItemModule } from './files-files-item/files-files-item.component';
 
 @Component({
-  selector: 'seed-me-home2-files-files',
+  selector: 'seed-me-home-files-files',
   templateUrl: './files-files.component.html',
   styleUrls: ['./files-files.component.scss'],
 })

@@ -4,7 +4,7 @@ import { RtorrentStatusModule } from './rtorrent-status/rtorrent-status.componen
 import { RtorrentTorrentsModule } from './rtorrent-torrents/rtorrent-torrents.component';
 
 @Component({
-  selector: 'seed-me-home2-seeds',
+  selector: 'seed-me-home-seeds',
   templateUrl: './seeds.component.html',
   styleUrls: ['./seeds.component.scss'],
 })

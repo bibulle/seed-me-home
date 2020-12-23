@@ -36,11 +36,11 @@ describe('FilesComponent', () => {
 
   it('should have one status and 2 file lists', () => {
     expect(
-      fixture.debugElement.queryAll(By.css('seed-me-home2-files-status')).length
+      fixture.debugElement.queryAll(By.css('seed-me-home-files-status')).length
     ).toBe(1);
 
     expect(
-      fixture.debugElement.queryAll(By.css('seed-me-home2-files-files')).length
+      fixture.debugElement.queryAll(By.css('seed-me-home-files-files')).length
     ).toBe(2);
   });
 });

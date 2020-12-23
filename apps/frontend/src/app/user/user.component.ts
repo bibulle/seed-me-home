@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'seed-me-home2-user',
+  selector: 'seed-me-home-user',
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.scss'],
 })

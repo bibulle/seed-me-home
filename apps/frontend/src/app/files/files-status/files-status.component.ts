@@ -8,7 +8,7 @@ import { Subscription } from 'rxjs';
 import { FilesStatusService } from './files-status.service';
 
 @Component({
-  selector: 'seed-me-home2-files-status',
+  selector: 'seed-me-home-files-status',
   templateUrl: './files-status.component.html',
   styleUrls: ['./files-status.component.scss'],
 })

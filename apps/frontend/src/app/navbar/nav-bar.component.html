@@ -4,7 +4,7 @@
       <a mat-button class="nav-bar-button title" routerLink="/" attr.aria-label="{{'title' | translate}}">
         <span>{{'title' | translate}}</span><span class="version">{{'version' | translate}} {{version}}</span>
       </a>
-      <a mat-button class="nav-bar-hide-small seed-me-home2-button" color="{{ link.selected ? 'accent' : 'none'}}"
+      <a mat-button class="nav-bar-hide-small seed-me-home-button" color="{{ link.selected ? 'accent' : 'none'}}"
          *ngFor="let link of linksLeft"
          routerLink="{{link.path}}">
         <!--suppress HtmlUnknownTarget -->
@@ -16,7 +16,7 @@
         <span class="link-text">{{link.label | translate}}</span>
       </a>
       <!--<div class="flex-spacer"></div>-->
-      <!--<a mat-button class="nav-bar-hide-small seed-me-home2-button" color="{{ link.selected ? 'primary' : 'none'}}"-->
+      <!--<a mat-button class="nav-bar-hide-small seed-me-home-button" color="{{ link.selected ? 'primary' : 'none'}}"-->
          <!--*ngFor="let link of linksRight"-->
          <!--routerLink="{{link.path}}">-->
         <!--<img class="nav-img" *ngIf="link.iconType=='img'" src="{{link.icon}}" alt="{{link.label | translate}}"-->
@@ -30,7 +30,7 @@
   <div class="nav-bar-header-right">
     <span class="version-small">{{version}}</span>
     <div class="user">
-      <seed-me-home2-user [user]="user"></seed-me-home2-user>
+      <seed-me-home-user [user]="user"></seed-me-home-user>
       <!--<div class="nav-bar-hide-small not-reloading" *ngIf="!reloading"></div>-->
       <!--<mat-spinner class="nav-bar-hide-small reloading" diameter="20" *ngIf="reloading"></mat-spinner>-->
       <a mat-button id="nav-bar-reload" *ngIf="updateNeeded" (click)="update()" matTooltip="{{'update-needed' | translate}}" color="accent">

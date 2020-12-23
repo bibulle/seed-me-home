@@ -18,7 +18,7 @@ import { UserModule } from '../user/user.module';
 import { VersionService } from '../utils/version/version.service';
 
 @Component({
-  selector: 'seed-me-home2-nav-bar',
+  selector: 'seed-me-home-nav-bar',
   templateUrl: './nav-bar.component.html',
   styleUrls: ['./nav-bar.component.scss'],
 })

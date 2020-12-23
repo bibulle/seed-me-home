@@ -26,7 +26,7 @@ import * as moment from 'moment';
 import { RtorrentTorrentsService } from '../rtorrent-torrents.service';
 
 @Component({
-  selector: 'seed-me-home2-rtorrent-torrent-item',
+  selector: 'seed-me-home-rtorrent-torrent-item',
   templateUrl: './rtorrent-torrent-item.component.html',
   styleUrls: ['./rtorrent-torrent-item.component.scss'],
 })
@@ -93,7 +93,7 @@ export class RtorrentTorrentItemComponent implements OnInit {
 }
 
 @Component({
-  selector: 'seed-me-home2-rtorrent-torrent-item-dialog',
+  selector: 'seed-me-home-rtorrent-torrent-item-dialog',
   templateUrl: './rtorrent-torrent-item-dialog.component.html',
   styleUrls: ['./rtorrent-torrent-item-dialog.component.scss'],
 })
