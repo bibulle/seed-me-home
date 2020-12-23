@@ -24,6 +24,6 @@
    RewriteRule ^(.*)$ http://localhost:4002/$1 [P]
 
    # otherwise forward it to index.html
-   RewriteRule ^(.*) /seeds/index.html [NC,L]
+   RewriteRule ^(.*) /index.html [NC,L]
 
 </IfModule>
