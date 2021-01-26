@@ -43,14 +43,8 @@ export class FtpSeedService {
         //debug: (m) => { FtpSeedService.logger.debug(m)}
       };
       this._pathFtp = this._configService.getSeedboxFtpPath();
-      this._pathDownload = path.join(
-        this.getPathLocal(),
-        this._configService.getPathDownload()
-      );
-      this._pathProgress = path.join(
-        this.getPathLocal(),
-        this._configService.getPathProgress()
-      );
+      this._pathDownload = this._configService.getPathDownload();
+      this._pathProgress = this._configService.getPathProgress();
       FtpSeedService.logger.log('Download to : ' + this._pathDownload);
       FtpSeedService.logger.log('Save progress to : ' + this._pathProgress);
 

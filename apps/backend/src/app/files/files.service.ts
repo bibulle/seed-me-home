@@ -57,12 +57,7 @@ export class FilesService {
   }
 
   getFilesLocal(): Promise<FilesFile> {
-    return this._getFiles(
-      path.join(
-        this._ftpSeedService.getPathLocal(),
-        this._configService.getPathDownload()
-      )
-    );
+    return this._getFiles(this._configService.getPathDownload());
   }
 
   getFilesNas(): Promise<FilesFile> {
@@ -314,12 +309,7 @@ export class FilesService {
     // File in downloaded or Nas ?
     let path_local, path_nas;
     try {
-      path_local = fs.realpathSync(
-        path.join(
-          this._ftpSeedService.getPathLocal(),
-          this._configService.getPathDownload()
-        )
-      );
+      path_local = fs.realpathSync(this._configService.getPathDownload());
       // eslint-disable-next-line no-empty
     } catch (e) {}
     try {

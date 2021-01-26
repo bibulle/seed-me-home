@@ -5,35 +5,41 @@ import { environment } from '../../environments/environment';
 class Config {
   public version = 'VERSION_PLACEHOLDER';
 
-  public seedbox_mode = '';
-  public seedbox_host = '';
-  public seedbox_port = 0;
-  public seedbox_path = '';
-  public seedbox_user = '';
-  public seedbox_pass = '';
+  public seedbox_mode: string;
+  public seedbox_host: string;
+  public seedbox_port: number;
+  public seedbox_path: string;
+  public seedbox_user: string;
+  public seedbox_pass: string;
 
-  public seedbox_ftp_host = '';
-  public seedbox_ftp_port = 0;
-  public seedbox_ftp_user = '';
-  public seedbox_ftp_pass = '';
-  public seedbox_ftp_path = '';
-  public seedbox_ftp_disabled = false;
+  public seedbox_ftp_host: string;
+  public seedbox_ftp_port: number;
+  public seedbox_ftp_user: string;
+  public seedbox_ftp_pass: string;
+  public seedbox_ftp_path: string;
+  public seedbox_ftp_disabled: boolean;
+  public static readonly SEEDBOX_FTP_DISABLED = false;
 
-  public path_download = 'downloaded';
-  public path_progress = 'progress';
+  public path_download: string;
+  public static readonly PATH_DOWNLOAD = '/downloaded';
+  public path_progress: string;
+  public static readonly PATH_PROGRESS = '/progress';
 
-  public path_nas = './nas';
-  public path_movies = 'movies';
-  public path_series = 'series';
+  public path_nas: string;
+  public static readonly PATH_NAS = '/nas';
+  public path_movies: string;
+  public static readonly PATH_MOVIES = 'movies';
+  public path_series: string;
+  public static readonly PATH_SERIES = 'series';
 
   public users_authorized = [];
   public users_admin = [];
 
-  public authent_jwt_secret = '';
+  public authent_jwt_secret: string;
 
-  public authent_google_clientID = '';
-  public authent_google_clientSecret = '';
-  public authent_google_callbackURL = '';
+  public authent_google_clientID: string;
+  public authent_google_clientSecret: string;
+  public authent_google_callbackURL: string;
 
   public node_env = environment.production ? 'production' : 'development';
 }
@@ -46,27 +52,34 @@ export class ConfigService {
 
   private _configFile = 'env-my-own.json';
 
-  private initialize() {
+  private _hasBeenInitialized = false;
+  private initialize(name: string, ignore_error = false) {
     // initialize
-    if (!this._config) {
+    if (!this._hasBeenInitialized) {
+      this._hasBeenInitialized = true;
+
       this._config = new Config();
 
       //this._config.node_env = process.env.NODE_ENV || 'development';
-      this.logger.log('environment : ' + this._config.node_env);
+      this.logger.log(`environment : ${this._config.node_env}`);
+      // this.logger.log(`              ${name} ${ignore_error}`)
 
       // Check the user env
       if (!fs.existsSync(__dirname + '/' + this._configFile)) {
-        this.logger.error(
-          "ERROR : Your environment is not set, create the '" +
-            __dirname +
-            '/' +
-            this._configFile +
-            "' file."
-        );
-        this.logger.error(
-          "          you can copy it from the 'config/env-model.json' file."
-        );
-        process.exit(1);
+        if (!ignore_error) {
+          this.logger.error(
+            `ERROR : Looking for '${name}'... not in environment variable`
+          );
+          this.logger.error(
+            `        Your environment is not set, create the '${__dirname}/${this._configFile}' file.`
+          );
+          this.logger.error(
+            `          you can copy it from the 'config/env-model.json' file.`
+          );
+          process.exit(1);
+        } else {
+          this._config = undefined;
+        }
       } else {
         // read it
         const rawData = fs.readFileSync(__dirname + '/' + this._configFile);
@@ -82,124 +95,221 @@ export class ConfigService {
     }
   }
 
-  public forceConfigFile(file: string) {
-    delete this._config;
-    this._configFile = file;
-    this.initialize();
-  }
+  // public forceConfigFile(file: string) {
+  //   delete this._config;
+  //   this._configFile = file;
+  //   this.initialize();
+  // }
 
-  public getSeedboxMode() {
-    this.initialize();
+  public getSeedboxMode(): string {
+    if (process.env.SEEDBOX_MODE !== undefined) {
+      return process.env.SEEDBOX_MODE;
+    }
+    this.initialize('SEEDBOX_MODE');
     return this._config.seedbox_mode;
   }
 
-  public getSeedboxHost() {
-    this.initialize();
+  public getSeedboxHost(): string {
+    if (process.env.SEEDBOX_HOST !== undefined) {
+      return process.env.SEEDBOX_HOST;
+    }
+    this.initialize('SEEDBOX_HOST');
     return this._config.seedbox_host;
   }
 
-  public getSeedboxPort() {
-    this.initialize();
+  public getSeedboxPort(): number {
+    if (process.env.SEEDBOX_PORT !== undefined) {
+      return parseInt(process.env.SEEDBOX_PORT);
+    }
+    this.initialize('SEEDBOX_PORT');
     return this._config.seedbox_port;
   }
 
-  public getSeedboxPath() {
-    this.initialize();
+  public getSeedboxPath(): string {
+    if (process.env.SEEDBOX_PATH !== undefined) {
+      return process.env.SEEDBOX_PATH;
+    }
+    this.initialize('SEEDBOX_PATH');
     return this._config.seedbox_path;
   }
 
-  public getSeedboxUser() {
-    this.initialize();
+  public getSeedboxUser(): string {
+    if (process.env.SEEDBOX_USER !== undefined) {
+      return process.env.SEEDBOX_USER;
+    }
+    this.initialize('SEEDBOX_USER');
     return this._config.seedbox_user;
   }
 
-  public getSeedboxPass() {
-    this.initialize();
+  public getSeedboxPass(): string {
+    if (process.env.SEEDBOX_PASS !== undefined) {
+      return process.env.SEEDBOX_PASS;
+    }
+    this.initialize('SEEDBOX_PASS');
     return this._config.seedbox_pass;
   }
 
-  public getSeedboxFtpHost() {
-    this.initialize();
+  public getSeedboxFtpHost(): string {
+    if (process.env.SEEDBOX_FTP_HOST !== undefined) {
+      return process.env.SEEDBOX_FTP_HOST;
+    }
+    this.initialize('SEEDBOX_FTP_HOST');
     return this._config.seedbox_ftp_host;
   }
 
-  public getSeedboxFtpPort() {
-    this.initialize();
+  public getSeedboxFtpPort(): number {
+    if (process.env.SEEDBOX_FTP_PORT !== undefined) {
+      return parseInt(process.env.SEEDBOX_FTP_PORT);
+    }
+    this.initialize('SEEDBOX_FTP_PORT');
     return this._config.seedbox_ftp_port;
   }
 
-  public getSeedboxFtpUser() {
-    this.initialize();
+  public getSeedboxFtpUser(): string {
+    if (process.env.SEEDBOX_FTP_USER !== undefined) {
+      return process.env.SEEDBOX_FTP_USER;
+    }
+    this.initialize('SEEDBOX_FTP_USER');
     return this._config.seedbox_ftp_user;
   }
 
-  public getSeedboxFtpPass() {
-    this.initialize();
+  public getSeedboxFtpPass(): string {
+    if (process.env.SEEDBOX_FTP_PASS !== undefined) {
+      return process.env.SEEDBOX_FTP_PASS;
+    }
+    this.initialize('SEEDBOX_FTP_PASS');
     return this._config.seedbox_ftp_pass;
   }
 
-  public getSeedboxFtpPath() {
-    this.initialize();
+  public getSeedboxFtpPath(): string {
+    if (process.env.SEEDBOX_FTP_PATH !== undefined) {
+      return process.env.SEEDBOX_FTP_PATH;
+    }
+    this.initialize('SEEDBOX_FTP_PATH');
     return this._config.seedbox_ftp_path;
   }
 
-  public getSeedboxFtpDisabled() {
-    this.initialize();
-    return this._config.seedbox_ftp_disabled;
+  public getSeedboxFtpDisabled(): boolean {
+    if (process.env.SEEDBOX_FTP_DISABLED !== undefined) {
+      return process.env.SEEDBOX_FTP_DISABLED === 'true';
+    }
+    this.initialize('SEEDBOX_FTP_DISABLED', true);
+    if (this._config) {
+      return this._config.seedbox_ftp_disabled;
+    }
+    return Config.SEEDBOX_FTP_DISABLED;
   }
 
-  public getPathDownload() {
-    this.initialize();
-    return this._config.path_download;
+  public getPathDownload(): string {
+    if (process.env.PATH_DOWNLOAD !== undefined) {
+      return process.env.PATH_DOWNLOAD;
+    }
+    this.initialize('PATH_DOWNLOAD', true);
+    if (this._config) {
+      return this._config.path_download;
+    }
+    return Config.PATH_DOWNLOAD;
   }
 
-  public getPathProgress() {
-    this.initialize();
-    return this._config.path_progress;
+  public getPathProgress(): string {
+    if (process.env.PATH_PROGRESS !== undefined) {
+      return process.env.PATH_PROGRESS;
+    }
+    this.initialize('PATH_PROGRESS', true);
+    if (this._config) {
+      return this._config.path_progress;
+    }
+    return Config.PATH_PROGRESS;
   }
 
-  public getPathNas() {
-    this.initialize();
-    return this._config.path_nas;
+  public getPathNas(): string {
+    if (process.env.PATH_NAS !== undefined) {
+      return process.env.PATH_NAS;
+    }
+    this.initialize('PATH_NAS', true);
+    if (this._config) {
+      return this._config.path_nas;
+    }
+    return Config.PATH_NAS;
   }
 
-  getPathMovies() {
-    this.initialize();
-    return this._config.path_movies;
+  getPathMovies(): string {
+    if (process.env.PATH_MOVIES !== undefined) {
+      return process.env.PATH_MOVIES;
+    }
+    if (this._config.path_movies !== undefined) {
+      return this._config.path_movies;
+    }
+    this.initialize('PATH_MOVIES', true);
+    if (this._config) {
+      return this._config.path_movies;
+    }
+    return Config.PATH_MOVIES;
   }
 
-  getPathSeries() {
-    this.initialize();
-    return this._config.path_series;
+  getPathSeries(): string {
+    if (process.env.PATH_SERIES !== undefined) {
+      return process.env.PATH_SERIES;
+    }
+    if (this._config.path_series !== undefined) {
+      return this._config.path_series;
+    }
+    this.initialize('PATH_SERIES', true);
+    if (this._config) {
+      return this._config.path_series;
+    }
+    return Config.PATH_SERIES;
   }
 
-  public getAuthentGoogleClientID() {
-    this.initialize();
+  public getAuthentGoogleClientID(): string {
+    if (process.env.AUTHENT_GOOGLE_CLIENT_ID !== undefined) {
+      return process.env.AUTHENT_GOOGLE_CLIENT_ID;
+    }
+    this.initialize('AUTHENT_GOOGLE_CLIENT_ID');
     return this._config.authent_google_clientID;
   }
 
-  public getAuthentGoogleClientSecret() {
-    this.initialize();
+  public getAuthentGoogleClientSecret(): string {
+    if (process.env.AUTHENT_GOOGLE_CLIENT_SECRET !== undefined) {
+      return process.env.AUTHENT_GOOGLE_CLIENT_SECRET;
+    }
+    this.initialize('AUTHENT_GOOGLE_CLIENT_SECRET');
     return this._config.authent_google_clientSecret;
   }
 
-  public getAuthentGoogleCallbackURL() {
-    this.initialize();
+  public getAuthentGoogleCallbackURL(): string {
+    if (process.env.AUTHENT_GOOGLE_CALLBACK_URL !== undefined) {
+      return process.env.AUTHENT_GOOGLE_CALLBACK_URL;
+    }
+    this.initialize('AUTHENT_GOOGLE_CALLBACK_URL');
     return this._config.authent_google_callbackURL;
   }
 
-  public getAuthentJwtSecret() {
-    this.initialize();
+  public getAuthentJwtSecret(): string {
+    if (process.env.AUTHENT_JWT_SECRET !== undefined) {
+      return process.env.AUTHENT_JWT_SECRET;
+    }
+    this.initialize('AUTHENT_JWT_SECRET');
     return this._config.authent_jwt_secret;
   }
 
-  public getUsersAuthorized() {
-    this.initialize();
+  public getUsersAuthorized(): string[] {
+    if (process.env.AUTHENT_USER_AUTHORIZED !== undefined) {
+      return process.env.AUTHENT_USER_AUTHORIZED.split(',').map((s) => {
+        return s.trim();
+      });
+    }
+    this.initialize('AUTHENT_USER_AUTHORIZED');
     return this._config.users_authorized;
   }
 
-  public getUsersAdmin() {
-    this.initialize();
+  public getUsersAdmin(): string[] {
+    if (process.env.AUTHENT_USERS_ADMIN !== undefined) {
+      return process.env.AUTHENT_USERS_ADMIN.split(',').map((s) => {
+        return s.trim();
+      });
+    }
+    this.initialize('AUTHENT_USERS_ADMIN');
     return this._config.users_admin;
   }
 }
