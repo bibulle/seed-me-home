@@ -193,10 +193,6 @@ export class FilesFilesItemDialogMoveComponent {
     MatRadioModule,
     MatCheckboxModule,
   ],
-  entryComponents: [
-    FilesFilesItemDialogRemoveComponent,
-    FilesFilesItemDialogMoveComponent,
-  ],
   declarations: [
     FilesFilesItemComponent,
     FilesFilesItemDialogRemoveComponent,

@@ -119,7 +119,6 @@ export class RtorrentTorrentItemDialogComponent {
     MatDialogModule,
     MatMenuModule,
   ],
-  entryComponents: [RtorrentTorrentItemDialogComponent],
   declarations: [
     RtorrentTorrentItemComponent,
     RtorrentTorrentItemDialogComponent,
