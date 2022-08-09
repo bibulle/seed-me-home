@@ -1,19 +1,18 @@
-import { Injectable } from '@angular/core';
-import { Observable, ReplaySubject, Subject } from 'rxjs';
-import { ApiReturn, RtorrentStatus } from '@seed-me-home/models';
 import { HttpClient } from '@angular/common/http';
-import { NotificationService } from '../../notification/notification.service';
+import { Injectable } from '@angular/core';
+import { ApiReturn, RtorrentStatus } from '@seed-me-home/models';
 import { NGXLogger } from 'ngx-logger';
-import { environment } from '../../../environments/environment';
+import { Observable, ReplaySubject, Subject } from 'rxjs';
+import { NotificationService } from '../../notification/notification.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class RtorrentStatusService {
   private static REFRESH_EVERY = 21 * 1000;
   private static _refreshIsRunning = false;
 
-  API_URL = environment.serverUrl + 'rtorrent/status';
+  API_URL = '/api/rtorrent/status';
 
   private readonly currentStatusSubject: Subject<RtorrentStatus>;
 
@@ -30,7 +29,7 @@ export class RtorrentStatusService {
     if (this.currentStatusSubject.observers.length > 0) {
       RtorrentStatusService._refreshIsRunning = true;
       this._loadStatus()
-        .then(status => {
+        .then((status) => {
           RtorrentStatusService._refreshIsRunning = false;
           this.currentStatusSubject.next(status);
           setTimeout(() => {
@@ -58,7 +57,7 @@ export class RtorrentStatusService {
           const value = data.data as RtorrentStatus;
           resolve(value);
         })
-        .catch(error => {
+        .catch((error) => {
           this._notificationService.handleError(error);
           reject(error);
         });

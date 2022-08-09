@@ -1,8 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
-import * as path from 'path';
-import { ConfigService } from '../../services/config/config.service';
-import * as fs from 'fs';
+import { ConfigService } from '@nestjs/config';
 import { Interval } from '@nestjs/schedule';
+import * as fs from 'fs';
+import * as path from 'path';
 
 @Injectable()
 export class FtpSeedService {
@@ -14,7 +14,7 @@ export class FtpSeedService {
   private static downloadCurrentList: string[] = [];
   private static readonly PARALLELED_DOWNLOAD_MAX = 4;
 
-  Client = require('ssh2');
+  // Client = require('ssh2');
 
   private _ftpConfig: {
     host: string;
@@ -30,21 +30,22 @@ export class FtpSeedService {
 
   constructor(private _configService: ConfigService) {
     //super();
+    // FtpSeedService.logger.debug(`FtpSeedService constructor ${FtpSeedService.downloadCurrentList.length} ${FtpSeedService.downloadWaitingList.length}`);
   }
 
   private _initialize() {
     //FtpSeedService.logger.debug('_initialize');
     if (!this._ftpConfig) {
       this._ftpConfig = {
-        host: this._configService.getSeedboxFtpHost(),
-        port: this._configService.getSeedboxFtpPort(),
-        username: this._configService.getSeedboxFtpUser(),
-        password: this._configService.getSeedboxFtpPass(),
+        host: this._configService.get('SEEDBOX_FTP_HOST'),
+        port: this._configService.get('SEEDBOX_FTP_PORT'),
+        username: this._configService.get('SEEDBOX_FTP_USER'),
+        password: this._configService.get('SEEDBOX_FTP_PASS'),
         //debug: (m) => { FtpSeedService.logger.debug(m)}
       };
-      this._pathFtp = this._configService.getSeedboxFtpPath();
-      this._pathDownload = this._configService.getPathDownload();
-      this._pathProgress = this._configService.getPathProgress();
+      this._pathFtp = this._configService.get('SEEDBOX_FTP_PATH');
+      this._pathDownload = this._configService.get('PATH_DOWNLOAD');
+      this._pathProgress = this._configService.get('PATH_PROGRESS');
       FtpSeedService.logger.log('Download to : ' + this._pathDownload);
       FtpSeedService.logger.log('Save progress to : ' + this._pathProgress);
 
@@ -151,8 +152,9 @@ export class FtpSeedService {
 
     files.forEach((file) => {
       try {
-        const modifiedTime = fs.statSync(path.join(this._pathProgress, file))
-          .mtimeMs;
+        const modifiedTime = fs.statSync(
+          path.join(this._pathProgress, file)
+        ).mtimeMs;
 
         if (modifiedTime < olderThan.getTime()) {
           fs.unlinkSync(path.join(this._pathProgress, file));
@@ -172,7 +174,7 @@ export class FtpSeedService {
     // eslint-disable-next-line no-useless-escape
     return path.join(
       this._pathProgress,
-      fullPath.replace(/[\\\/]/g, '_') + '.progress'
+      fullPath.replace(/[\\/]/g, '_') + '.progress'
     );
   }
 
@@ -181,9 +183,9 @@ export class FtpSeedService {
 
     const regexp = new RegExp(
       '.*(' +
-        this._configService.getSeedboxFtpPath() +
+        this._configService.get('SEEDBOX_FTP_PATH') +
         '|' +
-        this._configService.getPathDownload() +
+        this._configService.get('PATH_DOWNLOAD') +
         ')/'
     );
 
@@ -192,7 +194,7 @@ export class FtpSeedService {
 
   @Interval(40 * 1000)
   intervalJob_FtpSeedService() {
-    //FtpSeedService.logger.debug('intervalJob_FtpSeedService');
+    // FtpSeedService.logger.debug(`FtpSeedService interval ${FtpSeedService.downloadCurrentList.length} ${FtpSeedService.downloadWaitingList.length}`);
     const shouldDownload: Progression[] = [];
 
     // read all files
@@ -252,15 +254,17 @@ export class FtpSeedService {
 
       this._downloadFile(fullpath)
         .then(() => {
-          FtpSeedService.logger.debug('_downloadFile then : ' + fullpath);
+          // FtpSeedService.logger.debug('_downloadFile then : ' + fullpath);
           for (let i = 0; i < FtpSeedService.downloadCurrentList.length; i++) {
             if (FtpSeedService.downloadCurrentList[i] === fullpath) {
               FtpSeedService.downloadCurrentList.splice(i, 1);
             }
           }
         })
-        .catch(() => {
+        .catch((reason) => {
           FtpSeedService.logger.debug('_downloadFile catch : ' + fullpath);
+          FtpSeedService.logger.error(reason);
+
           for (let i = 0; i < FtpSeedService.downloadCurrentList.length; i++) {
             if (FtpSeedService.downloadCurrentList[i] === fullpath) {
               FtpSeedService.downloadCurrentList.splice(i, 1);
@@ -280,7 +284,10 @@ export class FtpSeedService {
 
       FtpSeedService.logger.log('Downloading : ' + fullPath);
 
-      const conn = new this.Client();
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const { Client } = require('ssh2');
+
+      const conn = new Client();
 
       conn.on('ready', () => {
         //FtpSeedService.logger.debug('Client : ready');
@@ -348,9 +355,9 @@ export class FtpSeedService {
           );
         });
       });
-      conn.on('close', (hadErr) => {
-        FtpSeedService.logger.debug('close (' + hadErr + ')');
-      });
+      // conn.on('close', (hadErr) => {
+      // FtpSeedService.logger.debug('close (' + hadErr + ')');
+      // });
       conn.on('error', (err: Error) => {
         FtpSeedService.logger.error(err.stack);
         reject(err);
@@ -361,7 +368,11 @@ export class FtpSeedService {
       });
 
       // connect
-      if (this._configService.getSeedboxFtpDisabled()) {
+      if (
+        this._configService.get('SEEDBOX_FTP_DISABLED') &&
+        ('' + this._configService.get('SEEDBOX_FTP_DISABLED')).toUpperCase() ===
+          'TRUE'
+      ) {
         FtpSeedService.logger.warn('SeedBox downloading disabled ');
         //        const progress = that.getProgression(fullPath);
         //        FtpSeedService.logger.debug(progress);

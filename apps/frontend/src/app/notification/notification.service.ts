@@ -96,4 +96,3 @@ export class NotificationService {
 export class NotificationModule {}
 
 import { HttpHeaders, HttpParams } from '@angular/common/http';
-import { LoggerConfig, NGXLoggerMonitor } from 'ngx-logger';

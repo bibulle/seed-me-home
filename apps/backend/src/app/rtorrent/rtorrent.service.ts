@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { ConfigService } from '../../services/config/config.service';
+import { ConfigService } from '@nestjs/config';
 import * as _ from 'lodash';
 import {
   RTorrentFile,
@@ -29,12 +29,12 @@ export class RtorrentService {
   private _initialize() {
     if (!this._rtorrent) {
       this._rtorrent = new Rtorrent({
-        mode: this._configService.getSeedboxMode(),
-        host: this._configService.getSeedboxHost(),
-        port: this._configService.getSeedboxPort(),
-        path: this._configService.getSeedboxPath(),
-        user: this._configService.getSeedboxUser(),
-        pass: this._configService.getSeedboxPass(),
+        mode: this._configService.get('SEEDBOX_MODE'),
+        host: this._configService.get('SEEDBOX_HOST'),
+        port: this._configService.get('SEEDBOX_PORT'),
+        path: this._configService.get('SEEDBOX_PATH'),
+        user: this._configService.get('SEEDBOX_USER'),
+        pass: this._configService.get('SEEDBOX_PASS'),
       });
     }
   }
@@ -94,7 +94,7 @@ export class RtorrentService {
       ])
         .then((result) => {
           // merge both
-          const status: RtorrentStatus = (result[0] as unknown) as RtorrentStatus;
+          const status: RtorrentStatus = result[0] as unknown as RtorrentStatus;
 
           if (result[1]) {
             status.free_disk_space_local = result[1].free;
@@ -139,7 +139,7 @@ export class RtorrentService {
                 'active',
                 'open',
               ])
-            );
+            ) as RtorrentTorrent[];
 
             // add download progression to files
             torrents.forEach((torrent) => {
@@ -196,13 +196,14 @@ export class RtorrentService {
   private _getAll(callback: (err, status) => void) {
     this._initialize();
     try {
-      this.logger.debug('_getAll before getAll');
+      // this.logger.debug('_getAll before getAll');
       this._rtorrent.getAll((err, status) => {
-        this.logger.debug('_getAll in callback');
+        // this.logger.debug('_getAll in callback');
         callback(err, status);
       });
     } catch (e) {
-      this.logger.debug('_getAll in catch');
+      // this.logger.debug('_getAll in catch');
+      this.logger.error(e);
       callback(e, null);
     }
   }

@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { APP_INTERCEPTOR } from '@nestjs/core';
-import { ConfigService } from '../services/config/config.service';
 
 import { AppController } from './app.controller';
 import { AuthenticationModule } from './authentication/authentication.module';
@@ -10,10 +10,15 @@ import { RefreshTokenInterceptor } from './interceptors/refresh-token.intercepto
 import { RtorrentModule } from './rtorrent/rtorrent.module';
 
 @Module({
-  imports: [RtorrentModule, AuthenticationModule, FilesModule, HealthModule],
+  imports: [
+    RtorrentModule,
+    AuthenticationModule,
+    FilesModule,
+    HealthModule,
+    ConfigModule,
+  ],
   controllers: [AppController],
   providers: [
-    ConfigService,
     //FtpSeedService
     {
       provide: APP_INTERCEPTOR,

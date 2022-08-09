@@ -40,6 +40,7 @@ testem.log
 Thumbs.db
 
 # Specific to project
+.env
 env-my-own.json
 downloaded
 downloaded_test

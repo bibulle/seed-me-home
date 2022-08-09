@@ -1,17 +1,16 @@
-import { ApiReturn, MyToken, User } from '@seed-me-home/models';
-import { environment } from '../../environments/environment';
-import { BehaviorSubject, Observable, timer } from 'rxjs';
-import { JwtHelperService } from '@auth0/angular-jwt';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { NotificationService } from '../notification/notification.service';
 import { Injectable } from '@angular/core';
-import { distinctUntilChanged } from 'rxjs/operators';
-import { WindowService } from '../utils/window/window.service';
-import { NGXLogger } from 'ngx-logger';
+import { JwtHelperService } from '@auth0/angular-jwt';
 import { TranslateService } from '@ngx-translate/core';
+import { ApiReturn, MyToken, User } from '@seed-me-home/models';
+import { NGXLogger } from 'ngx-logger';
+import { BehaviorSubject, Observable, timer } from 'rxjs';
+import { distinctUntilChanged } from 'rxjs/operators';
+import { NotificationService } from '../notification/notification.service';
+import { WindowService } from '../utils/window/window.service';
 
 enum LoginProvider {
-  GOOGLE
+  GOOGLE,
 }
 
 export class Config {
@@ -19,7 +18,7 @@ export class Config {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class JwtHelperServiceService {
   private jwtHelper: JwtHelperService = new JwtHelperService();
@@ -30,7 +29,7 @@ export class JwtHelperServiceService {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserService {
   private static KEY_TOKEN_LOCAL_STORAGE = 'id_token';
@@ -47,7 +46,9 @@ export class UserService {
   private loopCount = 600;
   private intervalLength = 100;
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private windowHandle: any = null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private intervalId: any = null;
 
   timer1;
@@ -69,7 +70,9 @@ export class UserService {
     });
 
     try {
-      this.config = JSON.parse(localStorage.getItem(UserService.KEY_CONFIG_LOCAL_STORAGE));
+      this.config = JSON.parse(
+        localStorage.getItem(UserService.KEY_CONFIG_LOCAL_STORAGE)
+      );
       if (!this.config) {
         this.config = new Config();
       }
@@ -132,12 +135,17 @@ export class UserService {
     // this.logger.debug(jwt);
     //    const oldUser = this.user;
 
-    if (!jwt || this._jwtHelperServiceService.getJwtHelper().isTokenExpired(jwt)) {
+    if (
+      !jwt ||
+      this._jwtHelperServiceService.getJwtHelper().isTokenExpired(jwt)
+    ) {
       // this.logger.debug(jwt);
       // this.logger.debug('', this._jwtHelperServiceService.getJwtHelper().isTokenExpired(jwt));
       this.user = {} as User;
     } else {
-      this.user = this._jwtHelperServiceService.getJwtHelper().decodeToken(jwt) as User;
+      this.user = this._jwtHelperServiceService
+        .getJwtHelper()
+        .decodeToken(jwt) as User;
 
       // const expirationDate = new Date(0);
       // expirationDate.setUTCSeconds(this.user['exp']);
@@ -184,7 +192,7 @@ export class UserService {
    */
   startLoginGoogle() {
     // this.logger.debug('startLoginGoogle');
-    const oAuthURL = `${environment.serverUrl}authentication/google`;
+    const oAuthURL = `/api/authentication/google`;
     return this._startLoginOAuth(oAuthURL, LoginProvider.GOOGLE);
   }
 
@@ -195,7 +203,9 @@ export class UserService {
    */
   loginGoogle(parsed): Promise<User | string> {
     // this.logger.debug('loginGoogle ' + parsed);
-    return this._doGet(environment.serverUrl + 'authentication/google/callback?code=' + parsed.code);
+    return this._doGet(
+      '/api/authentication/google/callback?code=' + parsed.code
+    );
   }
 
   /**
@@ -249,7 +259,9 @@ export class UserService {
               clearInterval(this.intervalId);
               this.windowHandle.close();
 
-              parsed = this._parseQueryString(href.replace(new RegExp(`^.*${oAuthCallbackUrl}[?]`), ''));
+              parsed = this._parseQueryString(
+                href.replace(new RegExp(`^.*${oAuthCallbackUrl}[?]`), '')
+              );
               // this.logger.debug(parsed);
 
               if (parsed.code) {
@@ -259,13 +271,15 @@ export class UserService {
                     .then(() => {
                       resolve();
                     })
-                    .catch(msg => {
+                    .catch((msg) => {
                       this.checkAuthentication();
                       reject(msg);
                     });
                 }
               } else {
-                this.logger.error('oAuth callback without and with code...?.. ' + href);
+                this.logger.error(
+                  'oAuth callback without and with code...?.. ' + href
+                );
                 this.checkAuthentication();
                 reject('login error');
               }
@@ -277,7 +291,9 @@ export class UserService {
                 this.windowHandle.close();
                 this.checkAuthentication();
 
-                parsed = this._parseQueryString(href.replace(new RegExp(`^.*${oAuthCallbackUrl}[?]`), ''));
+                parsed = this._parseQueryString(
+                  href.replace(new RegExp(`^.*${oAuthCallbackUrl}[?]`), '')
+                );
 
                 if (parsed.error_message) {
                   reject(parsed.error_message.replace(/[+]/g, ' '));
@@ -298,15 +314,15 @@ export class UserService {
    * @returns {Promise<void>}
    * @private
    */
-  private _doGet(authentUrl: string) {
+  private _doGet(authentUrl: string): Promise<User | string> {
     // this.logger.debug('_doGet '+authentUrl);
 
     return new Promise<User | string>((resolve, reject) => {
       this._http
         .get<ApiReturn>(authentUrl, {
           headers: new HttpHeaders({
-            Accept: 'application/json'
-          })
+            Accept: 'application/json',
+          }),
         })
         // .timeout(3000)
         .toPromise()
@@ -315,12 +331,12 @@ export class UserService {
           if (value && value.id_token) {
             UserService.tokenSetter(value.id_token);
             this.checkAuthentication();
-            resolve();
+            resolve('');
           } else {
-            resolve();
+            resolve('');
           }
         })
-        .catch(error => {
+        .catch((error) => {
           this.checkAuthentication();
 
           this._notificationService.handleError(error);
@@ -347,7 +363,7 @@ export class UserService {
     }
 
     //noinspection TypeScriptValidateJSTypes
-    return str.split('&').reduce(function(ret, param) {
+    return str.split('&').reduce(function (ret, param) {
       //noinspection TypeScriptValidateJSTypes
       const parts = param.replace(/[+]/g, ' ').split('=');
       // Firefox (pre 40) decodes `%3D` to `=`
@@ -361,6 +377,7 @@ export class UserService {
       // http://w3.org/TR/2012/WD-url-20120524/#collect-url-parameters
       val = val === undefined ? null : decodeURIComponent(val);
 
+      // eslint-disable-next-line no-prototype-builtins
       if (!ret.hasOwnProperty(key)) {
         ret[key] = val;
       } else if (Array.isArray(ret[key])) {
@@ -385,7 +402,10 @@ export class UserService {
     // console.log(this.config.language);
     this._translateService.use(this.config.language);
 
-    localStorage.setItem(UserService.KEY_CONFIG_LOCAL_STORAGE, JSON.stringify(this.config));
+    localStorage.setItem(
+      UserService.KEY_CONFIG_LOCAL_STORAGE,
+      JSON.stringify(this.config)
+    );
 
     this.configSubject.next(this.config);
   }

@@ -1,10 +1,15 @@
-import { Injectable, InternalServerErrorException, Logger, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { sign } from 'jsonwebtoken';
 import { User } from '@seed-me-home/models';
-import { ConfigService } from '../../services/config/config.service';
+import { ConfigService } from '@nestjs/config';
 
 export enum Provider {
-  GOOGLE = 'google'
+  GOOGLE = 'google',
 }
 
 @Injectable()
@@ -13,15 +18,27 @@ export class AuthenticationService {
 
   constructor(private readonly _configService: ConfigService) {}
 
-  async validateOAuthLogin(thirdPartyUser: any, provider: Provider): Promise<string> {
-    if (this._configService.getUsersAuthorized().indexOf(thirdPartyUser.displayName) < 0) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async validateOAuthLogin(
+    thirdPartyUser: any,
+    provider: Provider
+  ): Promise<string> {
+    if (
+      this._configService
+        .get('USERS_AUTHORIZED')
+        .indexOf(thirdPartyUser.displayName) < 0
+    ) {
       throw new UnauthorizedException(
-        'Your are not authorized to use this application (' + thirdPartyUser.displayName + ').'
+        'Your are not authorized to use this application (' +
+          thirdPartyUser.displayName +
+          ').'
       );
     }
 
     try {
-      this.logger.debug('validateOAuthLogin "' + thirdPartyUser.displayName + '"');
+      this.logger.debug(
+        'validateOAuthLogin "' + thirdPartyUser.displayName + '"'
+      );
       // this.logger.debug(thirdPartyUser);
       const user: User = {
         family_name: thirdPartyUser._json.family_name,
@@ -31,10 +48,15 @@ export class AuthenticationService {
         picture: thirdPartyUser._json.picture,
         provider: provider,
         providerId: thirdPartyUser._json.sub,
-        isAdmin: this._configService.getUsersAdmin().indexOf(thirdPartyUser.displayName) >= 0
+        isAdmin:
+          this._configService
+            .get('USERS_ADMIN')
+            .indexOf(thirdPartyUser.displayName) >= 0,
       };
 
-      return sign(user, this._configService.getAuthentJwtSecret(), { expiresIn: 3600 });
+      return sign(user, this._configService.get('AUTHENT_JWT_SECRET'), {
+        expiresIn: 3600,
+      });
     } catch (err) {
       throw new InternalServerErrorException('validateOAuthLogin', err.message);
     }

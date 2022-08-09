@@ -1,18 +1,18 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { ConfigService } from '../../services/config/config.service';
+import { ConfigService } from '@nestjs/config';
 
 class RealJwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(jwtSecret: string) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: jwtSecret
+      secretOrKey: jwtSecret,
     });
   }
 
-  //noinspection JSMethodCanBeStatic
-  async validate(payload, done: any) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async validate(payload: any, done: any): Promise<void> {
     try {
       done(null, payload);
     } catch (err) {
@@ -24,7 +24,9 @@ class RealJwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 @Injectable()
 export class JwtStrategy {
   constructor(private readonly _configService: ConfigService) {
-    this.strategy = new RealJwtStrategy(this._configService.getAuthentJwtSecret());
+    this.strategy = new RealJwtStrategy(
+      this._configService.get('AUTHENT_JWT_SECRET')
+    );
   }
 
   strategy: RealJwtStrategy;

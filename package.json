@@ -27,7 +27,7 @@
     "dep-graph": "nx dep-graph",
     "help": "nx help",
     "release": "standard-version --no-verify --commit-all",
-    "replace:version": "json -I -f libs/models/src/lib/version.json -e \"this.version='`cat package.json | json version`';\" && git add libs/models/src/lib/version.json",
+    "replace:version": "json -I -f libs/models/src/lib/version.json -e \"this.version='`cat package.json | json version`';\" ",
     "test:ci": "ng test"
   },
   "standard-version": {
@@ -44,12 +44,10 @@
   },
   "lint-staged": {
     "*.ts": [
-      "tslint -p tsconfig.base.json",
-      "git add"
+      "eslint"
     ],
     "*.{css,scss,json,json5,md,js,ts}": [
-      "prettier --write",
-      "git add"
+      "prettier --write"
     ]
   },
   "private": true,
@@ -72,6 +70,7 @@
     "@auth0/angular-jwt": "^5.0.2",
     "@electorrent/node-rtorrent": "^1.2.1",
     "@nestjs/common": "9.0.8",
+    "@nestjs/config": "^2.2.0",
     "@nestjs/core": "9.0.8",
     "@nestjs/passport": "^9.0.0",
     "@nestjs/platform-express": "9.0.8",
@@ -95,6 +94,9 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^14.1.1",
+    "@angular-eslint/eslint-plugin": "~14.0.0",
+    "@angular-eslint/eslint-plugin-template": "~14.0.0",
+    "@angular-eslint/template-parser": "~14.0.0",
     "@angular/cli": "^14.1.1",
     "@angular/compiler-cli": "^14.1.1",
     "@angular/language-service": "^14.1.1",
@@ -109,9 +111,13 @@
     "@nrwl/node": "14.5.4",
     "@nrwl/tao": "14.5.4",
     "@nrwl/workspace": "14.5.4",
+    "@types/cors": "^2.8.12",
+    "@types/express-session": "^1.17.5",
     "@types/jest": "^27.4.1",
+    "@types/lodash": "^4.14.182",
     "@types/mv": "^2.1.2",
     "@types/node": "^18.0.0",
+    "@types/passport-google-oauth20": "^2.0.11",
     "@types/passport-jwt": "^3.0.6",
     "@types/ssh2": "^0.5.52",
     "@typescript-eslint/eslint-plugin": "5.32.0",

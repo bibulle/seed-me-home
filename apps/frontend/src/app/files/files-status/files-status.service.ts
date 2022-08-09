@@ -7,13 +7,13 @@ import { NotificationService } from '../../notification/notification.service';
 import { NGXLogger } from 'ngx-logger';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class FilesStatusService {
   private static REFRESH_EVERY = 21 * 1000;
   private static _refreshIsRunning = false;
 
-  API_URL = environment.serverUrl + 'files_api/status';
+  API_URL = '/api/files_api/status';
 
   private readonly currentStatusSubject: Subject<FilesStatus>;
 
@@ -30,7 +30,7 @@ export class FilesStatusService {
     if (this.currentStatusSubject.observers.length > 0) {
       FilesStatusService._refreshIsRunning = true;
       this._loadStatus()
-        .then(status => {
+        .then((status) => {
           FilesStatusService._refreshIsRunning = false;
           this.currentStatusSubject.next(status);
           setTimeout(() => {
@@ -58,7 +58,7 @@ export class FilesStatusService {
           const value = data.data as FilesStatus;
           resolve(value);
         })
-        .catch(error => {
+        .catch((error) => {
           this._notificationService.handleError(error);
           reject(error);
         });

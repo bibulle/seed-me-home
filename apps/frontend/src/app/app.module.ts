@@ -55,7 +55,7 @@ registerLocaleData(localeEn, 'en');
       config: {
         tokenGetter: UserService.tokenGetter,
         allowedDomains: [
-          ('localhost:4002' as string | 'localhost:4002') as string | RegExp,
+          'localhost:4002' as string | 'localhost:4002' as string | RegExp,
           'seeds.bibulle.fr',
           new RegExp('^null$'),
         ],
@@ -83,7 +83,7 @@ registerLocaleData(localeEn, 'en');
       // useDefaultLang: false
     }),
     LoggerModule.forRoot({
-      serverLoggingUrl: environment.serverUrl + 'api/logs',
+      serverLoggingUrl: 'api/logs',
       level: NgxLoggerLevel.DEBUG,
       serverLogLevel: NgxLoggerLevel.WARN,
     }),

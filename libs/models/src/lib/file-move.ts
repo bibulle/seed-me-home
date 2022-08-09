@@ -1,4 +1,4 @@
-export interface FileMove {
+export class FileMove {
   sourcePath: string;
   sourceFullPath: string;
   targetPath: string;
@@ -7,5 +7,5 @@ export interface FileMove {
 
 export enum MoveType {
   movies,
-  series
+  series,
 }

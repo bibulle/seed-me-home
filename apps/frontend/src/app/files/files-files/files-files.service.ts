@@ -8,16 +8,16 @@ import { NGXLogger } from 'ngx-logger';
 import { String } from 'typescript-string-operations';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class FilesFilesService {
   private static REFRESH_EVERY = 21 * 1000;
   private static _refreshIsRunning = false;
 
-  API_URL_LOCAL = environment.serverUrl + 'files_api/local';
-  API_URL_NAS = environment.serverUrl + 'files_api/nas';
-  API_URL_REMOVE = environment.serverUrl + 'files_api/remove';
-  API_URL_MOVE = environment.serverUrl + 'files_api/move';
+  API_URL_LOCAL = '/api/files_api/local';
+  API_URL_NAS = '/api/files_api/nas';
+  API_URL_REMOVE = '/api/files_api/remove';
+  API_URL_MOVE = '/api/files_api/move';
 
   private readonly currentFilesSubjectLocal: Subject<FilesFile>;
   private readonly currentFilesSubjectNas: Subject<FilesFile>;
@@ -33,10 +33,14 @@ export class FilesFilesService {
   }
 
   private _refreshFiles(noTimeout = false) {
-    if (this.currentFilesSubjectLocal.observers.length + this.currentFilesSubjectNas.observers.length > 0) {
+    if (
+      this.currentFilesSubjectLocal.observers.length +
+        this.currentFilesSubjectNas.observers.length >
+      0
+    ) {
       FilesFilesService._refreshIsRunning = true;
       this._loadFiles()
-        .then(filesTable => {
+        .then((filesTable) => {
           FilesFilesService._refreshIsRunning = false;
           //this.logger.debug(filesTable[0]);
           this.currentFilesSubjectLocal.next(filesTable[0]);
@@ -79,12 +83,16 @@ export class FilesFilesService {
             const value = data.data as FilesFile;
             resolve(value);
           })
-          .catch(error => {
+          .catch((error) => {
             //console.log(error);
-            if (error && error.error && error.error.message === 'File not found') {
+            if (
+              error &&
+              error.error &&
+              error.error.message === 'File not found'
+            ) {
               error.error = new ErrorEvent('HTTP_ERROR', {
                 error: new Error('Http error'),
-                message: 'Local not found'
+                message: 'Local not found',
               });
             }
             this._notificationService.handleError(error);
@@ -100,17 +108,21 @@ export class FilesFilesService {
             const value = data.data as FilesFile;
             resolve(value);
           })
-          .catch(error => {
-            if (error && error.error && error.error.message === 'File not found') {
+          .catch((error) => {
+            if (
+              error &&
+              error.error &&
+              error.error.message === 'File not found'
+            ) {
               error.error = new ErrorEvent('HTTP_ERROR', {
                 error: new Error('Http error'),
-                message: 'Nas not found'
+                message: 'Nas not found',
               });
             }
             this._notificationService.handleError(error);
             reject(error);
           });
-      })
+      }),
     ]);
   }
 
@@ -150,7 +162,7 @@ export class FilesFilesService {
           //this.logger.debug('removeFile OK');
           resolve();
         })
-        .catch(error => {
+        .catch((error) => {
           //this.logger.debug('removeFile KO');
           this._notificationService.handleError(error);
           reject(error);
@@ -168,7 +180,7 @@ export class FilesFilesService {
           this._forceRefreshFiles();
           resolve();
         })
-        .catch(error => {
+        .catch((error) => {
           //this.logger.debug('moveFile KO');
           this._notificationService.handleError(error);
           reject(error);
@@ -181,13 +193,13 @@ export class FilesFilesService {
       sourcePath: sourcePath,
       sourceFullPath: sourceFullPath,
       targetPath: sourcePath,
-      targetType: MoveType.movies
+      targetType: MoveType.movies,
     };
 
     // test if series
     const series_matcher = [
       /(.+)[ .]+[s]([0-9]+)[e]([0-9]+)[ -.]*(.*)[.]([^.]*)/i,
-      /(.+)[ .]+([0-9]+)[-.x]([0-9]+)[ -.]*(.*)[.]([^.]*)/i
+      /(.+)[ .]+([0-9]+)[-.x]([0-9]+)[ -.]*(.*)[.]([^.]*)/i,
     ];
 
     const tv_shows_format =
@@ -243,10 +255,10 @@ export class FilesFilesService {
       '720p',
       'WEB-DL',
       'HDLight',
-      'SEEHD'
+      'SEEHD',
     ];
 
-    file_cleaner.forEach(str => {
+    file_cleaner.forEach((str) => {
       const regexp = new RegExp(`[ .-]*${str}([ .-]*)`, 'i');
       ret.targetPath = ret.targetPath.replace(regexp, '$1');
     });
@@ -254,9 +266,12 @@ export class FilesFilesService {
     while (ret.targetPath.match(/[.]([^.]*[.][^.]+$)/)) {
       ret.targetPath = ret.targetPath.replace(/[.]([^.]*[.][^.]+$)/, ' $1');
     }
-    ret.targetPath = ret.targetPath.replace(/ ([0-9][0-9][0-9][0-9])([.][^.]+$)/, ' ($1)$2');
+    ret.targetPath = ret.targetPath.replace(
+      / ([0-9][0-9][0-9][0-9])([.][^.]+$)/,
+      ' ($1)$2'
+    );
 
-    series_matcher.forEach(matcher => {
+    series_matcher.forEach((matcher) => {
       if (ret.targetPath.match(matcher)) {
         const seriesName = matcher.exec(ret.targetPath)[1];
         const seasonNum = matcher.exec(ret.targetPath)[2];

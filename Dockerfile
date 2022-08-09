@@ -1,5 +1,5 @@
 # -------------
-FROM node:15 AS BUILD
+FROM node:16 AS BUILD
 
 WORKDIR /usr/src
 
@@ -15,13 +15,13 @@ COPY libs libs
 RUN mkdir apps
 
 COPY apps/frontend apps/frontend
-RUN npm run ng build frontend -- --prod
-
 COPY apps/backend apps/backend
+
+RUN npm run ng build frontend -- --prod
 RUN npm run ng build backend -- --prod
 
 # -------------
-FROM node:15
+FROM node:16
 
 WORKDIR /usr/src
 

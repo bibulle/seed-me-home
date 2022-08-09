@@ -1,19 +1,18 @@
-import { Injectable } from '@angular/core';
-import { Observable, ReplaySubject, Subject } from 'rxjs';
-import { ApiReturn, RtorrentTorrent } from '@seed-me-home/models';
 import { HttpClient } from '@angular/common/http';
-import { NotificationService } from '../../notification/notification.service';
+import { Injectable } from '@angular/core';
+import { ApiReturn, RtorrentTorrent } from '@seed-me-home/models';
 import { NGXLogger } from 'ngx-logger';
-import { environment } from '../../../environments/environment';
+import { Observable, ReplaySubject, Subject } from 'rxjs';
+import { NotificationService } from '../../notification/notification.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class RtorrentTorrentsService {
   private static REFRESH_EVERY = 60 * 1000;
   private static _refreshIsRunning = false;
 
-  API_URL = environment.serverUrl + 'rtorrent/torrents';
+  API_URL = '/api/rtorrent/torrents';
 
   private readonly currentTorrentsSubject: Subject<RtorrentTorrent[]>;
 
@@ -30,7 +29,7 @@ export class RtorrentTorrentsService {
     if (this.currentTorrentsSubject.observers.length > 0) {
       RtorrentTorrentsService._refreshIsRunning = true;
       this._loadTorrents()
-        .then(torrents => {
+        .then((torrents) => {
           RtorrentTorrentsService._refreshIsRunning = false;
           this.currentTorrentsSubject.next(torrents);
           setTimeout(() => {
@@ -58,7 +57,7 @@ export class RtorrentTorrentsService {
           const value = data.data as RtorrentTorrent[];
           resolve(value);
         })
-        .catch(error => {
+        .catch((error) => {
           this._notificationService.handleError(error);
           reject(error);
         });
@@ -99,7 +98,7 @@ export class RtorrentTorrentsService {
         const torrents = data.data as RtorrentTorrent[];
         this.currentTorrentsSubject.next(torrents);
       })
-      .catch(error => {
+      .catch((error) => {
         this._notificationService.handleError(error);
       });
   }
@@ -115,7 +114,7 @@ export class RtorrentTorrentsService {
         const torrents = data.data as RtorrentTorrent[];
         this.currentTorrentsSubject.next(torrents);
       })
-      .catch(error => {
+      .catch((error) => {
         this._notificationService.handleError(error);
       });
   }
@@ -131,7 +130,7 @@ export class RtorrentTorrentsService {
         const torrents = data.data as RtorrentTorrent[];
         this.currentTorrentsSubject.next(torrents);
       })
-      .catch(error => {
+      .catch((error) => {
         this._notificationService.handleError(error);
       });
   }
@@ -149,7 +148,7 @@ export class RtorrentTorrentsService {
         const torrents = data.data as RtorrentTorrent[];
         this.currentTorrentsSubject.next(torrents);
       })
-      .catch(error => {
+      .catch((error) => {
         this._notificationService.handleError(error);
       });
   }

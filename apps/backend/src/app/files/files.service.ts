@@ -5,7 +5,7 @@ import {
   FilesStatus,
   MoveType,
 } from '@seed-me-home/models';
-import { ConfigService } from '../../services/config/config.service';
+import { ConfigService } from '@nestjs/config';
 import { FtpSeedService } from '../ftp-seed/ftp-seed.service';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -24,14 +24,14 @@ export class FilesService {
 
   getStatus(): Promise<FilesStatus> {
     //noinspection JSUnusedLocalSymbols
-    return new Promise<FilesStatus>((resolve, reject) => {
+    return new Promise<FilesStatus>((resolve) => {
       Promise.all([
         disk.check(this._ftpSeedService.getPathLocal()).catch((reason) => {
           this.logger.error(reason);
         }),
-        disk.check(this._configService.getPathNas()).catch((reason) => {
+        disk.check(this._configService.get('PATH_NAS')).catch((reason) => {
           this.logger.error(
-            `Not found ${path.resolve(this._configService.getPathNas())}`
+            `Not found ${path.resolve(this._configService.get('PATH_NAS'))}`
           );
           this.logger.error(reason);
         }),
@@ -57,11 +57,11 @@ export class FilesService {
   }
 
   getFilesLocal(): Promise<FilesFile> {
-    return this._getFiles(this._configService.getPathDownload());
+    return this._getFiles(this._configService.get('PATH_DOWNLOAD'));
   }
 
   getFilesNas(): Promise<FilesFile> {
-    return this._getFiles(this._configService.getPathNas());
+    return this._getFiles(this._configService.get('PATH_NAS'));
   }
 
   private _getFiles(filePath: string, level = 0): Promise<FilesFile> {
@@ -203,7 +203,7 @@ export class FilesService {
 
       // Nas exist ?
       try {
-        fs.realpathSync(this._configService.getPathNas());
+        fs.realpathSync(this._configService.get('PATH_NAS'));
       } catch (e) {
         return reject(new HttpException('Nas not found', HttpStatus.NOT_FOUND));
       }
@@ -228,14 +228,14 @@ export class FilesService {
 
       // calculate target full path
       let fullPathTarget = path.join(
-        this._configService.getPathNas(),
-        this._configService.getPathMovies(),
+        this._configService.get('PATH_NAS'),
+        this._configService.get('PATH_MOVIES'),
         fileMove.targetPath
       );
       if (fileMove.targetType === MoveType.series) {
         fullPathTarget = path.join(
-          this._configService.getPathNas(),
-          this._configService.getPathSeries(),
+          this._configService.get('PATH_NAS'),
+          this._configService.get('PATH_SERIES'),
           fileMove.targetPath
         );
       }
@@ -274,28 +274,31 @@ export class FilesService {
       // eslint-disable-next-line @typescript-eslint/no-this-alias
       const that = this;
       let mvDone = false;
-      mv(fileMove.sourceFullPath, fullPathTarget, { mkdirp: true }, function (
-        err
-      ) {
-        if (err) {
-          that.logger.error(
-            'cannot move "' +
-              fileMove.sourceFullPath +
-              '" to "' +
-              fullPathTarget +
-              '"'
-          );
-          that.logger.error(err);
-          mvDone = true;
-          return reject(
-            new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR)
-          );
+      mv(
+        fileMove.sourceFullPath,
+        fullPathTarget,
+        { mkdirp: true },
+        function (err) {
+          if (err) {
+            that.logger.error(
+              'cannot move "' +
+                fileMove.sourceFullPath +
+                '" to "' +
+                fullPathTarget +
+                '"'
+            );
+            that.logger.error(err);
+            mvDone = true;
+            return reject(
+              new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR)
+            );
+          }
+          if (!mvDone) {
+            mvDone = true;
+            resolve();
+          }
         }
-        if (!mvDone) {
-          mvDone = true;
-          resolve();
-        }
-      });
+      );
       setTimeout(() => {
         if (!mvDone) {
           mvDone = true;
@@ -309,11 +312,11 @@ export class FilesService {
     // File in downloaded or Nas ?
     let path_local, path_nas;
     try {
-      path_local = fs.realpathSync(this._configService.getPathDownload());
+      path_local = fs.realpathSync(this._configService.get('PATH_DOWNLOAD'));
       // eslint-disable-next-line no-empty
     } catch (e) {}
     try {
-      path_nas = fs.realpathSync(this._configService.getPathNas());
+      path_nas = fs.realpathSync(this._configService.get('PATH_NAS'));
       // eslint-disable-next-line no-empty
     } catch (e) {}
 
