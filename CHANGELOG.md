@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.9.1](https://github.com/bibulle/seed-me-home/compare/v0.9.0...v0.9.1) (2022-08-09)
+
+
+### Features
+
+* containerized into Docker ([9c576e1](https://github.com/bibulle/seed-me-home/commit/9c576e130643f5cd3ad50af9828f10e69c3bae93))
+
+
+### Bug Fixes
+
+* add .htaccess ([954fa08](https://github.com/bibulle/seed-me-home/commit/954fa0835a4fc56af3fc7eae49fd2f6d0e2a883b))
+* redirect loop ([da7ccb5](https://github.com/bibulle/seed-me-home/commit/da7ccb59ea1a0d8cd618281900092e60bbabb24f))
+* repear download and do some cleanup ([8d29256](https://github.com/bibulle/seed-me-home/commit/8d29256e1dd2e59d2fbfdc6d164ee64c699a93f8))
+* wrong app name ([ba2a850](https://github.com/bibulle/seed-me-home/commit/ba2a85059349384329712c06f2475a1b33f064e4))
+
 ## [0.9.0](https://github.com/bibulle/seed-me-home/compare/v0.8.1...v0.9.0) (2020-12-23)
 
 ### [0.8.1](https://github.com/bibulle/seed-me-home/compare/v0.8.0...v0.8.1) (2020-12-23)

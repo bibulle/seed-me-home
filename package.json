@@ -1,6 +1,6 @@
 {
   "name": "seed-me-home",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "license": "MIT",
   "scripts": {
     "ng": "nx",
@@ -39,7 +39,7 @@
     "hooks": {
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
       "pre-commit": "lint-staged",
-      "pre-push": "git status && test -z \"$(git status --porcelain)\" && npm run test:ci"
+      "pre-push": "git status && test -z \"$(git status --porcelain)\""
     }
   },
   "lint-staged": {
