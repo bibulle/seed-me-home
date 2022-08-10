@@ -4,6 +4,7 @@ import { ApiReturn, RtorrentTorrent } from '@seed-me-home/models';
 import { NGXLogger } from 'ngx-logger';
 import { Observable, ReplaySubject, Subject } from 'rxjs';
 import { NotificationService } from '../../notification/notification.service';
+import { RefreshService } from '../../refresh/refresh.service';
 
 @Injectable({
   providedIn: 'root',
@@ -20,29 +21,46 @@ export class RtorrentTorrentsService {
   constructor(
     private readonly httpClient: HttpClient,
     private readonly _notificationService: NotificationService,
-    private readonly logger: NGXLogger
+    private readonly logger: NGXLogger,
+    private readonly _refreshService: RefreshService
   ) {
     this.currentTorrentsSubject = new ReplaySubject<RtorrentTorrent[]>();
   }
 
-  private _refreshTorrents() {
+  private _refreshTorrents(noTimeout = false) {
     if (this.currentTorrentsSubject.observers.length > 0) {
+      this._refreshService.setRefreshing(true);
       RtorrentTorrentsService._refreshIsRunning = true;
       this._loadTorrents()
         .then((torrents) => {
           RtorrentTorrentsService._refreshIsRunning = false;
           this.currentTorrentsSubject.next(torrents);
-          setTimeout(() => {
-            this._refreshTorrents();
-          }, RtorrentTorrentsService.REFRESH_EVERY);
+          if (!noTimeout) {
+            setTimeout(() => {
+              this._refreshTorrents();
+            }, RtorrentTorrentsService.REFRESH_EVERY);
+            this._refreshService.setRefreshingTimout(RtorrentTorrentsService.REFRESH_EVERY / 1000, () => this._forceRefreshTorrents());
+          }
+          this._refreshService.setRefreshing(false);
         })
         .catch(() => {
           RtorrentTorrentsService._refreshIsRunning = false;
-          setTimeout(() => {
-            this._refreshTorrents();
-          }, RtorrentTorrentsService.REFRESH_EVERY);
+          if (!noTimeout) {
+            setTimeout(() => {
+              this._refreshTorrents();
+            }, RtorrentTorrentsService.REFRESH_EVERY);
+            this._refreshService.setRefreshingTimout(RtorrentTorrentsService.REFRESH_EVERY / 1000, () => this._forceRefreshTorrents());
+          }
+          this._refreshService.setRefreshing(false);
         });
     }
+  }
+
+  /**
+   * force refreshing of file (without
+   */
+  private _forceRefreshTorrents() {
+    this._refreshTorrents(true);
   }
 
   /**

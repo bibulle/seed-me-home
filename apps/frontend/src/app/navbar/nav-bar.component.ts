@@ -10,12 +10,10 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CommonModule } from '@angular/common';
 import { AppRoutingModule } from '../app-routing.module';
-import {
-  NotificationModule,
-  NotificationService,
-} from '../notification/notification.service';
+import { NotificationModule, NotificationService } from '../notification/notification.service';
 import { UserModule } from '../user/user.module';
 import { VersionService } from '../utils/version/version.service';
+import { RefreshModule } from '../refresh/refresh.module';
 
 @Component({
   selector: 'seed-me-home-nav-bar',
@@ -45,12 +43,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
   updateNeeded = false;
   private _currentVersionChangedSubscription: Subscription;
 
-  constructor(
-    private _router: Router,
-    private _userService: UserService,
-    private _versionService: VersionService,
-    private _notificationService: NotificationService
-  ) {
+  constructor(private _router: Router, private _userService: UserService, private _versionService: VersionService, private _notificationService: NotificationService) {
     this._router.events.subscribe((data) => {
       //console.log(data.constructor.name);
       if (data instanceof NavigationEnd) {
@@ -65,21 +58,17 @@ export class NavBarComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this._currentUserSubscription = this._userService
-      .userObservable()
-      .subscribe((user) => {
-        //console.log(this.user);
-        this.user = user;
-        this.calculateMenus();
-      });
-    this._currentVersionChangedSubscription = this._versionService
-      .versionChangedObservable()
-      .subscribe((versionChanged) => {
-        this.updateNeeded = versionChanged;
-        if (this.updateNeeded) {
-          this._notificationService.error('update-needed | translate');
-        }
-      });
+    this._currentUserSubscription = this._userService.userObservable().subscribe((user) => {
+      //console.log(this.user);
+      this.user = user;
+      this.calculateMenus();
+    });
+    this._currentVersionChangedSubscription = this._versionService.versionChangedObservable().subscribe((versionChanged) => {
+      this.updateNeeded = versionChanged;
+      if (this.updateNeeded) {
+        this._notificationService.error('update-needed | translate');
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -108,12 +97,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
     }[] = [];
     if (this._userService.isAuthenticate()) {
       this._router.config.forEach((obj) => {
-        if (
-          !obj.redirectTo &&
-          obj.data &&
-          obj.data['menu'] &&
-          (!obj.data['onlyAdmin'] || this.user.isAdmin)
-        ) {
+        if (!obj.redirectTo && obj.data && obj.data['menu'] && (!obj.data['onlyAdmin'] || this.user.isAdmin)) {
           if (obj.data['right']) {
             newLinksRight.push({
               path: obj.path,
@@ -144,17 +128,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
 }
 
 @NgModule({
-  imports: [
-    TranslateModule,
-    CommonModule,
-    MatButtonModule,
-    MatIconModule,
-    MatToolbarModule,
-    MatTooltipModule,
-    AppRoutingModule,
-    NotificationModule,
-    UserModule,
-  ],
+  imports: [TranslateModule, CommonModule, MatButtonModule, MatIconModule, MatToolbarModule, MatTooltipModule, AppRoutingModule, NotificationModule, UserModule, RefreshModule],
   declarations: [NavBarComponent],
   exports: [NavBarComponent],
 })

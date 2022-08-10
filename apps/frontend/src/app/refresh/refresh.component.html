@@ -1,0 +1,4 @@
+<button mat-icon-button (click)="refresh()" matTooltip="{{'force-refresh' | translate}}" [class.refreshing]="refreshingStatus.refreshing">
+  <mat-icon>refresh</mat-icon>
+</button>
+<mat-progress-bar *ngIf="progressValue<100" mode="determinate" value="{{progressValue}}" color="primary"></mat-progress-bar>

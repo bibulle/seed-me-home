@@ -4,6 +4,7 @@ import { ApiReturn, RtorrentStatus } from '@seed-me-home/models';
 import { NGXLogger } from 'ngx-logger';
 import { Observable, ReplaySubject, Subject } from 'rxjs';
 import { NotificationService } from '../../notification/notification.service';
+import { RefreshService } from '../../refresh/refresh.service';
 
 @Injectable({
   providedIn: 'root',
@@ -20,29 +21,43 @@ export class RtorrentStatusService {
   constructor(
     private readonly httpClient: HttpClient,
     private readonly _notificationService: NotificationService,
-    private readonly logger: NGXLogger
+    private readonly logger: NGXLogger,
+    private readonly _refreshService: RefreshService
   ) {
     this.currentStatusSubject = new ReplaySubject<RtorrentStatus>();
   }
 
-  private _refreshStatus() {
+  private _refreshStatus(noTimeout = false) {
     if (this.currentStatusSubject.observers.length > 0) {
       RtorrentStatusService._refreshIsRunning = true;
       this._loadStatus()
         .then((status) => {
           RtorrentStatusService._refreshIsRunning = false;
           this.currentStatusSubject.next(status);
-          setTimeout(() => {
-            this._refreshStatus();
-          }, RtorrentStatusService.REFRESH_EVERY);
+          if (!noTimeout) {
+            setTimeout(() => {
+              this._refreshStatus();
+            }, RtorrentStatusService.REFRESH_EVERY);
+            this._refreshService.setRefreshingTimout(RtorrentStatusService.REFRESH_EVERY / 1000, () => this._forceRefreshTorrentStatus());
+          }
         })
         .catch(() => {
           RtorrentStatusService._refreshIsRunning = false;
-          setTimeout(() => {
-            this._refreshStatus();
-          }, RtorrentStatusService.REFRESH_EVERY);
+          if (!noTimeout) {
+            setTimeout(() => {
+              this._refreshStatus();
+            }, RtorrentStatusService.REFRESH_EVERY);
+            this._refreshService.setRefreshingTimout(RtorrentStatusService.REFRESH_EVERY / 1000, () => this._forceRefreshTorrentStatus());
+          }
         });
     }
+  }
+
+  /**
+   * force refreshing of file (without
+   */
+  private _forceRefreshTorrentStatus() {
+    this._refreshStatus(true);
   }
 
   /**

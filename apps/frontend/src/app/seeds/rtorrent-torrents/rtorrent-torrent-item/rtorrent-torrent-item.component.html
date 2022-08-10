@@ -1,4 +1,4 @@
-<div *ngIf="index==0" class="header">
+<div *ngIf="index===0" class="header">
   <span class="done" (click)="toggleSort('progress')" [class.unselected]="(sortItem!=='progress')">
     <mat-icon *ngIf="(sortItem!=='progress') || (sortDirection!=='asc')">keyboard_arrow_down</mat-icon>
     <mat-icon *ngIf="(sortItem==='progress') && (sortDirection==='asc')">keyboard_arrow_up</mat-icon>
@@ -88,7 +88,7 @@
     <mat-icon>cloud_upload</mat-icon>{{torrent?.up_rate | bytesSize}}/s
   </span>
   <span class="ratio" [class.very-bad]="torrent?.ratio < 0.1" [class.good]="torrent?.ratio > 1" [class.very-good]="torrent?.ratio > 2">
-    <mat-icon>compare_arrows</mat-icon>{{torrent?.ratio.toFixed(2)}}
+    <mat-icon>compare_arrows</mat-icon>{{torrent?.ratio?.toFixed(2)}}
   </span>
   <span class="date">{{formatDate(torrent?.addtime * 1000)}}</span>
 </div>

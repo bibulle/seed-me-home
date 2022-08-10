@@ -29,6 +29,7 @@
   "title.file.move": "Déplacer vers le NAS",
   "title.file.remove": "Supprimer totalement",
 
+  "force-refresh": "Mettre a jour",
   "seed.pause": "Pause ce seed",
   "seed.start": "Démarre ce seed",
   "seed.erase": "Supprime ce seed",

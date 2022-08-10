@@ -5,6 +5,7 @@ import { NGXLogger } from 'ngx-logger';
 import { Observable, ReplaySubject, Subject } from 'rxjs';
 import { String } from 'typescript-string-operations';
 import { NotificationService } from '../../notification/notification.service';
+import { RefreshService } from '../../refresh/refresh.service';
 import { FilesCleanerService } from '../files-cleaner/files-cleaner.service';
 
 @Injectable({
@@ -27,14 +28,17 @@ export class FilesFilesService {
     private readonly httpClient: HttpClient,
     private readonly _notificationService: NotificationService,
     private readonly logger: NGXLogger,
-    private readonly _fileCleanerService: FilesCleanerService
+    private readonly _fileCleanerService: FilesCleanerService,
+    private readonly _refreshService: RefreshService
   ) {
     this.currentFilesSubjectLocal = new ReplaySubject<FilesFile>();
     this.currentFilesSubjectNas = new ReplaySubject<FilesFile>();
   }
 
   private _refreshFiles(noTimeout = false) {
+    // console.log("_refreshFiles");
     if (this.currentFilesSubjectLocal.observers.length + this.currentFilesSubjectNas.observers.length > 0) {
+      this._refreshService.setRefreshing(true);
       FilesFilesService._refreshIsRunning = true;
       this._loadFiles()
         .then((filesTable) => {
@@ -46,7 +50,9 @@ export class FilesFilesService {
             setTimeout(() => {
               this._refreshFiles();
             }, FilesFilesService.REFRESH_EVERY);
+            this._refreshService.setRefreshingTimout(FilesFilesService.REFRESH_EVERY / 1000, () => this._forceRefreshFiles());
           }
+          this._refreshService.setRefreshing(false);
         })
         .catch(() => {
           FilesFilesService._refreshIsRunning = false;
@@ -54,7 +60,11 @@ export class FilesFilesService {
             setTimeout(() => {
               this._refreshFiles();
             }, FilesFilesService.REFRESH_EVERY);
+            this._refreshService.setRefreshingTimout(FilesFilesService.REFRESH_EVERY / 1000, () => {
+              this._forceRefreshFiles();
+            });
           }
+          this._refreshService.setRefreshing(false);
         });
     }
   }

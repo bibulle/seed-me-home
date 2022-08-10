@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
-import { environment } from '../../../environments/environment';
-import { Observable, ReplaySubject, Subject } from 'rxjs';
-import { ApiReturn, FilesStatus } from '@seed-me-home/models';
 import { HttpClient } from '@angular/common/http';
-import { NotificationService } from '../../notification/notification.service';
+import { Injectable } from '@angular/core';
+import { ApiReturn, FilesStatus } from '@seed-me-home/models';
 import { NGXLogger } from 'ngx-logger';
+import { Observable, ReplaySubject, Subject } from 'rxjs';
+import { NotificationService } from '../../notification/notification.service';
+import { RefreshService } from '../../refresh/refresh.service';
 
 @Injectable({
   providedIn: 'root',
@@ -21,29 +21,43 @@ export class FilesStatusService {
   constructor(
     private readonly httpClient: HttpClient,
     private readonly _notificationService: NotificationService,
-    private readonly logger: NGXLogger
+    private readonly logger: NGXLogger,
+    private readonly _refreshService: RefreshService
   ) {
     this.currentStatusSubject = new ReplaySubject<FilesStatus>();
   }
 
-  private _refreshStatus() {
+  private _refreshStatus(noTimeout = false) {
     if (this.currentStatusSubject.observers.length > 0) {
       FilesStatusService._refreshIsRunning = true;
       this._loadStatus()
         .then((status) => {
           FilesStatusService._refreshIsRunning = false;
           this.currentStatusSubject.next(status);
-          setTimeout(() => {
-            this._refreshStatus();
-          }, FilesStatusService.REFRESH_EVERY);
+          if (!noTimeout) {
+            setTimeout(() => {
+              this._refreshStatus();
+            }, FilesStatusService.REFRESH_EVERY);
+            this._refreshService.setRefreshingTimout(FilesStatusService.REFRESH_EVERY / 1000, () => this._forceRefreshStatus());
+          }
         })
         .catch(() => {
           FilesStatusService._refreshIsRunning = false;
-          setTimeout(() => {
-            this._refreshStatus();
-          }, FilesStatusService.REFRESH_EVERY);
+          if (!noTimeout) {
+            setTimeout(() => {
+              this._refreshStatus();
+            }, FilesStatusService.REFRESH_EVERY);
+            this._refreshService.setRefreshingTimout(FilesStatusService.REFRESH_EVERY / 1000, () => this._forceRefreshStatus());
+          }
         });
     }
+  }
+
+  /**
+   * force refreshing of file (without
+   */
+  private _forceRefreshStatus() {
+    this._refreshStatus(true);
   }
 
   /**
