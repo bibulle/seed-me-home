@@ -18,7 +18,7 @@ COPY apps/frontend apps/frontend
 COPY apps/backend apps/backend
 
 RUN npm run ng build frontend -- --prod
-RUN npm run ng build backend -- --prod
+RUN npm run ng build backend -- --prod --verbose
 
 # -------------
 FROM node:16
