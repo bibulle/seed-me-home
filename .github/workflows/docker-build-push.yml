@@ -21,6 +21,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: get-npm-version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@main
+
       # setup Docker buld action
       - name: Set up Docker Buildx
         id: buildx
@@ -50,4 +54,5 @@ jobs:
           
       - name: Image digest
         #run: echo ${{ steps.docker_build.outputs.digest }} 
-        run: echo ${{ toJSON(steps) }} 
+        run: echo ${{ toJSON(steps.package-version) }} 
+
