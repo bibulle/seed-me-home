@@ -15,10 +15,11 @@ COPY libs libs
 RUN mkdir apps
 
 COPY apps/frontend apps/frontend
-COPY apps/backend apps/backend
+COPY apps/backend apps/backend 
 
-RUN npm run ng build frontend -- --prod
-RUN npm run ng build backend -- --prod
+RUN npx nx run-many --parallel --target=build --configuration=production --projects=frontend,backend 
+#RUN npx nx run frontend:build:production
+#RUN npx nx run backend:build:production
 
 # -------------
 FROM node:16
@@ -28,7 +29,7 @@ WORKDIR /usr/src
 COPY package*.json ./
 COPY --from=BUILD /usr/src/dist dist/ 
 
-RUN npm ci --only=production
+RUN npm ci --omit=dev
 
 ENV PORT=3000
 ENV AUTHENT_JWT_SECRET=authent_jwt_secret
@@ -41,3 +42,4 @@ VOLUME ["/progress"]
 EXPOSE 3000
 
 CMD mv dist/apps/frontend/* dist/apps/frontend/.htaccess /frontend && node dist/apps/backend/main.js
+
