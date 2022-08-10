@@ -15,10 +15,11 @@ COPY libs libs
 RUN mkdir apps
 
 COPY apps/frontend apps/frontend
-COPY apps/backend apps/backend
+COPY apps/backend apps/backend 
 
-RUN npm run ng build frontend -- --prod
-RUN npm run ng build backend -- --prod --verbose
+RUN npx nx run-many --parallel --target=build --configuration=production --projects=frontend,backend 
+#RUN npx nx run frontend:build:production
+#RUN npx nx run backend:build:production
 
 # -------------
 FROM node:16
