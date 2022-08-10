@@ -1,26 +1,20 @@
-import { Component, NgModule, OnInit } from '@angular/core';
+import { Component, NgModule } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
+import { FilesCleanerModule } from './files-cleaner/files-cleaner.component';
+import { FilePath, FilesFilesModule } from './files-files/files-files.component';
 import { FilesStatusModule } from './files-status/files-status.component';
-import {
-  FilePath,
-  FilesFilesModule,
-} from './files-files/files-files.component';
 
 @Component({
   selector: 'seed-me-home-files',
   templateUrl: './files.component.html',
   styleUrls: ['./files.component.scss'],
 })
-export class FilesComponent implements OnInit {
+export class FilesComponent {
   public filePathTypes = FilePath;
-
-  constructor() {}
-
-  ngOnInit() {}
 }
 
 @NgModule({
-  imports: [TranslateModule.forChild(), FilesStatusModule, FilesFilesModule],
+  imports: [TranslateModule.forChild(), FilesStatusModule, FilesCleanerModule, FilesFilesModule],
   declarations: [FilesComponent],
   exports: [FilesComponent],
 })

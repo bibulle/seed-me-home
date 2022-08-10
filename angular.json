@@ -3,7 +3,7 @@
   "version": 2,
   "projects": {
     "backend": "apps/backend",
-    "models": "libs/models",
-    "frontend": "apps/frontend"
+    "frontend": "apps/frontend",
+    "models": "libs/models"
   }
 }

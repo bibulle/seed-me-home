@@ -1,13 +1,13 @@
+import { CommonModule } from '@angular/common';
 import { Component, Input, NgModule, OnDestroy, OnInit } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
-import { BytesSizeModule } from '../../utils/pipes/bytes-size.pipe';
 import { FilesFile } from '@seed-me-home/models';
 import { Subscription } from 'rxjs';
-import { FilesFilesService } from './files-files.service';
-import { CommonModule } from '@angular/common';
+import { BytesSizeModule } from '../../utils/pipes/bytes-size.pipe';
 import { FilesFilesItemModule } from './files-files-item/files-files-item.component';
+import { FilesFilesService } from './files-files.service';
 
 @Component({
   selector: 'seed-me-home-files-files',
@@ -42,17 +42,15 @@ export class FilesFilesComponent implements OnInit, OnDestroy {
         break;
     }
     if (observable) {
-      this._currentFilesFilesSubscription = observable.subscribe(
-        (files: FilesFile) => {
-          if (!this.filesFiles) {
-            this.filesFiles = files;
-            this._doSort();
-          } else {
-            this._doSort(files);
-            this.mergeFiles(this.filesFiles, files);
-          }
+      this._currentFilesFilesSubscription = observable.subscribe((files: FilesFile) => {
+        if (!this.filesFiles) {
+          this.filesFiles = files;
+          this._doSort();
+        } else {
+          this._doSort(files);
+          this.mergeFiles(this.filesFiles, files);
         }
-      );
+      });
     }
 
     this._filesFilesService.startLoadingStats();
@@ -95,6 +93,7 @@ export class FilesFilesComponent implements OnInit, OnDestroy {
       .then(() => {
         this._removeFromFile(this.filesFiles, file.fullpath);
       })
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       .catch(() => {});
   }
 
@@ -135,24 +134,18 @@ export class FilesFilesComponent implements OnInit, OnDestroy {
             ret = f1.path.localeCompare(f2.path);
             break;
           case 'date':
-            ret =
-              new Date(f1.modifiedDate).getTime() -
-              new Date(f2.modifiedDate).getTime();
+            ret = new Date(f1.modifiedDate).getTime() - new Date(f2.modifiedDate).getTime();
             break;
           case 'size':
             ret = f1.size - f2.size;
             break;
           case 'progress':
-            ret =
-              f1.downloaded / Math.max(1, f1.size) -
-              f2.downloaded / Math.max(1, f2.size);
+            ret = f1.downloaded / Math.max(1, f1.size) - f2.downloaded / Math.max(1, f2.size);
             break;
         }
 
         if (ret === 0) {
-          ret =
-            new Date(f1.modifiedDate).getTime() -
-            new Date(f2.modifiedDate).getTime();
+          ret = new Date(f1.modifiedDate).getTime() - new Date(f2.modifiedDate).getTime();
         }
         return ret;
       });
@@ -172,14 +165,7 @@ export enum FilePath {
 }
 
 @NgModule({
-  imports: [
-    CommonModule,
-    MatCardModule,
-    TranslateModule,
-    MatIconModule,
-    BytesSizeModule,
-    FilesFilesItemModule,
-  ],
+  imports: [CommonModule, MatCardModule, TranslateModule, MatIconModule, BytesSizeModule, FilesFilesItemModule],
   declarations: [FilesFilesComponent],
   providers: [],
   exports: [FilesFilesComponent],

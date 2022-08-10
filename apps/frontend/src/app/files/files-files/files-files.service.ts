@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
-import { environment } from '../../../environments/environment';
-import { Observable, ReplaySubject, Subject } from 'rxjs';
-import { ApiReturn, FileMove, FilesFile, MoveType } from '@seed-me-home/models';
 import { HttpClient } from '@angular/common/http';
-import { NotificationService } from '../../notification/notification.service';
+import { Injectable } from '@angular/core';
+import { ApiReturn, FileMove, FilesFile, MoveType } from '@seed-me-home/models';
 import { NGXLogger } from 'ngx-logger';
+import { Observable, ReplaySubject, Subject } from 'rxjs';
 import { String } from 'typescript-string-operations';
+import { NotificationService } from '../../notification/notification.service';
+import { FilesCleanerService } from '../files-cleaner/files-cleaner.service';
 
 @Injectable({
   providedIn: 'root',
@@ -26,18 +26,15 @@ export class FilesFilesService {
   constructor(
     private readonly httpClient: HttpClient,
     private readonly _notificationService: NotificationService,
-    private readonly logger: NGXLogger
+    private readonly logger: NGXLogger,
+    private readonly _fileCleanerService: FilesCleanerService
   ) {
     this.currentFilesSubjectLocal = new ReplaySubject<FilesFile>();
     this.currentFilesSubjectNas = new ReplaySubject<FilesFile>();
   }
 
   private _refreshFiles(noTimeout = false) {
-    if (
-      this.currentFilesSubjectLocal.observers.length +
-        this.currentFilesSubjectNas.observers.length >
-      0
-    ) {
+    if (this.currentFilesSubjectLocal.observers.length + this.currentFilesSubjectNas.observers.length > 0) {
       FilesFilesService._refreshIsRunning = true;
       this._loadFiles()
         .then((filesTable) => {
@@ -85,11 +82,7 @@ export class FilesFilesService {
           })
           .catch((error) => {
             //console.log(error);
-            if (
-              error &&
-              error.error &&
-              error.error.message === 'File not found'
-            ) {
+            if (error && error.error && error.error.message === 'File not found') {
               error.error = new ErrorEvent('HTTP_ERROR', {
                 error: new Error('Http error'),
                 message: 'Local not found',
@@ -109,11 +102,7 @@ export class FilesFilesService {
             resolve(value);
           })
           .catch((error) => {
-            if (
-              error &&
-              error.error &&
-              error.error.message === 'File not found'
-            ) {
+            if (error && error.error && error.error.message === 'File not found') {
               error.error = new ErrorEvent('HTTP_ERROR', {
                 error: new Error('Http error'),
                 message: 'Nas not found',
@@ -197,68 +186,11 @@ export class FilesFilesService {
     };
 
     // test if series
-    const series_matcher = [
-      /(.+)[ .]+[s]([0-9]+)[e]([0-9]+)[ -.]*(.*)[.]([^.]*)/i,
-      /(.+)[ .]+([0-9]+)[-.x]([0-9]+)[ -.]*(.*)[.]([^.]*)/i,
-    ];
+    const series_matcher = [/(.+)[ .]+[s]([0-9]+)[e]([0-9]+)[ -.]*(.*)[.]([^.]*)/i, /(.+)[ .]+([0-9]+)[-.x]([0-9]+)[ -.]*(.*)[.]([^.]*)/i];
 
-    const tv_shows_format =
-      '${seriesName}/Season ${seasonNum1}/${seriesName} S${seasonNum}E${episodeNum}${episodeName}.${extension}';
+    const tv_shows_format = '${seriesName}/Season ${seasonNum1}/${seriesName} S${seasonNum}E${episodeNum}${episodeName}.${extension}';
 
-    const file_cleaner = [
-      'Repack',
-      'Multi',
-      'BDrip',
-      'DVDrip',
-      'HDRip',
-      'WEBRip',
-      'VDRip',
-      'Xvid',
-      'AC-3-UTT',
-      '[-]*UTT[-]*',
-      '[-]*LECHTI[-]*',
-      'TrueFrench',
-      'VOSTFR',
-      'MAGNET',
-      'HDTV',
-      'PTN',
-      'PROPER',
-      'SSL',
-      '[-]*GKS',
-      '[-]RAW',
-      '[-]PROTEiGON',
-      '[-]F4ST',
-      'x264',
-      'H.264',
-      'BluRay',
-      'TDPG',
-      'FTMVHD',
-      'FRENCH',
-      'PDTV',
-      '-2T',
-      '[-]FiXi0N',
-      'CCS3',
-      'ATeam',
-      'ViGi',
-      'NSP',
-      'SN2P',
-      'AMZN',
-      'ARK01',
-      'HEVC',
-      'x265',
-      'AAC',
-      'AC3',
-      'HVS',
-      'DD5.1',
-      'AAC5.1',
-      '1080p',
-      '720p',
-      'WEB-DL',
-      'HDLight',
-      'SEEHD',
-    ];
-
-    file_cleaner.forEach((str) => {
+    this._fileCleanerService.getCleaners().forEach((str) => {
       const regexp = new RegExp(`[ .-]*${str}([ .-]*)`, 'i');
       ret.targetPath = ret.targetPath.replace(regexp, '$1');
     });
@@ -266,10 +198,7 @@ export class FilesFilesService {
     while (ret.targetPath.match(/[.]([^.]*[.][^.]+$)/)) {
       ret.targetPath = ret.targetPath.replace(/[.]([^.]*[.][^.]+$)/, ' $1');
     }
-    ret.targetPath = ret.targetPath.replace(
-      / ([0-9][0-9][0-9][0-9])([.][^.]+$)/,
-      ' ($1)$2'
-    );
+    ret.targetPath = ret.targetPath.replace(/ ([0-9][0-9][0-9][0-9])([.][^.]+$)/, ' ($1)$2');
 
     series_matcher.forEach((matcher) => {
       if (ret.targetPath.match(matcher)) {

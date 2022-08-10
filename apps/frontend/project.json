@@ -1,7 +1,7 @@
 {
   "projectType": "application",
   "sourceRoot": "apps/frontend/src",
-  "prefix": "app",
+  "prefix": "seed-me-home",
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:browser",

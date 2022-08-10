@@ -1,0 +1,14 @@
+<mat-card>
+  <mat-card-title>
+    <mat-icon *ngIf="!textAreaVisible" color="primary" (click)="textAreaVisible = !textAreaVisible">add</mat-icon>
+    <mat-icon *ngIf="textAreaVisible" color="primary" (click)="textAreaVisible = !textAreaVisible">remove</mat-icon>
+    {{ 'title.files.cleaner' | translate }}
+  </mat-card-title>
+  <mat-card-content>
+    <mat-form-field appearance="fill" *ngIf="textAreaVisible">
+      <mat-label>{{ 'label.files.cleaner' | translate }}</mat-label>
+      <!-- <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="1" cdkAutosizeMaxRows="10" (change)="onCleanersChange()" (keyup)="onCleanersChange()" [(ngModel)]="cleanersTxt"> </textarea> -->
+      <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="1" cdkAutosizeMaxRows="10" (keyup)="onCleanersChange($event.target.value)" [ngModel]="cleanersTxt"> </textarea>
+    </mat-form-field>
+  </mat-card-content>
+</mat-card>
