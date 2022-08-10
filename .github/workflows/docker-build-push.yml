@@ -47,4 +47,5 @@ jobs:
           tags: bibulle/app:latest
           
       - name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }} 
+        #run: echo ${{ steps.docker_build.outputs.digest }} 
+        run: echo ${{ steps }} 
