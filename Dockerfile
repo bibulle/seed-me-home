@@ -17,8 +17,8 @@ RUN mkdir apps
 COPY apps/frontend apps/frontend
 COPY apps/backend apps/backend
 
-RUN npm run ng build frontend -- --prod --verbose
-RUN npm run ng build backend -- --prod --verbose
+RUN npm run ng build frontend -- --prod
+RUN npm run ng build backend -- --prod
 
 # -------------
 FROM node:16
@@ -28,7 +28,7 @@ WORKDIR /usr/src
 COPY package*.json ./
 COPY --from=BUILD /usr/src/dist dist/ 
 
-RUN npm ci --only=production
+RUN npm ci --omit=dev
 
 ENV PORT=3000
 ENV AUTHENT_JWT_SECRET=authent_jwt_secret
