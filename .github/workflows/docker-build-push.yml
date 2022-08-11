@@ -84,6 +84,7 @@ jobs:
         id: commit_yml
         if: steps.update_yml.outputs.line_modified != '0'
         run: |
+          cd ${{env.OPS_PATH}}
           git status
           git config --global user.email "${GITHUB_ACTOR}"
           git config --global user.name "${GITHUB_ACTOR}@users.noreply.github.com"
