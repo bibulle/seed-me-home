@@ -1,3 +1,14 @@
 {
-  "cSpell.words": ["SEEDBOX", "authent", "diskusage", "electorrent", "rtorrent"]
+  "cSpell.words": [
+    "authent",
+    "Buildx",
+    "diskusage",
+    "dockerhub",
+    "electorrent",
+    "gitops",
+    "Kubernetes",
+    "noreply",
+    "rtorrent",
+    "SEEDBOX"
+  ]
 }
