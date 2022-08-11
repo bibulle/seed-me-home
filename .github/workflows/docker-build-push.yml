@@ -12,6 +12,9 @@ on:
 env:
   APP_NAME: foo
   VERSION: 0.0.0
+  APP_PATH: ./application 
+  OPS_PATH: ./gitops 
+  K8S_FILE: seed-me-home/30-deployment-local.yaml
 
 jobs:
   # define job to build and publish docker image
@@ -25,18 +28,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
         with:
-          path: ./application
+          path: ${{env.APP_PATH}}
 
       - name: Checkout gitops
         uses: actions/checkout@v2
         with:
           repository: bibulle/myKubernetesConfig
           token: ${{ secrets.ACTIONS_TOKEN }}
-          path: ./gitops
+          path: ${{env.OPS_PATH}}
 
       - id: get_from_package
         run: |
-          content=`cat ./application/package.json`
+          content=`cat ${{env.APP_PATH}}/package.json`
           # the following lines are only required for multi line json
           content="${content//'%'/'%25'}"
           content="${content//$'\n'/'%0A'}"
@@ -64,14 +67,17 @@ jobs:
       #   id: docker_build
       #   uses: docker/build-push-action@v3
       #   with:
-      #     context: ./application
+      #     context: ${{env.APP_PATH}}
       #     push: true
       #     tags: ${{secrets.DOCKERHUB_USERNAME}}/${{env.APP_NAME}}:latest, ${{secrets.DOCKERHUB_USERNAME}}/${{env.APP_NAME}}:V${{env.VERSION}}
 
       - name: Update k8s yaml file
         id: update_yml
         run: |
-          image="${{secrets.DOCKERHUB_USERNAME}}\/${{env.APP_NAME}}"
-          sed -i "s/image: ${image}:.*/image: ${image}:V${{env.VERSION}}/g" ./gitops/seed-me-home/30-deployment-local.yaml
-          cat ./gitops/seed-me-home/30-deployment-local.yaml
+          cd ${{env.OPS_PATH}}
+          image="bibulle\/${{env.APP_NAME}}"
+          sed -i "s/image: ${image}:.*/image: ${image}:V${{env.VERSION}}/g" ${{env.K8S_FILE}}
+          git add .
+          git commit -am "Update version of ${{env.APP_NAME}}"
+          git push
         
