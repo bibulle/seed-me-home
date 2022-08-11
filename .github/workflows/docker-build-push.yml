@@ -39,8 +39,7 @@ jobs:
           content="${content//$'\r'/'%0D'}"
           # end of optional handling for multi line json
           echo "::set-output name=packageJson::$content"
-          echo "::set-output name=version::fromJson($content).version"
-          echo "::set-output name=app_name::fromJson($content).name"
+          echo "::set-output name=app_name::$fromJson(content).name"
 
       - run: |
           echo "Building : ${{fromJson(steps.set_var.outputs.packageJson).name}}:${{fromJson(steps.set_var.outputs.packageJson).version}}"
