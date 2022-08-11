@@ -41,11 +41,15 @@ jobs:
           echo "::set-output name=packageJson::$content"
           echo "::set-output name=app_name::$fromJson(content).name"
 
-      - run: |
+      - id: set_env
+        run: |
           echo "Building : ${{fromJson(steps.set_var.outputs.packageJson).name}}:${{fromJson(steps.set_var.outputs.packageJson).version}}"
+          env:
+            VERSION: ${{fromJson(steps.set_var.outputs.packageJson).version}}
+            APP_NAME: ${{fromJson(steps.set_var.outputs.packageJson).name}}
 
       - run: |
-          echo "Building : ${{steps.set_var.outputs.app_name}}:${{steps.set_var.outputs.version}}"
+          echo "Building : ${{env}}"
 
       # setup Docker buld action
       - name: Set up Docker Buildx
