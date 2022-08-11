@@ -61,17 +61,18 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push
-        id: docker_build
-        uses: docker/build-push-action@v3
-        with:
-          context: ./application
-          push: true
-          tags: ${{secrets.DOCKERHUB_USERNAME}}/${{env.APP_NAME}}:latest, ${{secrets.DOCKERHUB_USERNAME}}/${{env.APP_NAME}}:V${{env.VERSION}}
+      # - name: Build and push
+      #   id: docker_build
+      #   uses: docker/build-push-action@v3
+      #   with:
+      #     context: ./application
+      #     push: true
+      #     tags: ${{secrets.DOCKERHUB_USERNAME}}/${{env.APP_NAME}}:latest, ${{secrets.DOCKERHUB_USERNAME}}/${{env.APP_NAME}}:V${{env.VERSION}}
 
       - name: Update k8s yaml file
         id: update_yml
         run: |
-          sed 's/image: ${{secrets.DOCKERHUB_USERNAME}}/${{env.APP_NAME}}:.*/image: ${{secrets.DOCKERHUB_USERNAME}}/${{env.APP_NAME}}:V${{env.VERSION}}' ./gitops/seed-me-home/30-deployment-local.yaml
+          image="${{secrets.DOCKERHUB_USERNAME}}/${{env.APP_NAME}}"
+          sed -i "s/image: ${image}:.*/image: ${image}:V${{env.VERSION}}' ./gitops/seed-me-home/30-deployment-local.yaml
           cat ./gitops/seed-me-home/30-deployment-local.yaml
         
