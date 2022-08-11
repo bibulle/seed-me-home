@@ -45,9 +45,9 @@ jobs:
       - id: set_env
         run: |
           echo "Building : ${{env.APP_NAME}}:${{env.VERSION}}"
-          env:
-            VERSION1: ${{fromJson(steps.get_from_package.outputs.packageJson).version}}
-            APP_NAME1: ${{fromJson(steps.get_from_package.outputs.packageJson).name}}
+        env:
+          VERSION1: ${{fromJson(steps.get_from_package.outputs.packageJson).version}}
+          APP_NAME1: ${{fromJson(steps.get_from_package.outputs.packageJson).name}}
 
       - run: |
           echo "Building : ${{env.APP_NAME}}:${{env.VERSION}} ${{env.VERSION1}}"
