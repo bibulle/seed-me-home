@@ -73,6 +73,6 @@ jobs:
         id: update_yml
         run: |
           image="${{secrets.DOCKERHUB_USERNAME}}/${{env.APP_NAME}}"
-          sed -i "s/image: ${image}:.*/image: ${image}:V${{env.VERSION}}' ./gitops/seed-me-home/30-deployment-local.yaml
+          sed -i "s/image: ${image}:.*/image: ${image}:V${{env.VERSION}}" ./gitops/seed-me-home/30-deployment-local.yaml
           cat ./gitops/seed-me-home/30-deployment-local.yaml
         
