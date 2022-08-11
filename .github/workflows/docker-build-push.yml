@@ -41,7 +41,7 @@ jobs:
           echo "::set-output name=packageJson::$content"
           echo "::set-output name=app_name::$fromJson(content).name"
 
-      - run: echo "APP_NAME=${{fromJson(steps.set_var.outputs.packageJson).name}}"
+      - run: echo "APP_NAME=${{fromJson(steps.get_from_package.outputs.packageJson).name}}" >> $GITHUB_ENV
 
       -  run: echo "${{env.APP_NAME}}"
       # -  run: echo "${{ env.VERSION }}""
@@ -49,10 +49,10 @@ jobs:
 
       - id: set_env
         run: |
-          echo "Building : ${{fromJson(steps.set_var.outputs.packageJson).name}}:${{fromJson(steps.set_var.outputs.packageJson).version}}"
+          echo "Building : ${{fromJson(steps.get_from_package.outputs.packageJson).name}}:${{fromJson(steps.get_from_package.outputs.packageJson).version}}"
           env:
-            VERSION: ${{fromJson(steps.set_var.outputs.packageJson).version}}
-            APP_NAME: ${{fromJson(steps.set_var.outputs.packageJson).name}}
+            VERSION: ${{fromJson(steps.get_from_package.outputs.packageJson).version}}
+            APP_NAME: ${{fromJson(steps.get_from_package.outputs.packageJson).name}}
 
       - run: |
           echo "Building : ${{env}}"
