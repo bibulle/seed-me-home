@@ -39,14 +39,14 @@ jobs:
           content="${content//$'\r'/'%0D'}"
           # end of optional handling for multi line json
           echo "::set-output name=packageJson::$content"
+          echo "::set-output name=version::fromJson($content).version"
+          echo "::set-output name=app_name::fromJson($content).name"
 
       - run: |
-          echo "${{fromJson(steps.set_var.outputs.packageJson).version}}"
-          echo "${{fromJson(steps.set_var.outputs.packageJson).name}}"
+          echo "Building : ${{fromJson(steps.set_var.outputs.packageJson).name}}:${{fromJson(steps.set_var.outputs.packageJson).version}}"
 
-      - name: get-npm-version
-        id: package-version
-        uses: martinbeentjes/npm-get-version-action@main
+      - run: |
+          echo "Building : ${{steps.set_var.outputs.app_name}}:${{steps.set_var.outputs.version}}"
 
       # setup Docker buld action
       - name: Set up Docker Buildx
