@@ -20,6 +20,15 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          path: ./application
+
+      - name: Checkout gitops
+        uses: actions/checkout@v2
+        with:
+          repository: bibulle/myKubernetesConfig
+          token: ${{ secrets.ACTIONS_TOKEN }}
+          path: ./projectB
 
       - name: get-npm-version
         id: package-version
