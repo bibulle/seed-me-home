@@ -39,7 +39,6 @@ jobs:
           content="${content//$'\r'/'%0D'}"
           # end of optional handling for multi line json
           echo "::set-output name=packageJson::$content"
-          echo "::set-output name=app_name::$fromJson(content).name"
           echo "VERSION=${{fromJson(content).version}}" >> $GITHUB_ENV
 
 
