@@ -40,9 +40,10 @@ jobs:
           # end of optional handling for multi line json
           echo "::set-output name=packageJson::$content"
           echo "::set-output name=app_name::$fromJson($content).name"
-          echo "VERSION=$fromJson($content).version" >> $GITHUB_ENV
-      -  run: echo $VERSION
-      -  run: echo $steps.set_var.outputs.app_name
+          echo "VERSION=${{fromJson($content).version}}" >> $GITHUB_ENV
+          echo "VERSION1=fromJson($content).version" >> $GITHUB_ENV
+      -  run: echo "${{ env.VERSION }}""
+      -  run: echo "${{steps.set_var.outputs.app_name}}"
 
       - id: set_env
         run: |
