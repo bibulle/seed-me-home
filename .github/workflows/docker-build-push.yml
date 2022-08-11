@@ -32,7 +32,7 @@ jobs:
         with:
           repository: bibulle/myKubernetesConfig
           token: ${{ secrets.ACTIONS_TOKEN }}
-          path: ./projectB
+          path: ./gitops
 
       - id: get_from_package
         run: |
@@ -71,4 +71,7 @@ jobs:
 
       - name: Update k8s yaml file
         id: update_yml
+        run: |
+          sed 's/image: ${{secrets.DOCKERHUB_USERNAME}}/${{env.APP_NAME}}:.*/image: ${{secrets.DOCKERHUB_USERNAME}}/${{env.APP_NAME}}:V${{env.VERSION}}' ./gitops/seed-me-home/30-deployment-local.yaml
+          cat ./gitops/seed-me-home/30-deployment-local.yaml
         
