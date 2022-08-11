@@ -71,7 +71,7 @@ jobs:
       - name: Update k8s yaml file
         id: update_yml
         run: |
-          image="bibulle\/${{env.APP_NAME}}"
+          image="${{secrets.DOCKERHUB_USERNAME}}\/${{env.APP_NAME}}"
           sed -i "s/image: ${image}:.*/image: ${image}:V${{env.VERSION}}/g" ./gitops/seed-me-home/30-deployment-local.yaml
           cat ./gitops/seed-me-home/30-deployment-local.yaml
         
