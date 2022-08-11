@@ -40,6 +40,9 @@ jobs:
           # end of optional handling for multi line json
           echo "::set-output name=packageJson::$content"
           echo "::set-output name=app_name::$fromJson(content).name"
+          echo "::set-env name=FOO::$fromJson(content).name"
+      -  run: echo $FOO
+      -  run: echo $steps.set_var.outputs.app_name
 
       - id: set_env
         run: |
