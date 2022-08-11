@@ -39,10 +39,8 @@ jobs:
           content="${content//$'\r'/'%0D'}"
           # end of optional handling for multi line json
           echo "::set-output name=packageJson::$content"
-          echo "VERSION=${{fromJson($content).version}}" >> $GITHUB_ENV
-
-
       - run: echo "APP_NAME=${{fromJson(steps.get_from_package.outputs.packageJson).name}}" >> $GITHUB_ENV
+      - run: echo "VERSION=${{fromJson(steps.get_from_package.outputs.packageJson).version}}" >> $GITHUB_ENV
 
       -  run: echo "${{env.APP_NAME}}"
       -  run: echo "${{env.VERSION}}"
@@ -51,7 +49,7 @@ jobs:
 
       - id: set_env
         run: |
-          echo "Building : ${{fromJson(steps.get_from_package.outputs.packageJson).name}}:${{fromJson(steps.get_from_package.outputs.packageJson).version}}"
+          echo "Building : ${{env.APP_NAME}}:${{env.VERSION}}"
           env:
             VERSION: ${{fromJson(steps.get_from_package.outputs.packageJson).version}}
             APP_NAME: ${{fromJson(steps.get_from_package.outputs.packageJson).name}}
