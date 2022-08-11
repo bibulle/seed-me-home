@@ -77,6 +77,14 @@ jobs:
           cd ${{env.OPS_PATH}}
           image="bibulle\/${{env.APP_NAME}}"
           sed -i "s/image: ${image}:.*/image: ${image}:V${{env.VERSION}}/g" ${{env.K8S_FILE}}
+          status=`git status -s | wc -l | bc`
+          echo "::set-output name=line_modified::$status"
+
+      - name: Commit k8s yaml file
+        id: commit_yml
+        if: steps.update_yml.outputs.line_modified != '0'
+        run: |
+          git status
           git config --global user.email "${GITHUB_ACTOR}"
           git config --global user.name "${GITHUB_ACTOR}@users.noreply.github.com"
           git add .
