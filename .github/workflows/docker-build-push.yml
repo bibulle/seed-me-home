@@ -20,6 +20,29 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          path: ./application
+
+      - name: Checkout gitops
+        uses: actions/checkout@v2
+        with:
+          repository: bibulle/myKubernetesConfig
+          token: ${{ secrets.ACTIONS_TOKEN }}
+          path: ./projectB
+
+      - id: set_var
+        run: |
+          content=`cat ./applications/to/package.json`
+          # the following lines are only required for multi line json
+          content="${content//'%'/'%25'}"
+          content="${content//$'\n'/'%0A'}"
+          content="${content//$'\r'/'%0D'}"
+          # end of optional handling for multi line json
+          echo "::set-output name=packageJson::$content"
+
+      - run: |
+          echo "${{fromJson(steps.set_var.outputs.packageJson).version}}"
+          echo "${{fromJson(steps.set_var.outputs.packageJson).name}}"
 
       - name: get-npm-version
         id: package-version
@@ -41,7 +64,7 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v3
         with:
-          context: .
+          context: ./application
           push: true
           tags: bibulle/app:latest, bibulle/app:V${{ steps.package-version.outputs.current-version }}
           
