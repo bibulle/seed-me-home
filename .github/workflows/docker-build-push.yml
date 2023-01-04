@@ -7,7 +7,7 @@ on:
       - "master"
 
   # run it during pull request
-  pull_request:
+  # pull_request:
 
 env:
   APP_NAME: foo
