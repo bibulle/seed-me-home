@@ -26,15 +26,15 @@ jobs:
     # steps to perform in job
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: ${{env.APP_PATH}}
 
       - name: Checkout gitops
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: bibulle/myKubernetesConfig
-          token: ${{ secrets.ACTIONS_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           path: ${{env.OPS_PATH}}
 
       - id: get_from_package
