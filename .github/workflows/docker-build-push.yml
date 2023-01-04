@@ -45,7 +45,7 @@ jobs:
           content="${content//$'\n'/'%0A'}"
           content="${content//$'\r'/'%0D'}"
           # end of optional handling for multi line json
-          echo "::set-output name=packageJson::$content"
+          echo "name=packageJson::$content" >> $GITHUB_OUTPUT
       - run: echo "APP_NAME=${{fromJson(steps.get_from_package.outputs.packageJson).name}}" >> $GITHUB_ENV
       - run: echo "VERSION=${{fromJson(steps.get_from_package.outputs.packageJson).version}}" >> $GITHUB_ENV
 
@@ -78,7 +78,7 @@ jobs:
           image="bibulle\/${{env.APP_NAME}}"
           sed -i "s/image: ${image}:.*/image: ${image}:V${{env.VERSION}}/g" ${{env.K8S_FILE}}
           status=`git status -s | wc -l | bc`
-          echo "::set-output name=line_modified::$status"
+          echo "name=line_modified::$status" >> $GITHUB_OUTPUT
 
       - name: Commit k8s yaml file
         id: commit_yml
