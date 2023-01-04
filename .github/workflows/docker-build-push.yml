@@ -4,7 +4,7 @@ on:
   # run it on push to the default repository branch
   push:
     branches:
-      - "master"
+      - 'master'
 
   # run it during pull request
   # pull_request:
@@ -37,17 +37,16 @@ jobs:
           token: ${{ secrets.ACTIONS_TOKEN }}
           path: ${{env.OPS_PATH}}
 
-      - id: get_from_package
+      - name: Read package.json
+        id: read_package_json
         run: |
-          content=`cat ${{env.APP_PATH}}/package.json`
-          # the following lines are only required for multi line json
-          content="${content//'%'/'%25'}"
-          content="${content//$'\n'/'%0A'}"
-          content="${content//$'\r'/'%0D'}"
-          # end of optional handling for multi line json
-          echo "name=packageJson::$content" >> $GITHUB_OUTPUT
-      - run: echo "APP_NAME=${{fromJson(steps.get_from_package.outputs.packageJson).name}}" >> $GITHUB_ENV
-      - run: echo "VERSION=${{fromJson(steps.get_from_package.outputs.packageJson).version}}" >> $GITHUB_ENV
+          echo "PACKAGE_JSON=$(jq -c . < ${{env.APP_PATH}}/package.json)" >> $GITHUB_ENV
+
+      - name: Retrieve values from package.json
+        id: retrieve_package_json
+        run: |
+          echo "APP_NAME=${{fromJson(env.PACKAGE_JSON).name}}" >> $GITHUB_ENV
+          echo "VERSION=${{fromJson(env.PACKAGE_JSON).version}}" >> $GITHUB_ENV
 
       - run: |
           echo "Building : ${{env.APP_NAME}}:${{env.VERSION}}"
@@ -78,7 +77,7 @@ jobs:
           image="bibulle\/${{env.APP_NAME}}"
           sed -i "s/image: ${image}:.*/image: ${image}:V${{env.VERSION}}/g" ${{env.K8S_FILE}}
           status=`git status -s | wc -l | bc`
-          echo "name=line_modified::$status" >> $GITHUB_OUTPUT
+          echo "line_modified=$status" >> $GITHUB_OUTPUT
 
       - name: Commit k8s yaml file
         id: commit_yml
