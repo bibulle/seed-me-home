@@ -7,7 +7,7 @@ on:
       - 'master'
 
   # run it during pull request
-  # pull_request:
+  pull_request:
 
 env:
   APP_NAME: foo
@@ -23,6 +23,9 @@ jobs:
     # run only when code is compiling and tests are passing
     runs-on: ubuntu-latest
 
+    env: 
+        actions_token: ${{ secrets.ACTIONS_TOKEN }}
+
     # steps to perform in job
     steps:
       - name: Checkout code
@@ -32,9 +35,10 @@ jobs:
 
       - name: Checkout gitops
         uses: actions/checkout@v3
+        if: ${{ env.actions_token != '' }}
         with:
           repository: bibulle/myKubernetesConfig
-          token: ${{ secrets.ACTIONS_TOKEN }}
+          token: ${{ env.actions_token }}
           path: ${{env.OPS_PATH}}
 
       - name: Read package.json
@@ -72,6 +76,7 @@ jobs:
 
       - name: Update k8s yaml file
         id: update_yml
+        if: ${{ env.actions_token != '' }}
         run: |
           cd ${{env.OPS_PATH}}
           image="bibulle\/${{env.APP_NAME}}"
@@ -81,7 +86,7 @@ jobs:
 
       - name: Commit k8s yaml file
         id: commit_yml
-        if: steps.update_yml.outputs.line_modified != '0'
+        if: env.actions_token != '' && steps.update_yml.outputs.line_modified != '0'
         run: |
           cd ${{env.OPS_PATH}}
           git config --global user.email "${GITHUB_ACTOR}"
