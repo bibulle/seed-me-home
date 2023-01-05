@@ -25,6 +25,9 @@ jobs:
 
     env: 
         actions_token: ${{ secrets.ACTIONS_TOKEN }}
+        dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
+        dockerhub_password: ${{ secrets.DOCKERHUB_TOKEN }}
+
 
     # steps to perform in job
     steps:
@@ -52,6 +55,16 @@ jobs:
           echo "APP_NAME=${{fromJson(env.PACKAGE_JSON).name}}" >> $GITHUB_ENV
           echo "VERSION=${{fromJson(env.PACKAGE_JSON).version}}" >> $GITHUB_ENV
 
+      - name: Calculate docker tags
+        if: ${{ env.dockerhub_username != '' && env.dockerhub_password != '' }}
+        run : |
+          echo "DOCKER_TAGS=${{env.dockerhub_username}}/${{env.APP_NAME}}:latest, ${{env.dockerhub_username}}/${{env.APP_NAME}}:V${{env.VERSION}}" >> $GITHUB_ENV
+
+      - name: Calculate docker tags
+        if: ${{ env.dockerhub_username == '' || env.dockerhub_password == '' }}
+        run : |
+          echo "DOCKER_TAGS=${{env.APP_NAME}}:latest" >> $GITHUB_ENV
+
       - run: |
           echo "Building : ${{env.APP_NAME}}:${{env.VERSION}}"
 
@@ -62,17 +75,18 @@ jobs:
       - name: Login to DockerHub
         id: login_dockerhub
         uses: docker/login-action@v2
+        if: ${{ env.dockerhub_username != '' && env.dockerhub_password != '' }}
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          username: ${{ env.dockerhub_username }}
+          password: ${{ env.dockerhub_password }}
 
       - name: Build and push
         id: docker_build
         uses: docker/build-push-action@v3
         with:
           context: ${{env.APP_PATH}}
-          push: true
-          tags: ${{secrets.DOCKERHUB_USERNAME}}/${{env.APP_NAME}}:latest, ${{secrets.DOCKERHUB_USERNAME}}/${{env.APP_NAME}}:V${{env.VERSION}}
+          push: ${{ env.dockerhub_username != '' && env.dockerhub_password != '' }}
+          tags: ${{env.DOCKER_TAGS}}
 
       - name: Update k8s yaml file
         id: update_yml
