@@ -1,6 +1,6 @@
 {
   "name": "seed-me-home",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "license": "MIT",
   "scripts": {
     "ng": "nx",
@@ -26,8 +26,10 @@
     "workspace-generator": "nx workspace-generator",
     "dep-graph": "nx dep-graph",
     "help": "nx help",
-    "release": "standard-version --no-verify --commit-all",
-    "replace:version": "json -I -f libs/models/src/lib/version.json -e \"this.version='`cat package.json | json version`';\" ",
+    "release-patch": "standard-version --no-verify --commit-all --release-as patch",
+    "release-minor": "standard-version --no-verify --commit-all --release-as minor",
+    "release-major": "standard-version --no-verify --commit-all --release-as major",
+    "replace:version": "json -I -f libs/models/src/lib/version.json -e \"this.version='`cat package.json | json version`';\" && git add libs/models/src/lib/version.json",
     "test:ci": "ng test"
   },
   "standard-version": {

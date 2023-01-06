@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/bibulle/seed-me-home/compare/v0.9.0...v1.1.0) (2023-01-06)
+
+
+### Features
+
+* add check before yml commmit ([52c8adb](https://github.com/bibulle/seed-me-home/commit/52c8adbe1d5451ceabdb8537fab55b381f112e70))
+* add cleaners management ([836153f](https://github.com/bibulle/seed-me-home/commit/836153f5c715defdff4d33a0645d42a684d93b4b))
+* add github actions ([4a7a7bc](https://github.com/bibulle/seed-me-home/commit/4a7a7bcc273bfb3ddab2df0548914657b2c8505a))
+* add github actions ([aed4fc4](https://github.com/bibulle/seed-me-home/commit/aed4fc4da19cc0e3644112079152789b510c54a5))
+* add github actions ([92383e2](https://github.com/bibulle/seed-me-home/commit/92383e2fce6bafeadf4b89d5bcea9b46c7102b97))
+* add gitops part to the actions ([a7299c2](https://github.com/bibulle/seed-me-home/commit/a7299c2048f33b5c67271e5558882b37600b0972))
+* add refresh button ([92bda2d](https://github.com/bibulle/seed-me-home/commit/92bda2d4f241e3df9219dda1a390e8a77068c07a))
+* add the test for pull request ([5b251d4](https://github.com/bibulle/seed-me-home/commit/5b251d4211df6fdd738714476f363e15b66e600a))
+* containerized into Docker ([9c576e1](https://github.com/bibulle/seed-me-home/commit/9c576e130643f5cd3ad50af9828f10e69c3bae93))
+
+
+### Bug Fixes
+
+* add .htaccess ([954fa08](https://github.com/bibulle/seed-me-home/commit/954fa0835a4fc56af3fc7eae49fd2f6d0e2a883b))
+* add test on dockerhub secrets ([67167ed](https://github.com/bibulle/seed-me-home/commit/67167ed4b3be1a6afcdcbf28803ec9fd5ccc2ca9))
+* change read package.json ([b234c97](https://github.com/bibulle/seed-me-home/commit/b234c973a52968532776c73bdc6773d9623eaaf6))
+* change token ([72bda5c](https://github.com/bibulle/seed-me-home/commit/72bda5c6a9b36d52520c5745c3cb7defefc64767))
+* change token ([9af7c65](https://github.com/bibulle/seed-me-home/commit/9af7c658ef0c00ba885e6b64f929738863eea158))
+* docker version and husty preinstall ([7df3e23](https://github.com/bibulle/seed-me-home/commit/7df3e237cfac4122be3230c8633ca2af56323328))
+* redirect loop ([da7ccb5](https://github.com/bibulle/seed-me-home/commit/da7ccb59ea1a0d8cd618281900092e60bbabb24f))
+* repear download and do some cleanup ([8d29256](https://github.com/bibulle/seed-me-home/commit/8d29256e1dd2e59d2fbfdc6d164ee64c699a93f8))
+* suppress a warning ([f529cdb](https://github.com/bibulle/seed-me-home/commit/f529cdb79716172c9eaf253491e223305d34641c))
+* supress deprecated set-output ([0fa4035](https://github.com/bibulle/seed-me-home/commit/0fa4035f3fdb70a01d6898a48805dfc5931096de))
+* switch to helm ([7c44cd0](https://github.com/bibulle/seed-me-home/commit/7c44cd035887e91e600e17ec5cdc5d1064b4af36))
+* wrong app name ([ba2a850](https://github.com/bibulle/seed-me-home/commit/ba2a85059349384329712c06f2475a1b33f064e4))
+
 ## [1.0.0](https://github.com/bibulle/seed-me-home/compare/v0.9.0...v1.0.0) (2022-08-10)
 
 
