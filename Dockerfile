@@ -1,5 +1,5 @@
 # -------------
-FROM node:16 AS BUILD
+FROM node:19 AS BUILD
 
 WORKDIR /usr/src
 
@@ -22,7 +22,7 @@ RUN npx nx run-many --parallel --target=build --configuration=production --proje
 #RUN npx nx run backend:build:production
 
 # -------------
-FROM node:16
+FROM node:19
 
 WORKDIR /usr/src
 

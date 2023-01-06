@@ -1,5 +1,5 @@
-<mat-card>
-  <mat-card-title>{{'title.rtorrent.torrents' | translate}}</mat-card-title>
+<mat-card appearance="outlined">
+  <mat-card-header>{{'title.rtorrent.torrents' | translate}}</mat-card-header>
   <mat-card-content>
     <seed-me-home-rtorrent-torrent-item *ngFor="let torrent of rtorrentTorrents; let i = index"
                                [index]="i"

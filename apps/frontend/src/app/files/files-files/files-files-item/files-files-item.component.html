@@ -1,4 +1,4 @@
-<div *ngIf="index==0" class="header">
+<div *ngIf="index===0" class="header">
   <span class="name" (click)="toggleSort('name')" [class.unselected]="(sortItem!=='name')">
     <mat-icon *ngIf="(sortItem!=='name') || (sortDirection!=='asc')">keyboard_arrow_down</mat-icon>
     <mat-icon *ngIf="(sortItem==='name') && (sortDirection==='asc')">keyboard_arrow_up</mat-icon>

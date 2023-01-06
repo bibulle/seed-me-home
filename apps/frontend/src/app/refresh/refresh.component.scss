@@ -6,13 +6,13 @@
   animation: rotating 2s linear infinite;
 }
 
+/* TODO(mdc-migration): The following rule targets internal classes of progress-bar that may no longer apply for the MDC version. */
 mat-progress-bar {
   opacity: 40%;
   height: 2px;
   bottom: 0.5em;
-  right: 10px;
-  left: 10px;
-  width: 20px;
+  left: 25%;
+  width: 50%;
 }
 
 @-webkit-keyframes rotating /* Safari and Chrome */ {

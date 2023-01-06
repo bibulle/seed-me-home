@@ -4,16 +4,16 @@ import { UserService } from '../user/user.service';
 import { User, Version } from '@seed-me-home/models';
 import { Subscription } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { CommonModule } from '@angular/common';
 import { AppRoutingModule } from '../app-routing.module';
 import { NotificationModule, NotificationService } from '../notification/notification.service';
 import { UserModule } from '../user/user.module';
 import { VersionService } from '../utils/version/version.service';
 import { RefreshModule } from '../refresh/refresh.module';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'seed-me-home-nav-bar',

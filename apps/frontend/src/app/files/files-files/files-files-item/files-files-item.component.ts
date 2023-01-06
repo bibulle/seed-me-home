@@ -1,22 +1,10 @@
-import {
-  Component,
-  EventEmitter,
-  Inject,
-  Input,
-  NgModule,
-  OnInit,
-  Output,
-  ViewChild,
-} from '@angular/core';
-import { FileMove, FilesFile, MoveType } from '@seed-me-home/models';
+/* eslint-disable @typescript-eslint/no-empty-function */
+import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, Inject, Input, NgModule, OnInit, Output, ViewChild } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import {
-  MAT_DIALOG_DATA,
-  MatDialog,
-  MatDialogModule,
-  MatDialogRef,
-} from '@angular/material/dialog';
+import { MatDialog, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -24,11 +12,10 @@ import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatRadioModule } from '@angular/material/radio';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { BytesSizeModule } from '../../../utils/pipes/bytes-size.pipe';
-import { CommonModule } from '@angular/common';
+import { FileMove, FilesFile, MoveType } from '@seed-me-home/models';
 import * as moment from 'moment';
+import { BytesSizeModule } from '../../../utils/pipes/bytes-size.pipe';
 import { FilesFilesService } from '../files-files.service';
-import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'seed-me-home-files-files-item',
@@ -61,11 +48,7 @@ export class FilesFilesItemComponent implements OnInit {
 
   @ViewChild('menuTrigger') menuTrigger: MatMenuTrigger;
 
-  constructor(
-    private _translateService: TranslateService,
-    private dialog: MatDialog,
-    private _filesFilesService: FilesFilesService
-  ) {}
+  constructor(private _translateService: TranslateService, private dialog: MatDialog, private _filesFilesService: FilesFilesService) {}
 
   ngOnInit() {}
 
@@ -81,19 +64,10 @@ export class FilesFilesItemComponent implements OnInit {
   }
 
   getEta(): string {
-    if (
-      this.file &&
-      this.file.downloadStarted &&
-      this.file.downloaded !== 0 &&
-      this.file.downloaded !== this.file.size
-    ) {
+    if (this.file && this.file.downloadStarted && this.file.downloaded !== 0 && this.file.downloaded !== this.file.size) {
       this.file.downloadStarted = new Date(this.file.downloadStarted);
 
-      const dateMilli =
-        this.file.downloadStarted.getTime() +
-        (this.file.size *
-          (new Date().getTime() - this.file.downloadStarted.getTime())) /
-          this.file.downloaded;
+      const dateMilli = this.file.downloadStarted.getTime() + (this.file.size * (new Date().getTime() - this.file.downloadStarted.getTime())) / this.file.downloaded;
 
       moment.locale(this._translateService.currentLang);
 
@@ -125,10 +99,7 @@ export class FilesFilesItemComponent implements OnInit {
   }
 
   move() {
-    const fileMove: FileMove = this._filesFilesService.calculateTrgPath(
-      this.file.path,
-      this.file.fullpath
-    );
+    const fileMove: FileMove = this._filesFilesService.calculateTrgPath(this.file.path, this.file.fullpath);
     const dialogRef = this.dialog.open(FilesFilesItemDialogMoveComponent, {
       width: '80%',
       data: fileMove,
@@ -149,10 +120,7 @@ export class FilesFilesItemComponent implements OnInit {
   styleUrls: ['./files-files-item-dialog-remove.component.scss'],
 })
 export class FilesFilesItemDialogRemoveComponent {
-  constructor(
-    public dialogRef: MatDialogRef<FilesFilesItemDialogRemoveComponent>,
-    @Inject(MAT_DIALOG_DATA) public fileName: string
-  ) {}
+  constructor(public dialogRef: MatDialogRef<FilesFilesItemDialogRemoveComponent>, @Inject(MAT_DIALOG_DATA) public fileName: string) {}
 
   onNoClick(): void {
     this.dialogRef.close();
@@ -167,10 +135,7 @@ export class FilesFilesItemDialogRemoveComponent {
 export class FilesFilesItemDialogMoveComponent {
   moveType = MoveType;
 
-  constructor(
-    public dialogRef: MatDialogRef<FilesFilesItemDialogMoveComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: FileMove
-  ) {}
+  constructor(public dialogRef: MatDialogRef<FilesFilesItemDialogMoveComponent>, @Inject(MAT_DIALOG_DATA) public data: FileMove) {}
 
   onNoClick(): void {
     this.dialogRef.close();
@@ -193,11 +158,7 @@ export class FilesFilesItemDialogMoveComponent {
     MatRadioModule,
     MatCheckboxModule,
   ],
-  declarations: [
-    FilesFilesItemComponent,
-    FilesFilesItemDialogRemoveComponent,
-    FilesFilesItemDialogMoveComponent,
-  ],
+  declarations: [FilesFilesItemComponent, FilesFilesItemDialogRemoveComponent, FilesFilesItemDialogMoveComponent],
   providers: [],
   exports: [FilesFilesItemComponent],
 })

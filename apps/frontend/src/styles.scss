@@ -1,18 +1,17 @@
-/* prettier-ignore */
+@use '@angular/material' as mat;
+
 @import url(https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic);
 @import url(https://fonts.googleapis.com/icon?family=Material+Icons);
 
-@import '@angular/material/theming';
-
 // always include only once per project
-@include mat-core();
+@include mat.core();
 
 // Define the light theme.
-$primary: mat-palette($mat-green, 600, 300, 900);
-$accent: mat-palette($mat-yellow);
-$warn: mat-palette($mat-deep-orange, A200);
+$primary: mat.define-palette(mat.$green-palette, 600, 300, 900);
+$accent: mat.define-palette(mat.$yellow-palette);
+$warn: mat.define-palette(mat.$deep-orange-palette, A200);
 
-$theme: mat-light-theme(
+$theme: mat.define-light-theme(
   (
     color: (
       primary: $primary,
@@ -21,6 +20,9 @@ $theme: mat-light-theme(
     ),
   )
 );
+
+// @include mat.core-theme($theme);
+@include mat.all-component-themes($theme);
 
 // import custom component themes
 @import 'app/not-found/not-found.component.theme';
@@ -31,27 +33,32 @@ $theme: mat-light-theme(
   @include nav-bar-component-theme($theme);
 }
 
-@include angular-material-theme($theme);
+// @include angular-material-theme($theme);
 @include custom-components-theme($theme);
 
-$background: map-get($theme, 'background');
+$background: mat.get-color-from-palette($theme, 'background');
 
 .docs-header {
-  background-color: mat-color($background, 'background');
+  background-color: mat.get-color-from-palette($background, 'background');
 }
 
 body {
-  font-family: 'Roboto', 'Helvetica Neue Light', 'Helvetica Neue', Helvetica,
-    Arial, 'Lucida Grande', sans-serif;
-  //  margin: 0;
-  background-color: mat-color($background, 'background');
+  font-family: 'Roboto', 'Helvetica Neue Light', 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif;
+  background-color: mat.get-color-from-palette($background, 'background');
+
+  a {
+    text-decoration: none;
+  }
 }
 
 html,
 body {
   height: 100%;
-}
-body {
-  margin: 0;
-  font-family: Roboto, 'Helvetica Neue', sans-serif;
+
+  .mat-mdc-button-base > .mat-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    font-size: 1.5rem;
+    margin-right: 0;
+  }
 }

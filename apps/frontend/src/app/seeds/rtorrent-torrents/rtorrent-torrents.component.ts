@@ -1,13 +1,13 @@
 import { Component, NgModule, OnDestroy, OnInit } from '@angular/core';
 import { RtorrentTorrentsService } from './rtorrent-torrents.service';
 import { Subscription } from 'rxjs';
-import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
 import { BytesSizeModule } from '../../utils/pipes/bytes-size.pipe';
 import { RtorrentTorrent } from '@seed-me-home/models';
 import { RtorrentTorrentItemModule } from './rtorrent-torrent-item/rtorrent-torrent-item.component';
 import { CommonModule } from '@angular/common';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'seed-me-home-rtorrent-torrents',
@@ -24,12 +24,10 @@ export class RtorrentTorrentsComponent implements OnInit, OnDestroy {
   constructor(private _rtorrentTorrentsService: RtorrentTorrentsService) {}
 
   ngOnInit() {
-    this._currentRtorrentTorrentSubscription = this._rtorrentTorrentsService
-      .currentTorrentsObservable()
-      .subscribe((torrents: RtorrentTorrent[]) => {
-        this.rtorrentTorrents = torrents;
-        this._doSort();
-      });
+    this._currentRtorrentTorrentSubscription = this._rtorrentTorrentsService.currentTorrentsObservable().subscribe((torrents: RtorrentTorrent[]) => {
+      this.rtorrentTorrents = torrents;
+      this._doSort();
+    });
 
     this._rtorrentTorrentsService.startLoadingTorrents();
   }
@@ -70,9 +68,7 @@ export class RtorrentTorrentsComponent implements OnInit, OnDestroy {
           ret = r1.size - r2.size;
           break;
         case 'progress':
-          ret =
-            (r1.completed + r1.downloaded) / Math.max(1, r1.size) -
-            (r2.completed + r2.downloaded) / Math.max(1, r2.size);
+          ret = (r1.completed + r1.downloaded) / Math.max(1, r1.size) - (r2.completed + r2.downloaded) / Math.max(1, r2.size);
           break;
       }
 
@@ -88,14 +84,7 @@ export class RtorrentTorrentsComponent implements OnInit, OnDestroy {
 }
 
 @NgModule({
-  imports: [
-    CommonModule,
-    MatCardModule,
-    TranslateModule,
-    MatIconModule,
-    BytesSizeModule,
-    RtorrentTorrentItemModule,
-  ],
+  imports: [CommonModule, MatCardModule, TranslateModule, MatIconModule, BytesSizeModule, RtorrentTorrentItemModule],
   declarations: [RtorrentTorrentsComponent],
   providers: [RtorrentTorrentsService],
   exports: [RtorrentTorrentsComponent],

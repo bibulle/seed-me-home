@@ -1,18 +1,16 @@
-@import '@angular/material/theming';
-
 // mixin name will be used in main style.scss
 @mixin not-found-component-theme($theme) {
   // retrieve variables from theme
   // (all possible variables, use only what you really need)
-  $primary: map-get($theme, primary);
-  $accent: map-get($theme, accent);
-  $warn: map-get($theme, warn);
-  $foreground: map-get($theme, foreground);
-  $background: map-get($theme, background);
+  $primary: mat.get-color-from-palette($theme, primary);
+  $accent: mat.get-color-from-palette($theme, accent);
+  $warn: mat.get-color-from-palette($theme, warn);
+  $foreground: mat.get-color-from-palette($theme, foreground);
+  $background: mat.get-color-from-palette($theme, background);
 
-  $red: red(mat-color($primary));
-  $green: green(mat-color($primary));
-  $blue: blue(mat-color($primary));
+  $red: red(mat.get-color-from-palette($primary));
+  $green: green(mat.get-color-from-palette($primary));
+  $blue: blue(mat.get-color-from-palette($primary));
   // all of these variables contain many additional variables
 
   .not-found {

@@ -1,29 +1,16 @@
-import {
-  Component,
-  EventEmitter,
-  Inject,
-  Input,
-  NgModule,
-  OnInit,
-  Output,
-  ViewChild,
-} from '@angular/core';
+/* eslint-disable @typescript-eslint/no-empty-function */
+import { Component, EventEmitter, Inject, Input, NgModule, OnInit, Output, ViewChild } from '@angular/core';
 import { RtorrentTorrent } from '@seed-me-home/models';
-import { MatButtonModule } from '@angular/material/button';
-import {
-  MAT_DIALOG_DATA,
-  MatDialog,
-  MatDialogModule,
-  MatDialogRef,
-} from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { BytesSizeModule } from '../../../utils/pipes/bytes-size.pipe';
 import { CommonModule } from '@angular/common';
 import * as moment from 'moment';
 import { RtorrentTorrentsService } from '../rtorrent-torrents.service';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { MatMenuTrigger, MatMenuModule } from '@angular/material/menu';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @Component({
   selector: 'seed-me-home-rtorrent-torrent-item',
@@ -48,11 +35,7 @@ export class RtorrentTorrentItemComponent implements OnInit {
 
   @ViewChild('menuTrigger') menuTrigger: MatMenuTrigger;
 
-  constructor(
-    private _translateService: TranslateService,
-    private _rtorrentTorrentsService: RtorrentTorrentsService,
-    public dialog: MatDialog
-  ) {}
+  constructor(private _translateService: TranslateService, private _rtorrentTorrentsService: RtorrentTorrentsService, public dialog: MatDialog) {}
 
   ngOnInit() {}
 
@@ -98,10 +81,7 @@ export class RtorrentTorrentItemComponent implements OnInit {
   styleUrls: ['./rtorrent-torrent-item-dialog.component.scss'],
 })
 export class RtorrentTorrentItemDialogComponent {
-  constructor(
-    public dialogRef: MatDialogRef<RtorrentTorrentItemDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public torrentName: string
-  ) {}
+  constructor(public dialogRef: MatDialogRef<RtorrentTorrentItemDialogComponent>, @Inject(MAT_DIALOG_DATA) public torrentName: string) {}
 
   onNoClick(): void {
     this.dialogRef.close();
@@ -109,20 +89,8 @@ export class RtorrentTorrentItemDialogComponent {
 }
 
 @NgModule({
-  imports: [
-    CommonModule,
-    TranslateModule,
-    BytesSizeModule,
-    MatButtonModule,
-    MatIconModule,
-    MatProgressBarModule,
-    MatDialogModule,
-    MatMenuModule,
-  ],
-  declarations: [
-    RtorrentTorrentItemComponent,
-    RtorrentTorrentItemDialogComponent,
-  ],
+  imports: [CommonModule, TranslateModule, BytesSizeModule, MatButtonModule, MatIconModule, MatProgressBarModule, MatDialogModule, MatMenuModule],
+  declarations: [RtorrentTorrentItemComponent, RtorrentTorrentItemDialogComponent],
   providers: [],
   exports: [RtorrentTorrentItemComponent],
 })
