@@ -28,8 +28,7 @@
     "help": "nx help",
     "release": "standard-version --no-verify --commit-all",
     "replace:version": "json -I -f libs/models/src/lib/version.json -e \"this.version='`cat package.json | json version`';\" ",
-    "test:ci": "ng test",
-    "prepare": "husky install"
+    "test:ci": "ng test"
   },
   "standard-version": {
     "scripts": {
