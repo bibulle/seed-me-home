@@ -1,5 +1,5 @@
 # -------------
-FROM node:16 AS BUILD
+FROM node:19 AS BUILD
 
 WORKDIR /usr/src
 
