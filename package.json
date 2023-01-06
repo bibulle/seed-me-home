@@ -28,18 +28,12 @@
     "help": "nx help",
     "release": "standard-version --no-verify --commit-all",
     "replace:version": "json -I -f libs/models/src/lib/version.json -e \"this.version='`cat package.json | json version`';\" ",
-    "test:ci": "ng test"
+    "test:ci": "ng test",
+    "prepare": "husky install"
   },
   "standard-version": {
     "scripts": {
       "postbump": "npm run replace:version"
-    }
-  },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
-      "pre-commit": "lint-staged",
-      "pre-push": "git status && test -z \"$(git status --porcelain)\""
     }
   },
   "lint-staged": {
@@ -128,7 +122,7 @@
     "dotenv": "^16.0.0",
     "eslint": "^8.15.0",
     "eslint-config-prettier": "^8.1.0",
-    "husky": "^4.3.8",
+    "husky": "^8.0.0",
     "jest": "^28.0.0",
     "jest-environment-jsdom": "^28.0.0",
     "jest-preset-angular": "^12.2.3",
