@@ -1,11 +1,14 @@
 :host {
-  mat-card-title {
+  /* TODO(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version. */
+  mat-card-header {
     font-size: 1.1em;
+    margin-bottom: 8px;
 
-    mat-icon {
-      float: right;
+    .filler {
+      flex-grow: 1;
     }
   }
+  /* TODO(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version. */
   mat-card-content {
     display: flex;
     flex-direction: column;

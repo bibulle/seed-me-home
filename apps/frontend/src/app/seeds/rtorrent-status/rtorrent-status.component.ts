@@ -2,10 +2,10 @@ import { Component, NgModule, OnDestroy, OnInit } from '@angular/core';
 import { RtorrentStatusService } from './rtorrent-status.service';
 import { RtorrentStatus } from '@seed-me-home/models';
 import { Subscription } from 'rxjs';
-import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
 import { BytesSizeModule } from '../../utils/pipes/bytes-size.pipe';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'seed-me-home-rtorrent-status',
@@ -19,11 +19,9 @@ export class RtorrentStatusComponent implements OnInit, OnDestroy {
   constructor(private _rtorrentStatusService: RtorrentStatusService) {}
 
   ngOnInit() {
-    this._currentRtorrentStatusSubscription = this._rtorrentStatusService
-      .currentStatusObservable()
-      .subscribe((status: RtorrentStatus) => {
-        this.rtorrentStatus = status;
-      });
+    this._currentRtorrentStatusSubscription = this._rtorrentStatusService.currentStatusObservable().subscribe((status: RtorrentStatus) => {
+      this.rtorrentStatus = status;
+    });
 
     this._rtorrentStatusService.startLoadingStats();
   }

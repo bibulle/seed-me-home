@@ -1,16 +1,16 @@
 @mixin nav-bar-component-theme($theme) {
-  $primary: map-get($theme, primary);
-  $accent: map-get($theme, accent);
-  $warn: map-get($theme, warn);
-  $background: map-get($theme, background);
-  $foreground: map-get($theme, foreground);
+  $primary: mat.get-color-from-palette($theme, primary);
+  $accent: mat.get-color-from-palette($theme, accent);
+  $warn: mat.get-color-from-palette($theme, warn);
+  $background: mat.get-color-from-palette($theme, background);
+  $foreground: mat.get-color-from-palette($theme, foreground);
 
   seed-me-home-nav-bar {
-    color: mat-color($primary, default-contrast);
+    color: mat.get-color-from-palette($primary, default-contrast);
 
     .nav-bar,
     .nav-bar-header {
-      background: mat-color($primary);
+      background: mat.get-color-from-palette($primary);
     }
   }
 }

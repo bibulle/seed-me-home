@@ -1,24 +1,16 @@
-import { Injectable, NgModule } from '@angular/core';
-import {
-  MatSnackBar,
-  MatSnackBarConfig,
-  MatSnackBarModule,
-} from '@angular/material/snack-bar';
 import { HttpClientModule, HttpErrorResponse } from '@angular/common/http';
-import { throwError } from 'rxjs';
+import { Injectable, NgModule } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { NGXLogger } from 'ngx-logger';
 import { NGXLoggerMock } from 'ngx-logger/testing';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { throwError } from 'rxjs';
+import { MatSnackBar, MatSnackBarConfig, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Injectable({
   providedIn: 'root',
 })
 export class NotificationService {
-  constructor(
-    private readonly _snackBar: MatSnackBar,
-    private readonly logger: NGXLogger,
-    private _translateService: TranslateService
-  ) {}
+  constructor(private readonly _snackBar: MatSnackBar, private readonly logger: NGXLogger, private _translateService: TranslateService) {}
 
   error(err: string, ...args: any[]) {
     this.logger.error(err);
@@ -45,10 +37,7 @@ export class NotificationService {
     } else {
       // The backend returned an unsuccessful response code.
       // The response body may contain clues as to what went wrong,
-      this.logger.error(
-        `Backend returned code ${error.status}, ` +
-          `body was: ${JSON.stringify(error.error)}`
-      );
+      this.logger.error(`Backend returned code ${error.status}, ` + `body was: ${JSON.stringify(error.error)}`);
 
       if (error && error.error && error.error.message) {
         message = error.error.message + ' | translate';
@@ -88,11 +77,6 @@ export class NotificationService {
   imports: [HttpClientModule, MatSnackBarModule, TranslateModule],
   declarations: [],
   exports: [],
-  providers: [
-    NotificationService,
-    { provide: NGXLogger, useClass: NGXLoggerMock },
-  ],
+  providers: [NotificationService, { provide: NGXLogger, useClass: NGXLoggerMock }],
 })
 export class NotificationModule {}
-
-import { HttpHeaders, HttpParams } from '@angular/common/http';

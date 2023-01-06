@@ -1,11 +1,11 @@
 import { Component, NgModule, OnDestroy, OnInit } from '@angular/core';
-import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
 import { BytesSizeModule } from '../../utils/pipes/bytes-size.pipe';
 import { FilesStatus } from '@seed-me-home/models';
 import { Subscription } from 'rxjs';
 import { FilesStatusService } from './files-status.service';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'seed-me-home-files-status',
@@ -19,11 +19,9 @@ export class FilesStatusComponent implements OnInit, OnDestroy {
   constructor(private _filesStatusService: FilesStatusService) {}
 
   ngOnInit() {
-    this._currentFilesStatusSubscription = this._filesStatusService
-      .currentStatusObservable()
-      .subscribe((status: FilesStatus) => {
-        this.filesStatus = status;
-      });
+    this._currentFilesStatusSubscription = this._filesStatusService.currentStatusObservable().subscribe((status: FilesStatus) => {
+      this.filesStatus = status;
+    });
 
     this._filesStatusService.startLoadingStats();
   }

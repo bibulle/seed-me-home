@@ -20,7 +20,7 @@
     flex: 1 1 100%;
     display: flex;
     position: relative;
-    padding-right: 28px;
+    // padding-right: 28px;
 
     span {
       line-height: 24px;
@@ -28,14 +28,17 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      flex-grow: 1;
     }
 
-    button.mat-icon-button {
+    button.mat-mdc-icon-button {
       width: 24px;
       height: 24px;
       line-height: 24px;
-      position: absolute;
-      right: 0;
+      padding: 0;
+      font-size: 12xp;
+      // position: absolute;
+      // right: 0;
     }
   }
 

@@ -1,9 +1,10 @@
-<mat-card>
-  <mat-card-title>
+<mat-card appearance="outlined">
+  <mat-card-header>
+    <mat-card-title>{{ 'title.files.cleaner' | translate }}</mat-card-title>
+    <div class="filler"></div>
     <mat-icon *ngIf="!textAreaVisible" color="primary" (click)="textAreaVisible = !textAreaVisible">add</mat-icon>
     <mat-icon *ngIf="textAreaVisible" color="primary" (click)="textAreaVisible = !textAreaVisible">remove</mat-icon>
-    {{ 'title.files.cleaner' | translate }}
-  </mat-card-title>
+  </mat-card-header>
   <mat-card-content>
     <mat-form-field appearance="fill" *ngIf="textAreaVisible">
       <mat-label>{{ 'label.files.cleaner' | translate }}</mat-label>
