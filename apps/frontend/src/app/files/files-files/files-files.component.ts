@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { CommonModule } from '@angular/common';
 import { Component, Input, NgModule, OnDestroy, OnInit } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
