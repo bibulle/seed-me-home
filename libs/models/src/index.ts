@@ -6,4 +6,5 @@ export * from './lib/user';
 export * from './lib/files-status';
 export * from './lib/files-file';
 export * from './lib/file-move';
+export * from './lib/progression';
 export { MessageLog, MessageLogLevel } from './lib/messageLog';

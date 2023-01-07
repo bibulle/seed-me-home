@@ -1,38 +1,31 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
-import {
-  FileMove,
-  FilesFile,
-  FilesStatus,
-  MoveType,
-} from '@seed-me-home/models';
+import { FileMove, FilesFile, FilesStatus, MoveType, Progression } from '@seed-me-home/models';
 import { ConfigService } from '@nestjs/config';
-import { FtpSeedService } from '../ftp-seed/ftp-seed.service';
 import * as fs from 'fs';
 import * as path from 'path';
 
 import * as mv from 'mv';
 import * as disk from 'diskusage';
+import { ProgressionService } from '@seed-me-home/progression';
 
 @Injectable()
 export class FilesService {
   readonly logger = new Logger(FilesService.name);
 
-  constructor(
-    private _configService: ConfigService,
-    private _ftpSeedService: FtpSeedService
-  ) {}
+  constructor(private _configService: ConfigService, private progressionService: ProgressionService) {
+    this.progressionService.init(this._configService.get('PATH_PROGRESS'), this._configService.get('SEEDBOX_FTP_PATH'), this._configService.get('PATH_DOWNLOAD'));
+  }
 
   getStatus(): Promise<FilesStatus> {
     //noinspection JSUnusedLocalSymbols
     return new Promise<FilesStatus>((resolve) => {
       Promise.all([
-        disk.check(this._ftpSeedService.getPathLocal()).catch((reason) => {
+        disk.check(this.progressionService.getPathLocal()).catch((reason) => {
           this.logger.error(reason);
         }),
         disk.check(this._configService.get('PATH_NAS')).catch((reason) => {
-          this.logger.error(
-            `Not found ${path.resolve(this._configService.get('PATH_NAS'))}`
-          );
+          this.logger.error(`Not found ${path.resolve(this._configService.get('PATH_NAS'))}`);
           this.logger.error(reason);
         }),
       ]).then((infos) => {
@@ -75,9 +68,7 @@ export class FilesService {
       fs.stat(filePath, (err, stats) => {
         if (err) {
           this.logger.error(err);
-          return reject(
-            new HttpException('File not found', HttpStatus.NOT_FOUND)
-          );
+          return reject(new HttpException('File not found', HttpStatus.NOT_FOUND));
         }
 
         //this.logger.debug(stats);
@@ -94,9 +85,8 @@ export class FilesService {
         };
 
         if (!result.isDirectory) {
-          const progress = this._ftpSeedService.getProgression(result.fullpath);
+          const progress = this.progressionService.getProgression(result.fullpath);
           if (progress) {
-            //this.logger.debug(progress);
             result.size = +progress.size;
             result.downloaded = progress.value;
             result.downloadStarted = progress.downloadStarted;
@@ -110,9 +100,7 @@ export class FilesService {
           fs.readdirSync(filePath).forEach((child) => {
             //console.log(path.join(root, child));
             if (!child.startsWith('.')) {
-              promises.push(
-                this._getFiles(path.join(filePath, child), level + 1)
-              );
+              promises.push(this._getFiles(path.join(filePath, child), level + 1));
             }
           });
           Promise.all(promises)
@@ -122,12 +110,7 @@ export class FilesService {
               result.children.forEach((child) => {
                 result.size += child.size;
                 result.downloaded += child.downloaded;
-                if (
-                  !result.downloadStarted ||
-                  (child.downloadStarted &&
-                    child.downloadStarted.getTime() <
-                      result.downloadStarted.getTime())
-                ) {
+                if (!result.downloadStarted || (child.downloadStarted && child.downloadStarted.getTime() < result.downloadStarted.getTime())) {
                   result.downloadStarted = child.downloadStarted;
                 }
               });
@@ -151,9 +134,7 @@ export class FilesService {
       try {
         fullPath = fs.realpathSync(fullPath);
       } catch (e) {
-        return reject(
-          new HttpException('File not found', HttpStatus.NOT_FOUND)
-        );
+        return reject(new HttpException('File not found', HttpStatus.NOT_FOUND));
       }
       //this.logger.debug(fullPath);
 
@@ -212,32 +193,20 @@ export class FilesService {
       try {
         fileMove.sourceFullPath = fs.realpathSync(fileMove.sourceFullPath);
       } catch (e) {
-        return reject(
-          new HttpException('File not found', HttpStatus.NOT_FOUND)
-        );
+        return reject(new HttpException('File not found', HttpStatus.NOT_FOUND));
       }
       //this.logger.debug(fileMove.sourceFullPath);
 
-      const isAuthorized = this._fileModificationAuthorized(
-        fileMove.sourceFullPath
-      );
+      const isAuthorized = this._fileModificationAuthorized(fileMove.sourceFullPath);
       //this.logger.debug(isAuthorized);
       if (!isAuthorized) {
         return reject(new HttpException('Forbidden', HttpStatus.FORBIDDEN));
       }
 
       // calculate target full path
-      let fullPathTarget = path.join(
-        this._configService.get('PATH_NAS'),
-        this._configService.get('PATH_MOVIES'),
-        fileMove.targetPath
-      );
+      let fullPathTarget = path.join(this._configService.get('PATH_NAS'), this._configService.get('PATH_MOVIES'), fileMove.targetPath);
       if (fileMove.targetType === MoveType.series) {
-        fullPathTarget = path.join(
-          this._configService.get('PATH_NAS'),
-          this._configService.get('PATH_SERIES'),
-          fileMove.targetPath
-        );
+        fullPathTarget = path.join(this._configService.get('PATH_NAS'), this._configService.get('PATH_SERIES'), fileMove.targetPath);
       }
 
       // modify target full path depending on case
@@ -257,9 +226,7 @@ export class FilesService {
             // search in parent (with no case)
             previousFound = false;
             fs.readdirSync(path.dirname(d)).forEach((f) => {
-              if (
-                path.join(path.dirname(d), f).toLowerCase() === d.toLowerCase()
-              ) {
+              if (path.join(path.dirname(d), f).toLowerCase() === d.toLowerCase()) {
                 previousFound = true;
                 replaced = d0;
                 replacer = path.join(path.dirname(d), f);
@@ -274,31 +241,18 @@ export class FilesService {
       // eslint-disable-next-line @typescript-eslint/no-this-alias
       const that = this;
       let mvDone = false;
-      mv(
-        fileMove.sourceFullPath,
-        fullPathTarget,
-        { mkdirp: true },
-        function (err) {
-          if (err) {
-            that.logger.error(
-              'cannot move "' +
-                fileMove.sourceFullPath +
-                '" to "' +
-                fullPathTarget +
-                '"'
-            );
-            that.logger.error(err);
-            mvDone = true;
-            return reject(
-              new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR)
-            );
-          }
-          if (!mvDone) {
-            mvDone = true;
-            resolve();
-          }
+      mv(fileMove.sourceFullPath, fullPathTarget, { mkdirp: true }, function (err) {
+        if (err) {
+          that.logger.error('cannot move "' + fileMove.sourceFullPath + '" to "' + fullPathTarget + '"');
+          that.logger.error(err);
+          mvDone = true;
+          return reject(new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR));
         }
-      );
+        if (!mvDone) {
+          mvDone = true;
+          resolve();
+        }
+      });
       setTimeout(() => {
         if (!mvDone) {
           mvDone = true;
@@ -323,9 +277,6 @@ export class FilesService {
     //this.logger.debug(path_local);
     //this.logger.debug(path_nas);
 
-    return (
-      (path_local && fullPath && fullPath.startsWith(path_local)) ||
-      (path_nas && fullPath && fullPath.startsWith(path_nas))
-    );
+    return (path_local && fullPath && fullPath.startsWith(path_local)) || (path_nas && fullPath && fullPath.startsWith(path_nas));
   }
 }

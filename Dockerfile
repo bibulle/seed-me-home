@@ -16,8 +16,9 @@ RUN mkdir apps
 
 COPY apps/frontend apps/frontend
 COPY apps/backend apps/backend 
+COPY apps/downloader apps/downloader 
 
-RUN npx nx run-many --parallel --target=build --configuration=production --projects=frontend,backend 
+RUN npx nx run-many --parallel --target=build --configuration=production --projects=frontend,backend,downloader 
 #RUN npx nx run frontend:build:production
 #RUN npx nx run backend:build:production
 

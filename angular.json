@@ -3,7 +3,9 @@
   "version": 2,
   "projects": {
     "backend": "apps/backend",
+    "downloader": "apps/downloader",
     "frontend": "apps/frontend",
-    "models": "libs/models"
+    "models": "libs/models",
+    "progression": "libs/progression"
   }
 }
