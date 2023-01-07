@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/bibulle/seed-me-home/compare/v1.1.0...v1.2.0) (2023-01-07)
+
+
+### Features
+
+* faire download dans un autre pod (fixes [#14](https://github.com/bibulle/seed-me-home/issues/14)) ([bd2e1aa](https://github.com/bibulle/seed-me-home/commit/bd2e1aa15e6c0c72915c9d24ea07b1d1d5dc945b))
+* update k8s config commit message ([b97765d](https://github.com/bibulle/seed-me-home/commit/b97765db69d04af162f5b867956a55e2b522e31f))
+
+
+### Bug Fixes
+
+* remove warning ([601e112](https://github.com/bibulle/seed-me-home/commit/601e112132315c1f872837a326b6f18b99ef6ecb))
+
 ## [1.1.0](https://github.com/bibulle/seed-me-home/compare/v0.9.0...v1.1.0) (2023-01-06)
 
 
