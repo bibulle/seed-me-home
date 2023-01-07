@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_INTERCEPTOR } from '@nestjs/core';
@@ -10,13 +11,7 @@ import { RefreshTokenInterceptor } from './interceptors/refresh-token.intercepto
 import { RtorrentModule } from './rtorrent/rtorrent.module';
 
 @Module({
-  imports: [
-    RtorrentModule,
-    AuthenticationModule,
-    FilesModule,
-    HealthModule,
-    ConfigModule,
-  ],
+  imports: [RtorrentModule, AuthenticationModule, FilesModule, HealthModule, ConfigModule],
   controllers: [AppController],
   providers: [
     //FtpSeedService

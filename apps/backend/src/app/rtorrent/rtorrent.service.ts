@@ -1,17 +1,14 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as _ from 'lodash';
-import {
-  RTorrentFile,
-  RtorrentStatus,
-  RtorrentTorrent,
-} from '@seed-me-home/models';
-import { FtpSeedService } from '../ftp-seed/ftp-seed.service';
+import { Progression, RTorrentFile, RtorrentStatus, RtorrentTorrent } from '@seed-me-home/models';
 import { Interval } from '@nestjs/schedule';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const Rtorrent = require('@electorrent/node-rtorrent');
 import * as disk from 'diskusage';
+import { ProgressionService } from '@seed-me-home/progression';
 
 @Injectable()
 export class RtorrentService {
@@ -19,11 +16,8 @@ export class RtorrentService {
 
   private _rtorrent;
 
-  constructor(
-    private _configService: ConfigService,
-    private _ftpSeedService: FtpSeedService
-  ) {
-    //super();
+  constructor(private _configService: ConfigService, private progressionService: ProgressionService) {
+    this.progressionService.init(this._configService.get('PATH_PROGRESS'), this._configService.get('SEEDBOX_FTP_PATH'), this._configService.get('PATH_DOWNLOAD'));
   }
 
   private _initialize() {
@@ -39,6 +33,7 @@ export class RtorrentService {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   forceRtorrentForMocking(mockRtorrent: any) {
     this._rtorrent = mockRtorrent;
   }
@@ -47,12 +42,7 @@ export class RtorrentService {
     this._initialize();
     this._rtorrent.getGlobals((err, status) => {
       if (status) {
-        status = _.pick(status, [
-          'down_rate',
-          'down_total',
-          'up_rate',
-          'up_total',
-        ]);
+        status = _.pick(status, ['down_rate', 'down_total', 'up_rate', 'up_total']);
       }
 
       //if (err) {
@@ -75,20 +65,14 @@ export class RtorrentService {
               reject1(err);
             } else {
               if (status) {
-                status = _.pick(status, [
-                  'down_rate',
-                  'down_total',
-                  'up_rate',
-                  'up_total',
-                  'free_disk_space',
-                ]);
+                status = _.pick(status, ['down_rate', 'down_total', 'up_rate', 'up_total', 'free_disk_space']);
               }
               resolve1(status);
             }
           });
         }),
         // get local disk status
-        disk.check(this._ftpSeedService.getPathLocal()).catch((reason) => {
+        disk.check(this.progressionService.getPathLocal()).catch((reason) => {
           this.logger.error(reason);
         }),
       ])
@@ -148,36 +132,23 @@ export class RtorrentService {
               let total_shouldDownload = false;
               let total_downloadStarted: Date;
               torrent.files.forEach((file) => {
-                const progress = this._ftpSeedService.getProgression(
-                  file.fullpath
-                );
+                const progress = this.progressionService.getProgression(file.fullpath);
                 if (progress) {
                   file.shouldDownload = progress.shouldDownload;
                   file.downloaded = progress.value;
                   file.downloadStarted = progress.downloadStarted;
                   total_downloaded += progress.value;
-                  total_shouldDownload =
-                    total_shouldDownload || progress.shouldDownload;
-                  if (
-                    !total_downloadStarted ||
-                    (file.downloadStarted &&
-                      file.downloadStarted.getTime() <
-                        total_downloadStarted.getTime())
-                  ) {
+                  total_shouldDownload = total_shouldDownload || progress.shouldDownload;
+                  if (!total_downloadStarted || (file.downloadStarted && file.downloadStarted.getTime() < total_downloadStarted.getTime())) {
                     total_downloadStarted = file.downloadStarted;
                   }
                 } else {
                   file.downloaded = 0;
                   if (file['completed_chunks'] === file['chunks']) {
-                    this._ftpSeedService.setProgression(
-                      file.fullpath,
-                      0,
-                      file.size,
-                      undefined
-                    );
+                    this.progressionService.setProgression(file.fullpath, 0, file.size, undefined);
                   }
                 }
-                this._ftpSeedService.tellProgressionUseful(file.fullpath);
+                this.progressionService.tellProgressionUseful(file.fullpath);
               });
 
               torrent.downloaded = total_downloaded;
@@ -288,7 +259,7 @@ export class RtorrentService {
         }
 
         files.forEach((f) => {
-          this._ftpSeedService.switchShouldDownload(f.fullpath, f.size, should);
+          this.progressionService.switchShouldDownload(f.fullpath, f.size, should);
         });
         //this.logger.debug(files);
         this.getTorrents()

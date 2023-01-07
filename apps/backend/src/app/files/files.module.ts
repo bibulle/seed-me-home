@@ -1,13 +1,14 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { FtpSeedService } from '../ftp-seed/ftp-seed.service';
+import { ProgressionModule } from '@seed-me-home/progression';
 import { FilesController } from './files.controller';
 import { FilesService } from './files.service';
 
 @Module({
-  imports: [ConfigModule],
+  imports: [ConfigModule, ProgressionModule],
   controllers: [FilesController],
-  providers: [FilesService, FtpSeedService],
-  exports: [FilesService, FtpSeedService],
+  providers: [FilesService],
+  exports: [FilesService],
 })
 export class FilesModule {}

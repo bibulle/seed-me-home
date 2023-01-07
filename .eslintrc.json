@@ -31,5 +31,9 @@
       "extends": ["plugin:@nrwl/nx/javascript"],
       "rules": {}
     }
-  ]
+  ],
+  "env": {
+    "browser": true,
+    "node": true
+  }
 }

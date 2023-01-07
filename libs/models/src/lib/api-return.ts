@@ -1,4 +1,8 @@
-import { FilesFile, FilesStatus, RtorrentStatus, RtorrentTorrent, Version } from '@seed-me-home/models';
+import { FilesFile } from './files-file';
+import { FilesStatus } from './files-status';
+import { RtorrentStatus } from './rtorrent-status';
+import { RtorrentTorrent } from './rtorrent-torrent';
+import { Version } from './version';
 
 export interface ApiReturn {
   version: Version;
