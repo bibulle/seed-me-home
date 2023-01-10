@@ -61,5 +61,6 @@
       *ngFor="let child of file?.children"
       [file]="child"
       (removeFileEvent)="removeFileEvent.emit($event)"
+      removeEnable="true"
   ></seed-me-home-files-files-item>
 </div>
