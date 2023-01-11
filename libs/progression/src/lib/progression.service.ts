@@ -1,8 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable, Logger } from '@nestjs/common';
 import { Progression } from '@seed-me-home/models';
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, unlinkSync, writeFileSync } from 'fs';
-import { join, normalize, resolve } from 'path';
+import { join } from 'path';
 
 @Injectable()
 export class ProgressionService {

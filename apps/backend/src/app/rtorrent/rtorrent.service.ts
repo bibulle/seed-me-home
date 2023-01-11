@@ -1,14 +1,13 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import * as _ from 'lodash';
-import { Progression, RTorrentFile, RtorrentStatus, RtorrentTorrent } from '@seed-me-home/models';
 import { Interval } from '@nestjs/schedule';
+import { RTorrentFile, RtorrentStatus, RtorrentTorrent } from '@seed-me-home/models';
+import { ProgressionService } from '@seed-me-home/progression';
+import * as disk from 'diskusage';
+import * as _ from 'lodash';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const Rtorrent = require('@electorrent/node-rtorrent');
-import * as disk from 'diskusage';
-import { ProgressionService } from '@seed-me-home/progression';
 
 @Injectable()
 export class RtorrentService {

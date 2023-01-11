@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Inject, Input, NgModule, OnInit, Output, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -50,7 +49,7 @@ export class FilesFilesItemComponent implements OnInit {
 
   constructor(private _translateService: TranslateService, private dialog: MatDialog, private _filesFilesService: FilesFilesService) {}
 
-  // eslint-disable-next-line @angular-eslint/no-empty-lifecycle-method
+  // eslint-disable-next-line @angular-eslint/no-empty-lifecycle-method, @typescript-eslint/no-empty-function
   ngOnInit() {}
 
   formatDate(dateMilli: Date | string) {
@@ -109,6 +108,7 @@ export class FilesFilesItemComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result: FileMove) => {
       if (result) {
         //console.log(result);
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         this._filesFilesService.moveFile(result).then(() => {});
       }
     });

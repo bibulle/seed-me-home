@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { HttpException, HttpStatus, Injectable, Logger, StreamableFile } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { FileMove, FilesFile, FilesStatus, MoveType } from '@seed-me-home/models';
@@ -277,7 +276,6 @@ export class FilesService {
     if (!this._fileModificationAuthorized(fullPath)) {
       throw new HttpException('Not Authorized', HttpStatus.UNAUTHORIZED);
     }
-    const fullPathNas = fs.realpathSync(filePath);
     fs.statSync(fullPath);
 
     // this.logger.debug(`  --> ${fullPath}`);
