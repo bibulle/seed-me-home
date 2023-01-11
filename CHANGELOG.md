@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/bibulle/seed-me-home/compare/v1.2.0...v1.3.0) (2023-01-11)
+
+
+### Features
+
+* pouvoir supprimer les fichiers/repertoires telechagés (Fixes [#15](https://github.com/bibulle/seed-me-home/issues/15)) ([474cdf3](https://github.com/bibulle/seed-me-home/commit/474cdf3e4c365ec96a3868b30bb524ee5201dc72))
+* pouvoir supprimer les fichiers/repertoires telechargés (Fixes [#15](https://github.com/bibulle/seed-me-home/issues/15)) ([420614e](https://github.com/bibulle/seed-me-home/commit/420614e2a7fa6a1dec56a93debbad4346ea3cd8a)), closes [#20](https://github.com/bibulle/seed-me-home/issues/20)
+* pouvoir télécharger en local des fichiers (Fixes [#16](https://github.com/bibulle/seed-me-home/issues/16)) ([d62ec28](https://github.com/bibulle/seed-me-home/commit/d62ec28fb916b3b2ddf64d9863af1c2cb4c46ff5)), closes [#22](https://github.com/bibulle/seed-me-home/issues/22)
+* pouvoir télécharger en local des fichiers (Fixes [#16](https://github.com/bibulle/seed-me-home/issues/16)) ([27a9caa](https://github.com/bibulle/seed-me-home/commit/27a9caaa64ed9309ac002cde2160d55b4dde460c))
+
 ## [1.2.0](https://github.com/bibulle/seed-me-home/compare/v1.1.0...v1.2.0) (2023-01-07)
 
 
