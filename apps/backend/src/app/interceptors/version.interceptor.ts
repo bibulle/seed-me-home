@@ -1,4 +1,4 @@
-import { CallHandler, ExecutionContext, Injectable, Logger, NestInterceptor } from '@nestjs/common';
+import { CallHandler, ConsoleLogger, ExecutionContext, Injectable, Logger, NestInterceptor } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Version } from '@seed-me-home/models';
@@ -10,7 +10,12 @@ export class VersionInterceptor implements NestInterceptor {
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(
-      map(data => {
+      map((data) => {
+        // In case it's a stream, don't change the content
+        if (data.stream) {
+          return data;
+        }
+
         if (!data) {
           data = {};
         }

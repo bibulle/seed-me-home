@@ -7,4 +7,5 @@ export interface FilesFile {
   modifiedDate: Date;
   children: FilesFile[];
   downloadStarted: Date;
+  url: string;
 }

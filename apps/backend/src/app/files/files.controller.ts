@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Param, Post, Res, StreamableFile, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { FileMove, FilesFile, FilesStatus } from '@seed-me-home/models';
+import type { Response } from 'express';
 import { FilesService } from './files.service';
 
 class FileFullPath {
@@ -10,6 +11,8 @@ class FileFullPath {
 
 @Controller('files_api')
 export class FilesController {
+  // readonly logger = new Logger(FilesController.name);
+
   constructor(private readonly filesService: FilesService) {}
 
   @Get('status')
@@ -40,5 +43,11 @@ export class FilesController {
   @UseGuards(AuthGuard('jwt'))
   async moveFile(@Body() fileMove: FileMove): Promise<void> {
     return this.filesService.moveFile(fileMove);
+  }
+
+  @Get('download/:filePath(*)')
+  // @UseGuards(AuthGuard('jwt'))
+  downloadFile(@Param('filePath') filePath: string, @Res({ passthrough: true }) res: Response): StreamableFile {
+    return this.filesService.downloadFile(filePath, res);
   }
 }

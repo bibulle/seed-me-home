@@ -1,13 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
-import { FileMove, FilesFile, FilesStatus, MoveType, Progression } from '@seed-me-home/models';
+import { HttpException, HttpStatus, Injectable, Logger, StreamableFile } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { FileMove, FilesFile, FilesStatus, MoveType } from '@seed-me-home/models';
+import { Response } from 'express';
 import * as fs from 'fs';
 import * as path from 'path';
 
-import * as mv from 'mv';
-import * as disk from 'diskusage';
 import { ProgressionService } from '@seed-me-home/progression';
+import * as disk from 'diskusage';
+import * as mv from 'mv';
 
 @Injectable()
 export class FilesService {
@@ -82,6 +83,8 @@ export class FilesService {
           isDirectory: stats.isDirectory(),
           children: [],
           modifiedDate: stats.mtime,
+          // url:`/api/files_api/download/${encodeURIComponent(filePath).replace(/%2F/g, '/').replace(/%20/g, ' ')}`
+          url: `/api/files_api/download/${filePath}`,
         };
 
         if (!result.isDirectory) {
@@ -260,6 +263,38 @@ export class FilesService {
         }
       }, 2000);
     });
+  }
+
+  downloadFile(filePath: string, res: Response): StreamableFile {
+    // this.logger.debug(`downloadFile(${filePath})`);
+
+    let fullPath = '';
+    try {
+      fullPath = fs.realpathSync(filePath);
+    } catch (e) {
+      throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+    }
+    if (!this._fileModificationAuthorized(fullPath)) {
+      throw new HttpException('Not Authorized', HttpStatus.UNAUTHORIZED);
+    }
+    const fullPathNas = fs.realpathSync(filePath);
+    fs.statSync(fullPath);
+
+    // this.logger.debug(`  --> ${fullPath}`);
+
+    res.set({
+      // 'Content-Type': 'video/x-matroska',
+      'Thumbnail-control': 'public, max-age=31536000',
+      'Content-Disposition': `attachment; filename="${path.basename(filePath)}"`,
+    });
+
+    const readStream = fs.createReadStream(fullPath);
+
+    // readStream.on('data', (chunk) => console.log(chunk)); // <--- the data log gets printed
+    // readStream.on('end', () => console.log('done'));
+    // readStream.on('error', (err) => { console.error(err); });
+
+    return new StreamableFile(readStream);
   }
 
   private _fileModificationAuthorized(fullPath: string): boolean {

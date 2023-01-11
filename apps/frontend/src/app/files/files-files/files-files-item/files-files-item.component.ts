@@ -50,6 +50,7 @@ export class FilesFilesItemComponent implements OnInit {
 
   constructor(private _translateService: TranslateService, private dialog: MatDialog, private _filesFilesService: FilesFilesService) {}
 
+  // eslint-disable-next-line @angular-eslint/no-empty-lifecycle-method
   ngOnInit() {}
 
   formatDate(dateMilli: Date | string) {
@@ -111,6 +112,16 @@ export class FilesFilesItemComponent implements OnInit {
         this._filesFilesService.moveFile(result).then(() => {});
       }
     });
+  }
+
+  download() {
+    const link = document.createElement('a');
+    link.setAttribute('href', this.file.url);
+    // link.setAttribute('download', this.book.book_id+'.epub');
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }
 }
 

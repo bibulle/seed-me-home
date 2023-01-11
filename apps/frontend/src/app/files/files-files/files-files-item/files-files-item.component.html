@@ -44,7 +44,8 @@
   <span title="{{file?.path}}">{{file?.path}}</span>
   <button mat-icon-button [matMenuTriggerFor]="moreActionMenu" #menuTrigger='matMenuTrigger'><mat-icon>more_horiz</mat-icon></button>
   <mat-menu #moreActionMenu="matMenu" xPosition="before">
-    <button mat-menu-item (click)="move()"><mat-icon>save_alt</mat-icon>{{ 'file.move' | translate}}</button>
+    <button mat-menu-item (click)="move()"><mat-icon>input</mat-icon>{{ 'file.move' | translate}}</button>
+    <button mat-menu-item *ngIf="file && !file.isDirectory && (file?.downloaded === file?.size)" (click)="download()"><mat-icon>download</mat-icon>{{ 'file.download' | translate}}</button>
     <button mat-menu-item *ngIf="removeEnable" (click)="remove()"><mat-icon>delete_forever</mat-icon>{{ 'file.erase' | translate}}</button>
   </mat-menu>
 </div>
