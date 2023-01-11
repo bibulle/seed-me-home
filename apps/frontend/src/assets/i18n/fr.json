@@ -46,6 +46,7 @@
   "file.move.movie": "films",
   "file.move.series": "series",
   "file.erase": "Supprime",
+  "file.download": "Télécharge",
   "name": "Nom",
   "progress": "Avancement",
   "size": "Taille",
