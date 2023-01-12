@@ -2,10 +2,10 @@ import { FilesFile } from './files-file';
 import { FilesStatus } from './files-status';
 import { RtorrentStatus } from './rtorrent-status';
 import { RtorrentTorrent } from './rtorrent-torrent';
-import { Version } from './version';
+import { Environment } from './environment';
 
 export interface ApiReturn {
-  version: Version;
+  environment: Environment;
   data: RtorrentStatus | FilesStatus | FilesFile | RtorrentTorrent[] | MyToken;
   refreshToken: string;
 }
