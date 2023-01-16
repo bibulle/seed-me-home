@@ -15,13 +15,14 @@ export class EnvironmentInterceptor implements NestInterceptor {
     return next.handle().pipe(
       map((data) => {
         // In case it's a stream, don't change the content
-        if (data.stream) {
-          return data;
-        }
 
         if (!data) {
           data = {};
         }
+        if (data.stream) {
+          return data;
+        }
+
         if (!data.data) {
           data = { data: data };
         }

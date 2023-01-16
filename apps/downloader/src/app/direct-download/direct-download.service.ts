@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { Interval } from '@nestjs/schedule';
 import { Progression, ProgressionType } from '@seed-me-home/models';
 import { ProgressionService } from '@seed-me-home/progression';
-import { copyFile, copyFileSync, renameSync, statSync, unlink, unlinkSync } from 'fs';
+import { copyFile, statSync, unlink } from 'fs';
 import { join } from 'path';
 import { Uptobox, UptoboxApi } from 'uptobox-ts';
 
