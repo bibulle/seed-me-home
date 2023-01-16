@@ -77,15 +77,7 @@ export class DirectDownloadService {
           }
         });
 
-        if (p.name) {
-          let stats = statSync(p.name, { throwIfNoEntry: false });
-          if (!stats) {
-            stats = statSync(join(this.pathDownload, p.name), { throwIfNoEntry: false });
-          }
-          if (stats && stats.size && stats.size !== p.value) {
-            this.progressionService.setProgression(p.type, p.url, stats.size, p.size, p.downloadStarted, p.name);
-          }
-        }
+        this._updateprogrssionFromFile(p);
 
         return this.progressionService.getProgressionFromUrl(new URL(p.url));
       })
@@ -96,12 +88,29 @@ export class DirectDownloadService {
       this._startADownload();
     });
 
+    // update downloading files
+    DirectDownloadService.downloadCurrentList.forEach((u) => {
+      this._updateprogrssionFromFile(this.progressionService.getProgressionFromPath(u));
+    });
+
     // clean very old done files
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
     this.progressionService.clearOldDoneFiles(yesterday);
 
     return false;
+  }
+
+  private _updateprogrssionFromFile(p: Progression) {
+    if (p.name) {
+      let stats = statSync(p.name, { throwIfNoEntry: false });
+      if (!stats) {
+        stats = statSync(join(this.pathDownload, p.name), { throwIfNoEntry: false });
+      }
+      if (stats && stats.size && stats.size !== p.value) {
+        this.progressionService.setProgression(p.type, p.url, stats.size, p.size, p.downloadStarted, p.name);
+      }
+    }
   }
 
   private _startADownload() {
@@ -113,6 +122,7 @@ export class DirectDownloadService {
 
       this._downloadFile(progression)
         .then(() => {
+          this._updateprogrssionFromFile(progression);
           // this.logger.debug('_downloadFile then : ' + progression.url);
           for (let i = 0; i < DirectDownloadService.downloadCurrentList.length; i++) {
             if (DirectDownloadService.downloadCurrentList[i] === progression.url) {
