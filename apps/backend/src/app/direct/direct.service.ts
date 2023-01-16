@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { ApiReturn, DirectDownload, ProgressionType } from '@seed-me-home/models';
 import { ProgressionService } from '@seed-me-home/progression';
 import { basename } from 'path';
@@ -8,7 +8,7 @@ export class DirectService {
   constructor(private _progressionService: ProgressionService) {}
 
   getDownloads(): Promise<DirectDownload[]> {
-    return new Promise<DirectDownload[]>((resolve, reject) => {
+    return new Promise<DirectDownload[]>((resolve) => {
       const progressStrings = this._progressionService.getAll();
       const downloads = progressStrings
         .map((s) => {
@@ -19,7 +19,7 @@ export class DirectService {
         })
         .map((p) => {
           return {
-            name: basename(p.url),
+            name: p.name ? p.name : basename(p.url),
             url: p.url,
             shouldDownload: p.shouldDownload,
             downloadStarted: p.downloadStarted,
@@ -40,6 +40,22 @@ export class DirectService {
       }
 
       this._progressionService.setProgression(ProgressionType.DIRECT, url.toString(), 0, undefined, new Date());
+
+      resolve({
+        ok: 'added',
+      });
+    });
+  }
+
+  removeUrl(url: URL): Promise<ApiReturn> {
+    return new Promise<ApiReturn>((resolve) => {
+      const progress = this._progressionService.getProgressionFromUrl(url);
+
+      if (!progress) {
+        throw new NotFoundException();
+      }
+
+      this._progressionService.removeProgressionFromUrl(url);
 
       resolve({
         ok: 'added',

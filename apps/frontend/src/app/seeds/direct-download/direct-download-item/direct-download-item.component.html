@@ -20,13 +20,11 @@
             class="paused"
             color="warn"
             title="{{ 'direct.paused' | translate}}"
-            (click)="start()"
   >pause</mat-icon>
   <mat-icon *ngIf="download && (download.downloaded !== 0) && (download.downloaded !== download.size)"
             class="local-download"
             color="primary"
             title="{{ 'direct.download' | translate}}"
-            (click)="shouldGetFromSeeBox(false)"
   >save_alt</mat-icon>
   <mat-icon *ngIf="download && (download.downloaded !== 0) && (download.downloaded === download.size)"
             color="primary"
@@ -35,7 +33,7 @@
   <span title="{{download?.name}}">{{download?.name}}</span>
   <button mat-icon-button [matMenuTriggerFor]="moreActionMenu" #menuTrigger='matMenuTrigger'><mat-icon>more_horiz</mat-icon></button>
   <mat-menu #moreActionMenu="matMenu" xPosition="before">
-    <button mat-menu-item (click)="remove()"><mat-icon>delete_forever</mat-icon>{{ 'seed.erase' | translate}}</button>
+    <button mat-menu-item (click)="remove()"><mat-icon>delete_forever</mat-icon>{{ 'direct.erase' | translate}}</button>
   </mat-menu>
 </div>
 <div class="progress">

@@ -48,7 +48,7 @@ export class FtpSeedService {
   }
 
   @Interval(40 * 1000)
-  intervalJob_FtpSeedService() {
+  intervalJob() {
     // this.logger.debug(`FtpSeedService interval ${FtpSeedService.downloadCurrentList.length} ${FtpSeedService.downloadWaitingList.length}`);
     const shouldDownload: Progression[] = [];
 
@@ -60,7 +60,7 @@ export class FtpSeedService {
       const progress = this.progressionService.getProgressionFromPath(file);
       if (!progress) {
         this.logger.warn('Cannot read progression for file : ' + file);
-      } else {
+      } else if (progress.type === ProgressionType.TORRENT) {
         if (progress.shouldDownload && progress.progress !== 100) {
           // test if in currentDownload
           if (!FtpSeedService.downloadCurrentList.includes(progress.fullPath)) {

@@ -57,6 +57,14 @@ export class ProgressionService {
     });
   }
 
+  removeProgressionFromUrl(url: URL) {
+    const fullPath = this.cleanFullFileName(url.toString());
+
+    const fileTrg = this._getProgressionFileName(fullPath);
+
+    unlinkSync(fileTrg);
+  }
+
   getPathLocal() {
     return join(__dirname, '../../..');
   }
@@ -73,6 +81,9 @@ export class ProgressionService {
       if (progress.downloadStarted) {
         progress.downloadStarted = new Date(progress.downloadStarted);
       }
+      if (!progress.type) {
+        progress.type = ProgressionType.TORRENT;
+      }
 
       return progress;
     } catch (e) {
@@ -84,7 +95,7 @@ export class ProgressionService {
     return this.getProgressionFromPath(url.toString());
   }
 
-  setProgression(type: ProgressionType, fullPathOrUrl: string, value: number, size: number, downloadStarted: Date) {
+  setProgression(type: ProgressionType, fullPathOrUrl: string, value: number, size: number, downloadStarted: Date, name?: string) {
     const previous = this.getProgressionFromPath(fullPathOrUrl);
 
     const obj: Progression = {
@@ -92,9 +103,10 @@ export class ProgressionService {
       value: value,
       size: size,
       progress: Math.round((100 * value) / Math.max(1, size)),
-      shouldDownload: previous ? previous.shouldDownload : size < ProgressionService.SIZE_LIMIT_DOWNLOAD,
+      shouldDownload: previous ? previous.shouldDownload : !size || size < ProgressionService.SIZE_LIMIT_DOWNLOAD,
       fullPath: type === ProgressionType.TORRENT ? fullPathOrUrl : undefined,
       url: type === ProgressionType.DIRECT ? fullPathOrUrl : undefined,
+      name: name ? name : previous.name,
       downloadStarted: downloadStarted,
     };
 
@@ -115,6 +127,7 @@ export class ProgressionService {
   }
 
   private _saveProgression(fullPath: string, data: Progression) {
+    // this.logger.debug(JSON.stringify(data, null, 2));
     fullPath = this.cleanFullFileName(fullPath);
 
     const fileTrg = this._getProgressionFileName(fullPath);

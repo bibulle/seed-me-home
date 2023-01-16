@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { Component, EventEmitter, Inject, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { TranslateService } from '@ngx-translate/core';
 import { DirectDownload } from '@seed-me-home/models';
@@ -46,14 +46,27 @@ export class DirectDownloadItemComponent implements OnInit {
   }
 
   remove() {
-    // const dialogRef = this.dialog.open(RtorrentTorrentItemDialogComponent, {
-    //   width: '80%',
-    //   data: this.torrent.name,
-    // });
-    // dialogRef.afterClosed().subscribe((result) => {
-    //   if (result) {
-    //     this._rtorrentTorrentsService.removeTorrent(this.torrent.hash);
-    //   }
-    // });
+    const dialogRef = this.dialog.open(DirectDownloadItemDialogComponent, {
+      width: '80%',
+      data: this.download.name,
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this._directDownloadService.removeDownload(this.download.url);
+      }
+    });
+  }
+}
+
+@Component({
+  selector: 'seed-me-home-direct-download-item-dialog',
+  templateUrl: './direct-download-item-dialog.component.html',
+  styleUrls: ['./direct-download-item-dialog.component.scss'],
+})
+export class DirectDownloadItemDialogComponent {
+  constructor(public dialogRef: MatDialogRef<DirectDownloadItemDialogComponent>, @Inject(MAT_DIALOG_DATA) public downloadName: string) {}
+
+  onNoClick(): void {
+    this.dialogRef.close();
   }
 }

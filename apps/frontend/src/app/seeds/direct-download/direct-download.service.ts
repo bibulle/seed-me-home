@@ -13,6 +13,7 @@ export class DirectDownloadService {
   private static _refreshIsRunning = false;
 
   API_URL_ADD_URL = '/api/direct/add';
+  API_URL_REMOVE_URL = '/api/direct/remove';
   API_URL = '/api/direct/direct-downloads';
 
   private readonly currentDownloadsSubject: Subject<DirectDownload[]>;
@@ -82,9 +83,7 @@ export class DirectDownloadService {
         .then((data: ApiReturn) => {
           const value = data.data as DirectDownload[];
           value.forEach((v) => {
-            console.log(v.downloadStarted);
             v.downloadStarted = new Date(v.downloadStarted);
-            console.log(v.downloadStarted);
           });
           resolve(value);
         })
@@ -110,10 +109,27 @@ export class DirectDownloadService {
   }
 
   addUrl(url: string): Promise<void> {
-    console.log(url);
     return new Promise<void>((resolve, reject) => {
       this._httpClient
         .post(this.API_URL_ADD_URL, { url: url })
+        .toPromise()
+        .then(() => {
+          this._forceRefreshDownloads();
+          //this.logger.debug('addUrl OK');
+          resolve();
+        })
+        .catch((error) => {
+          //this.logger.debug('addUrl KO');
+          this._notificationService.handleError(error);
+          reject(error);
+        });
+    });
+  }
+
+  removeDownload(url: string) {
+    return new Promise<void>((resolve, reject) => {
+      this._httpClient
+        .post(this.API_URL_REMOVE_URL, { url: url })
         .toPromise()
         .then(() => {
           this._forceRefreshDownloads();

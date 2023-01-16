@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { DirectDownload, RtorrentTorrent } from '@seed-me-home/models';
+import { DirectDownload } from '@seed-me-home/models';
 import { Subscription } from 'rxjs';
 import { DirectDownloadService } from './direct-download.service';
 
@@ -14,6 +14,9 @@ export class DirectDownloadComponent implements OnInit, OnDestroy {
 
   directDownloads: DirectDownload[];
   private _currentDirectDownloadSubscription: Subscription;
+
+  sortItem = 'date';
+  sortDirection = 'desc';
 
   constructor(private _directDownloadService: DirectDownloadService) {}
   ngOnInit() {
@@ -49,7 +52,38 @@ export class DirectDownloadComponent implements OnInit, OnDestroy {
     return url.protocol === 'http:' || url.protocol === 'https:';
   }
 
+  toggleSort(sort: string) {
+    if (sort === this.sortItem) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortItem = sort;
+      this.sortDirection = 'desc';
+    }
+    this._doSort();
+  }
+
   _doSort() {
-    return;
+    this.directDownloads.sort((r1: DirectDownload, r2: DirectDownload) => {
+      let ret = 0;
+      switch (this.sortItem) {
+        case 'date':
+          ret = r1.downloadStarted.getTime() - r2.downloadStarted.getTime();
+          break;
+        case 'size':
+          ret = r1.size - r2.size;
+          break;
+        case 'progress':
+          ret = r1.downloaded / Math.max(1, r1.size) - r2.downloaded / Math.max(1, r2.size);
+          break;
+      }
+
+      if (ret === 0) {
+        ret = r1.downloadStarted.getTime() - r2.downloadStarted.getTime();
+      }
+      return ret;
+    });
+    if (this.sortDirection === 'desc') {
+      this.directDownloads.reverse();
+    }
   }
 }

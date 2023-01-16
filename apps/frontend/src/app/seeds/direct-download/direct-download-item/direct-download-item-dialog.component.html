@@ -1,0 +1,8 @@
+<div mat-dialog-title>{{'title.rtorrent.remove' | translate}} : <span class="torrent-name">{{downloadName}}</span></div>
+<div mat-dialog-content>
+  <p>{{'label.sure' | translate}}</p>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">{{'label.no.thanks' | translate}}</button>
+  <button mat-button mat-dialog-close="YES" cdkFocusInitial color="warn">Ok</button>
+</div>

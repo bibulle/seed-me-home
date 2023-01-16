@@ -1,6 +1,7 @@
 export class Progression {
   type: ProgressionType;
   fullPath?: string;
+  name?: string;
   url?: string;
   value: number;
   size: number;
