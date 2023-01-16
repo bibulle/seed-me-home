@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.4.0](https://github.com/bibulle/seed-me-home/compare/v1.3.0...v1.4.0) (2023-01-16)
+
+
+### Features
+
+* add downloader for direct download (fix [#21](https://github.com/bibulle/seed-me-home/issues/21)) ([74dff5c](https://github.com/bibulle/seed-me-home/commit/74dff5c98b47b167102879e99e3ae0b363bf6e18))
+* add the directDownload objects(Fixes [#21](https://github.com/bibulle/seed-me-home/issues/21)) ([7189e4e](https://github.com/bibulle/seed-me-home/commit/7189e4e296e85674827a829566dd219d60d823f1))
+* change version interceptors to environment interceptors ([3389efb](https://github.com/bibulle/seed-me-home/commit/3389efb7e623114072f0f4a0cc0a8cde59572fb6))
+
+
+### Bug Fixes
+
+* import fs and path the "right way" ([2171f43](https://github.com/bibulle/seed-me-home/commit/2171f43d90292748c12fff5b80f93c320a2a8b8e))
+* remove some eslint disable not needed anymore ([286f4e8](https://github.com/bibulle/seed-me-home/commit/286f4e85b06a9d446fdd86987f5772509eec8740))
+
 ## [1.3.0](https://github.com/bibulle/seed-me-home/compare/v1.2.0...v1.3.0) (2023-01-11)
 
 
