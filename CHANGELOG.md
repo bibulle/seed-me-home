@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.2](https://github.com/bibulle/seed-me-home/compare/v1.4.1...v1.4.2) (2023-01-16)
+
+
+### Bug Fixes
+
+* allow mv dowloaded file in different filesystem ([b65ea33](https://github.com/bibulle/seed-me-home/commit/b65ea33f8757105eacd9dc7f0ca50c0800cea5c8))
+* ignore temporary download ([32d52b0](https://github.com/bibulle/seed-me-home/commit/32d52b0419fe6b4efb8c5d903233e3dce671c6ed))
+* upgrade downladed size more often ([7a257a0](https://github.com/bibulle/seed-me-home/commit/7a257a00723c215f88b2164149310f48e0a1104e))
+
 ### [1.4.1](https://github.com/bibulle/seed-me-home/compare/v1.4.0...v1.4.1) (2023-01-16)
 
 
