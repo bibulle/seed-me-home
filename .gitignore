@@ -48,3 +48,5 @@ progress
 progress_test
 nas
 nas_test
+/*.mkv
+/*.mp4
