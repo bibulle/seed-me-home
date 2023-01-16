@@ -8,10 +8,15 @@
     flex: 1 1 20%;
   }
 
-  seed-me-home-rtorrent-torrents {
-    padding: 0.5em;
+  .content {
+    display: flex;
     min-width: 0;
     flex: 1 1 80%;
+    flex-direction: column;
+  }
+  seed-me-home-rtorrent-torrents,
+  seed-me-home-direct-download {
+    padding: 0.5em;
   }
 
   @media only screen and (max-width: 800px) {
@@ -20,7 +25,8 @@
     seed-me-home-rtorrent-status {
       flex: 1 1 100%;
     }
-    seed-me-home-rtorrent-torrents {
+    seed-me-home-rtorrent-torrents,
+    seed-me-home-direct-download {
       flex: 1 1 100%;
     }
   }

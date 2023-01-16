@@ -21,6 +21,8 @@
 
   "title.rtorrent.status": "Seedbox status",
   "title.rtorrent.torrents": "Torrents",
+  "title.rtorrent.direct-download": "Direct download",
+  "title.rtorrent.url": "Url to download",
   "title.rtorrent.remove": "Remove and erase",
   "title.files.cleaner": "Files cleaners",
   "title.files.status": "Files status",
@@ -41,6 +43,9 @@
   "seed.local.download": "Local download",
   "seed.done": "Seed done",
   "seed.wont.be.downloaded": "This seed won't be downloaded locally",
+  "direct.paused": "Direct download paused",
+  "direct.download": "Direct download downloading",
+  "direct.done": "Direct download done",
   "file.move": "Move to NAS",
   "file.move.target": "Target file name",
   "file.move.movie": "movies",

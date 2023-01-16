@@ -8,9 +8,10 @@ import { FilesModule } from './files/files.module';
 import { HealthModule } from './health/health.module';
 import { RefreshTokenInterceptor } from './interceptors/refresh-token.interceptor';
 import { RtorrentModule } from './rtorrent/rtorrent.module';
+import { DirectModule } from './direct/direct.module';
 
 @Module({
-  imports: [RtorrentModule, AuthenticationModule, FilesModule, HealthModule, ConfigModule],
+  imports: [RtorrentModule, AuthenticationModule, FilesModule, HealthModule, ConfigModule, DirectModule],
   controllers: [AppController],
   providers: [
     //FtpSeedService

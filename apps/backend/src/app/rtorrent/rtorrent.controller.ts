@@ -38,6 +38,7 @@ export class RtorrentController {
     let shouldBool = false;
     try {
       shouldBool = JSON.parse(should);
+      // eslint-disable-next-line no-empty
     } catch (e) {}
 
     return this.rtorrentService.switchShouldDownload(hash, shouldBool);

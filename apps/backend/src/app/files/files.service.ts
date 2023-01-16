@@ -86,7 +86,7 @@ export class FilesService {
         };
 
         if (!result.isDirectory) {
-          const progress = this.progressionService.getProgression(result.fullpath);
+          const progress = this.progressionService.getProgressionFromPath(result.fullpath);
           if (progress) {
             result.size = +progress.size;
             result.downloaded = progress.value;

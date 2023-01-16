@@ -1,6 +1,7 @@
 export * from './lib/api-return';
 export * from './lib/rtorrent-status';
 export * from './lib/rtorrent-torrent';
+export * from './lib/direct-download';
 export * from './lib/environment';
 export * from './lib/user';
 export * from './lib/files-status';
