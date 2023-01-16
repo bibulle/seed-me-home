@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { Interval } from '@nestjs/schedule';
 import { Progression, ProgressionType } from '@seed-me-home/models';
 import { ProgressionService } from '@seed-me-home/progression';
-import { renameSync, statSync } from 'fs';
+import { copyFile, copyFileSync, renameSync, statSync, unlink, unlinkSync } from 'fs';
 import { join } from 'path';
 import { Uptobox, UptoboxApi } from 'uptobox-ts';
 
@@ -149,24 +149,25 @@ export class DirectDownloadService {
         .then((mess) => {
           this.logger.debug(`${progression.url} => ${mess}`);
 
-          try {
-            renameSync(progression.name, join(this.pathDownload, progression.name));
-          } catch (e) {
-            return reject(e);
-          }
-
-          if (mess === 'Invalid parameter') {
-            reject(mess);
+          if (mess === 'File saved') {
+            copyFile(progression.name, join(this.pathDownload, progression.name), (err) => {
+              if (err) {
+                reject(err);
+              } else {
+                unlink(progression.name, (err) => {
+                  if (err) {
+                    reject(err);
+                  } else {
+                    resolve();
+                  }
+                });
+              }
+            });
           } else {
-            resolve();
+            reject(mess);
           }
         })
         .catch((reason) => {
-          try {
-            renameSync(progression.name, join(this.pathDownload, progression.name));
-            // eslint-disable-next-line no-empty
-          } catch {}
-
           this.logger.error(reason);
           reject(reason);
         });
