@@ -106,7 +106,7 @@ export class ProgressionService {
       shouldDownload: previous ? previous.shouldDownload : !size || size < ProgressionService.SIZE_LIMIT_DOWNLOAD,
       fullPath: type === ProgressionType.TORRENT ? fullPathOrUrl : undefined,
       url: type === ProgressionType.DIRECT ? fullPathOrUrl : undefined,
-      name: name ? name : previous.name,
+      name: name ? name : previous ? previous.name : undefined,
       downloadStarted: downloadStarted,
     };
 
