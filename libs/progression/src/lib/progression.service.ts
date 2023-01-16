@@ -1,8 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable, Logger } from '@nestjs/common';
-import { Progression } from '@seed-me-home/models';
+import { Progression, ProgressionType } from '@seed-me-home/models';
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, unlinkSync, writeFileSync } from 'fs';
-import { join, normalize, resolve } from 'path';
+import { join } from 'path';
 
 @Injectable()
 export class ProgressionService {
@@ -58,11 +57,19 @@ export class ProgressionService {
     });
   }
 
+  removeProgressionFromUrl(url: URL) {
+    const fullPath = this.cleanFullFileName(url.toString());
+
+    const fileTrg = this._getProgressionFileName(fullPath);
+
+    unlinkSync(fileTrg);
+  }
+
   getPathLocal() {
     return join(__dirname, '../../..');
   }
 
-  getProgression(fullPath: string): Progression {
+  getProgressionFromPath(fullPath: string): Progression {
     fullPath = this.cleanFullFileName(fullPath);
 
     const fileTrg = this._getProgressionFileName(fullPath);
@@ -74,6 +81,9 @@ export class ProgressionService {
       if (progress.downloadStarted) {
         progress.downloadStarted = new Date(progress.downloadStarted);
       }
+      if (!progress.type) {
+        progress.type = ProgressionType.TORRENT;
+      }
 
       return progress;
     } catch (e) {
@@ -81,28 +91,35 @@ export class ProgressionService {
     }
   }
 
-  setProgression(fullPath: string, value: number, size: number, downloadStarted: Date) {
-    const previous = this.getProgression(fullPath);
+  getProgressionFromUrl(url: URL): Progression {
+    return this.getProgressionFromPath(url.toString());
+  }
+
+  setProgression(type: ProgressionType, fullPathOrUrl: string, value: number, size: number, downloadStarted: Date, name?: string) {
+    const previous = this.getProgressionFromPath(fullPathOrUrl);
 
     const obj: Progression = {
+      type: type,
       value: value,
       size: size,
       progress: Math.round((100 * value) / Math.max(1, size)),
-      shouldDownload: previous ? previous.shouldDownload : size < ProgressionService.SIZE_LIMIT_DOWNLOAD,
-      fullPath: fullPath,
+      shouldDownload: previous ? previous.shouldDownload : !size || size < ProgressionService.SIZE_LIMIT_DOWNLOAD,
+      fullPath: type === ProgressionType.TORRENT ? fullPathOrUrl : undefined,
+      url: type === ProgressionType.DIRECT ? fullPathOrUrl : undefined,
+      name: name ? name : previous.name,
       downloadStarted: downloadStarted,
     };
 
-    this._saveProgression(fullPath, obj);
+    this._saveProgression(fullPathOrUrl, obj);
   }
 
-  switchShouldDownload(fullPath: string, size: number, should: boolean) {
+  switchShouldDownload(type: ProgressionType, fullPath: string, size: number, should: boolean) {
     fullPath = this.cleanFullFileName(fullPath);
 
-    let data = this.getProgression(fullPath);
+    let data = this.getProgressionFromPath(fullPath);
     if (!data) {
-      this.setProgression(fullPath, 0, size, undefined);
-      data = this.getProgression(fullPath);
+      this.setProgression(type, fullPath, 0, size, undefined);
+      data = this.getProgressionFromPath(fullPath);
     }
 
     data.shouldDownload = should;
@@ -110,6 +127,7 @@ export class ProgressionService {
   }
 
   private _saveProgression(fullPath: string, data: Progression) {
+    // this.logger.debug(JSON.stringify(data, null, 2));
     fullPath = this.cleanFullFileName(fullPath);
 
     const fileTrg = this._getProgressionFileName(fullPath);

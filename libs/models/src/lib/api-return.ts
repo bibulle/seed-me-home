@@ -2,12 +2,14 @@ import { FilesFile } from './files-file';
 import { FilesStatus } from './files-status';
 import { RtorrentStatus } from './rtorrent-status';
 import { RtorrentTorrent } from './rtorrent-torrent';
-import { Version } from './version';
+import { Environment } from './environment';
+import { DirectDownload } from './direct-download';
 
 export interface ApiReturn {
-  version: Version;
-  data: RtorrentStatus | FilesStatus | FilesFile | RtorrentTorrent[] | MyToken;
-  refreshToken: string;
+  ok?: string;
+  environment?: Environment;
+  data?: RtorrentStatus | FilesStatus | FilesFile | RtorrentTorrent[] | DirectDownload[] | MyToken;
+  refreshToken?: string;
 }
 
 export interface MyToken {

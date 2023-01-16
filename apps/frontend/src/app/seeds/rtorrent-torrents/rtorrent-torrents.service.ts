@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ApiReturn, RtorrentTorrent } from '@seed-me-home/models';
-import { NGXLogger } from 'ngx-logger';
 import { Observable, ReplaySubject, Subject } from 'rxjs';
 import { NotificationService } from '../../notification/notification.service';
 import { RefreshService } from '../../refresh/refresh.service';
@@ -18,12 +17,7 @@ export class RtorrentTorrentsService {
   private readonly currentTorrentsSubject: Subject<RtorrentTorrent[]>;
 
   //noinspection JSUnusedLocalSymbols
-  constructor(
-    private readonly httpClient: HttpClient,
-    private readonly _notificationService: NotificationService,
-    private readonly logger: NGXLogger,
-    private readonly _refreshService: RefreshService
-  ) {
+  constructor(private readonly httpClient: HttpClient, private readonly _notificationService: NotificationService, private readonly _refreshService: RefreshService) {
     this.currentTorrentsSubject = new ReplaySubject<RtorrentTorrent[]>();
   }
 

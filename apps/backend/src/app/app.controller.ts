@@ -6,9 +6,6 @@ import { MessageLog, MessageLogLevel } from '@seed-me-home/models';
 export class AppController {
   readonly logger = new Logger('FrontEnd');
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  constructor() {}
-
   @Post('/logs')
   createLog(@Body() message: MessageLog) {
     let mess = message.message;

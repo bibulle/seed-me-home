@@ -1,14 +1,13 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { HttpException, HttpStatus, Injectable, Logger, StreamableFile } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { FileMove, FilesFile, FilesStatus, MoveType } from '@seed-me-home/models';
 import { Response } from 'express';
-import * as fs from 'fs';
-import * as path from 'path';
 
 import { ProgressionService } from '@seed-me-home/progression';
 import * as disk from 'diskusage';
+import { createReadStream, existsSync, lstatSync, readdirSync, realpathSync, rmdirSync, stat, statSync, unlinkSync } from 'fs';
 import * as mv from 'mv';
+import { basename, dirname, join } from 'path';
 
 @Injectable()
 export class FilesService {
@@ -19,14 +18,13 @@ export class FilesService {
   }
 
   getStatus(): Promise<FilesStatus> {
-    //noinspection JSUnusedLocalSymbols
     return new Promise<FilesStatus>((resolve) => {
       Promise.all([
         disk.check(this.progressionService.getPathLocal()).catch((reason) => {
           this.logger.error(reason);
         }),
         disk.check(this._configService.get('PATH_NAS')).catch((reason) => {
-          this.logger.error(`Not found ${path.resolve(this._configService.get('PATH_NAS'))}`);
+          this.logger.error(`Not found ${resolve(this._configService.get('PATH_NAS'))}`);
           this.logger.error(reason);
         }),
       ]).then((infos) => {
@@ -66,7 +64,7 @@ export class FilesService {
       if (level > 20) {
         reject('Too many levels');
       }
-      fs.stat(filePath, (err, stats) => {
+      stat(filePath, (err, stats) => {
         if (err) {
           this.logger.error(err);
           return reject(new HttpException('File not found', HttpStatus.NOT_FOUND));
@@ -76,8 +74,8 @@ export class FilesService {
 
         const result: FilesFile = {
           downloadStarted: undefined,
-          path: path.basename(filePath),
-          fullpath: fs.realpathSync(filePath),
+          path: basename(filePath),
+          fullpath: realpathSync(filePath),
           size: stats.size,
           downloaded: stats.size,
           isDirectory: stats.isDirectory(),
@@ -88,7 +86,7 @@ export class FilesService {
         };
 
         if (!result.isDirectory) {
-          const progress = this.progressionService.getProgression(result.fullpath);
+          const progress = this.progressionService.getProgressionFromPath(result.fullpath);
           if (progress) {
             result.size = +progress.size;
             result.downloaded = progress.value;
@@ -100,10 +98,10 @@ export class FilesService {
           result.size = 0;
           result.downloaded = 0;
           const promises = [];
-          fs.readdirSync(filePath).forEach((child) => {
+          readdirSync(filePath).forEach((child) => {
             //console.log(path.join(root, child));
             if (!child.startsWith('.')) {
-              promises.push(this._getFiles(path.join(filePath, child), level + 1));
+              promises.push(this._getFiles(join(filePath, child), level + 1));
             }
           });
           Promise.all(promises)
@@ -135,7 +133,7 @@ export class FilesService {
 
       // File exist ?
       try {
-        fullPath = fs.realpathSync(fullPath);
+        fullPath = realpathSync(fullPath);
       } catch (e) {
         return reject(new HttpException('File not found', HttpStatus.NOT_FOUND));
       }
@@ -162,17 +160,17 @@ export class FilesService {
   }
 
   private _deleteFolderRecursive(fullPath: string) {
-    if (fs.existsSync(fullPath)) {
-      if (fs.lstatSync(fullPath).isDirectory()) {
+    if (existsSync(fullPath)) {
+      if (lstatSync(fullPath).isDirectory()) {
         // Directory : remove the content
-        fs.readdirSync(fullPath).forEach((file) => {
-          const curPath = path.join(fullPath, file);
+        readdirSync(fullPath).forEach((file) => {
+          const curPath = join(fullPath, file);
           this._deleteFolderRecursive(curPath);
         });
-        fs.rmdirSync(fullPath);
+        rmdirSync(fullPath);
       } else {
         // File : simply remove it
-        fs.unlinkSync(fullPath);
+        unlinkSync(fullPath);
       }
     }
   }
@@ -187,14 +185,14 @@ export class FilesService {
 
       // Nas exist ?
       try {
-        fs.realpathSync(this._configService.get('PATH_NAS'));
+        realpathSync(this._configService.get('PATH_NAS'));
       } catch (e) {
         return reject(new HttpException('Nas not found', HttpStatus.NOT_FOUND));
       }
 
       // File exist ?
       try {
-        fileMove.sourceFullPath = fs.realpathSync(fileMove.sourceFullPath);
+        fileMove.sourceFullPath = realpathSync(fileMove.sourceFullPath);
       } catch (e) {
         return reject(new HttpException('File not found', HttpStatus.NOT_FOUND));
       }
@@ -207,17 +205,17 @@ export class FilesService {
       }
 
       // calculate target full path
-      let fullPathTarget = path.join(this._configService.get('PATH_NAS'), this._configService.get('PATH_MOVIES'), fileMove.targetPath);
+      let fullPathTarget = join(this._configService.get('PATH_NAS'), this._configService.get('PATH_MOVIES'), fileMove.targetPath);
       if (fileMove.targetType === MoveType.series) {
-        fullPathTarget = path.join(this._configService.get('PATH_NAS'), this._configService.get('PATH_SERIES'), fileMove.targetPath);
+        fullPathTarget = join(this._configService.get('PATH_NAS'), this._configService.get('PATH_SERIES'), fileMove.targetPath);
       }
 
       // modify target full path depending on case
       const dirs = [];
-      let dir = path.dirname(fullPathTarget);
+      let dir = dirname(fullPathTarget);
       while (dir.length !== 1) {
         dirs.push(dir);
-        dir = path.dirname(dir);
+        dir = dirname(dir);
       }
       let replaced = '';
       let replacer = '';
@@ -225,14 +223,14 @@ export class FilesService {
       dirs.reverse().forEach((d0) => {
         if (previousFound) {
           const d = d0.replace(replaced, replacer);
-          if (!fs.existsSync(d)) {
+          if (!existsSync(d)) {
             // search in parent (with no case)
             previousFound = false;
-            fs.readdirSync(path.dirname(d)).forEach((f) => {
-              if (path.join(path.dirname(d), f).toLowerCase() === d.toLowerCase()) {
+            readdirSync(dirname(d)).forEach((f) => {
+              if (join(dirname(d), f).toLowerCase() === d.toLowerCase()) {
                 previousFound = true;
                 replaced = d0;
-                replacer = path.join(path.dirname(d), f);
+                replacer = join(dirname(d), f);
               }
             });
           }
@@ -270,25 +268,24 @@ export class FilesService {
 
     let fullPath = '';
     try {
-      fullPath = fs.realpathSync(filePath);
+      fullPath = realpathSync(filePath);
     } catch (e) {
       throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
     }
     if (!this._fileModificationAuthorized(fullPath)) {
       throw new HttpException('Not Authorized', HttpStatus.UNAUTHORIZED);
     }
-    const fullPathNas = fs.realpathSync(filePath);
-    fs.statSync(fullPath);
+    statSync(fullPath);
 
     // this.logger.debug(`  --> ${fullPath}`);
 
     res.set({
       // 'Content-Type': 'video/x-matroska',
       'Thumbnail-control': 'public, max-age=31536000',
-      'Content-Disposition': `attachment; filename="${path.basename(filePath)}"`,
+      'Content-Disposition': `attachment; filename="${basename(filePath)}"`,
     });
 
-    const readStream = fs.createReadStream(fullPath);
+    const readStream = createReadStream(fullPath);
 
     // readStream.on('data', (chunk) => console.log(chunk)); // <--- the data log gets printed
     // readStream.on('end', () => console.log('done'));
@@ -301,11 +298,11 @@ export class FilesService {
     // File in downloaded or Nas ?
     let path_local, path_nas;
     try {
-      path_local = fs.realpathSync(this._configService.get('PATH_DOWNLOAD'));
+      path_local = realpathSync(this._configService.get('PATH_DOWNLOAD'));
       // eslint-disable-next-line no-empty
     } catch (e) {}
     try {
-      path_nas = fs.realpathSync(this._configService.get('PATH_NAS'));
+      path_nas = realpathSync(this._configService.get('PATH_NAS'));
       // eslint-disable-next-line no-empty
     } catch (e) {}
 

@@ -1,0 +1,46 @@
+<div *ngIf="index===0" class="header">
+  <span class="done" (click)="toggleSort('progress')" [class.unselected]="(sortItem!=='progress')">
+    <mat-icon *ngIf="(sortItem!=='progress') || (sortDirection!=='asc')">keyboard_arrow_down</mat-icon>
+    <mat-icon *ngIf="(sortItem==='progress') && (sortDirection==='asc')">keyboard_arrow_up</mat-icon>
+    {{'progress' | translate}}
+  </span>
+  <span class="size"  (click)="toggleSort('size')" [class.unselected]="(sortItem!=='size')">
+    <mat-icon *ngIf="(sortItem!=='size') || (sortDirection!=='asc')">keyboard_arrow_down</mat-icon>
+    <mat-icon *ngIf="(sortItem==='size') && (sortDirection==='asc')">keyboard_arrow_up</mat-icon>
+    {{'size' | translate}}
+  </span>
+  <span class="date" (click)="toggleSort('date')" [class.unselected]="(sortItem!=='date')">
+    <mat-icon *ngIf="(sortItem!=='date') || (sortDirection!=='asc')">keyboard_arrow_down</mat-icon>
+    <mat-icon *ngIf="(sortItem==='date') && (sortDirection==='asc')">keyboard_arrow_up</mat-icon>
+    {{'added' | translate}}
+  </span>
+</div>
+<div class="title">
+  <mat-icon *ngIf="download && (download.downloaded === 0)"
+            class="paused"
+            color="warn"
+            title="{{ 'direct.paused' | translate}}"
+  >pause</mat-icon>
+  <mat-icon *ngIf="download && (download.downloaded !== 0) && (download.downloaded !== download.size)"
+            class="local-download"
+            color="primary"
+            title="{{ 'direct.download' | translate}}"
+  >save_alt</mat-icon>
+  <mat-icon *ngIf="download && (download.downloaded !== 0) && (download.downloaded === download.size)"
+            color="primary"
+            title="{{ 'direct.done' | translate}}"
+  >done</mat-icon>
+  <span title="{{download?.name}}">{{download?.name}}</span>
+  <button mat-icon-button [matMenuTriggerFor]="moreActionMenu" #menuTrigger='matMenuTrigger'><mat-icon>more_horiz</mat-icon></button>
+  <mat-menu #moreActionMenu="matMenu" xPosition="before">
+    <button mat-menu-item (click)="remove()"><mat-icon>delete_forever</mat-icon>{{ 'direct.erase' | translate}}</button>
+  </mat-menu>
+</div>
+<div class="progress">
+  <mat-progress-bar mode="determinate" title="{{(100 * download?.downloaded/download?.size).toFixed(0) + '%'}}" value="{{100 * download?.downloaded/download?.size}}" color="{{download?.downloaded === download?.size ? 'primary' : 'warn'}}"></mat-progress-bar>
+</div>
+<div class="info">
+  <span class="done">&nbsp;</span>
+  <span class="size">{{download?.size | bytesSize}}</span>
+  <span class="date">{{formatDate(download?.downloadStarted.getTime())}}</span>
+</div>

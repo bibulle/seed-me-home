@@ -1,12 +1,13 @@
 import { Logger, LogLevel } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import * as cors from 'cors';
 import * as expressSession from 'express-session';
 import * as passport from 'passport';
 
 import { AppModule } from './app/app.module';
+import { EnvironmentInterceptor } from './app/interceptors/environment.interceptor';
 import { LoggingInterceptor } from './app/interceptors/logging.interceptor';
-import { VersionInterceptor } from './app/interceptors/version.interceptor';
 
 async function bootstrap() {
   let logger_levels: LogLevel[] = ['error', 'warn', 'log'];
@@ -27,17 +28,14 @@ async function bootstrap() {
     }
   }
 
-  console.log(
-    `LOG_LEVEL : ${
-      process.env.LOG_LEVEL ? process.env.LOG_LEVEL : 'LOG (by default)'
-    }`
-  );
+  console.log(`LOG_LEVEL : ${process.env.LOG_LEVEL ? process.env.LOG_LEVEL : 'LOG (by default)'}`);
 
   const app = await NestFactory.create(AppModule, {
     logger: logger_levels,
   });
 
-  app.useGlobalInterceptors(new LoggingInterceptor(), new VersionInterceptor());
+  const config = app.get<ConfigService>(ConfigService);
+  app.useGlobalInterceptors(new LoggingInterceptor(), new EnvironmentInterceptor(config));
 
   // Add cors
   app.use(cors());

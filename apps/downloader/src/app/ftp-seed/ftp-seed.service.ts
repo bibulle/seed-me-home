@@ -1,10 +1,9 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Interval } from '@nestjs/schedule';
-import { Progression } from '@seed-me-home/models';
+import { Progression, ProgressionType } from '@seed-me-home/models';
 import { ProgressionService } from '@seed-me-home/progression';
-import { existsSync, mkdirSync, readdirSync } from 'fs';
+import { existsSync, mkdirSync } from 'fs';
 import { dirname, join } from 'path';
 
 @Injectable()
@@ -49,7 +48,7 @@ export class FtpSeedService {
   }
 
   @Interval(40 * 1000)
-  intervalJob_FtpSeedService() {
+  intervalJob() {
     // this.logger.debug(`FtpSeedService interval ${FtpSeedService.downloadCurrentList.length} ${FtpSeedService.downloadWaitingList.length}`);
     const shouldDownload: Progression[] = [];
 
@@ -58,10 +57,10 @@ export class FtpSeedService {
 
     const files = this.progressionService.getAll();
     files.forEach((file) => {
-      const progress = this.progressionService.getProgression(file);
+      const progress = this.progressionService.getProgressionFromPath(file);
       if (!progress) {
         this.logger.warn('Cannot read progression for file : ' + file);
-      } else {
+      } else if (progress.type === ProgressionType.TORRENT) {
         if (progress.shouldDownload && progress.progress !== 100) {
           // test if in currentDownload
           if (!FtpSeedService.downloadCurrentList.includes(progress.fullPath)) {
@@ -77,7 +76,9 @@ export class FtpSeedService {
       if (ret !== 0) {
         return ret;
       } else {
-        return a.fullPath.localeCompare(b.fullPath);
+        const nameA = a.fullPath ? a.fullPath : a.url;
+        const nameB = b.fullPath ? b.fullPath : b.url;
+        return nameA.localeCompare(nameB);
       }
     });
 
@@ -171,13 +172,13 @@ export class FtpSeedService {
                 this.logger.debug(msg);
               },
               step: (total_transferred: number, chunk: number, total: number) => {
-                const progress = that.progressionService.getProgression(fullPath);
+                const progress = that.progressionService.getProgressionFromPath(fullPath);
                 if (!progress.shouldDownload) {
                   this.logger.log('Asked to stop downloading : ' + fullPath);
-                  that.progressionService.setProgression(fullPath, 0, total, undefined);
+                  that.progressionService.setProgression(ProgressionType.TORRENT, fullPath, 0, total, undefined);
                   sftp.end();
                 } else {
-                  that.progressionService.setProgression(fullPath, total_transferred, total, downloadStarted);
+                  that.progressionService.setProgression(ProgressionType.TORRENT, fullPath, total_transferred, total, downloadStarted);
                 }
               },
             },

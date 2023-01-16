@@ -1,0 +1,18 @@
+<mat-card appearance="outlined">
+  <mat-card-header>{{'title.rtorrent.direct-download' | translate}}</mat-card-header>
+  <mat-card-content>
+    <div class="add-urls">
+    <mat-form-field appearance="fill">
+      <mat-label>{{ 'title.rtorrent.url' | translate }}</mat-label>
+      <input matInput (keyup)="newUrlChange($event.target.value)" [(ngModel)]="newUrl">
+    </mat-form-field>
+    <button mat-fab color="primary" [disabled]="!newUrlOk" (click)="addUrl()"><mat-icon>add</mat-icon></button>
+  </div>
+    <seed-me-home-direct-download-item *ngFor="let download of directDownloads; let i = index"
+                               [index]="i"
+                               [download]="download"
+                               [sortItem]="sortItem"
+                               [sortDirection]="sortDirection"
+                               (toggleSortEvent)="toggleSort($event)"></seed-me-home-direct-download-item>
+  </mat-card-content>
+</mat-card>

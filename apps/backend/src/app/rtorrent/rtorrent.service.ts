@@ -1,14 +1,13 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import * as _ from 'lodash';
-import { Progression, RTorrentFile, RtorrentStatus, RtorrentTorrent } from '@seed-me-home/models';
 import { Interval } from '@nestjs/schedule';
+import { ProgressionType, RTorrentFile, RtorrentStatus, RtorrentTorrent } from '@seed-me-home/models';
+import { ProgressionService } from '@seed-me-home/progression';
+import * as disk from 'diskusage';
+import * as _ from 'lodash';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const Rtorrent = require('@electorrent/node-rtorrent');
-import * as disk from 'diskusage';
-import { ProgressionService } from '@seed-me-home/progression';
 
 @Injectable()
 export class RtorrentService {
@@ -132,7 +131,7 @@ export class RtorrentService {
               let total_shouldDownload = false;
               let total_downloadStarted: Date;
               torrent.files.forEach((file) => {
-                const progress = this.progressionService.getProgression(file.fullpath);
+                const progress = this.progressionService.getProgressionFromPath(file.fullpath);
                 if (progress) {
                   file.shouldDownload = progress.shouldDownload;
                   file.downloaded = progress.value;
@@ -145,7 +144,7 @@ export class RtorrentService {
                 } else {
                   file.downloaded = 0;
                   if (file['completed_chunks'] === file['chunks']) {
-                    this.progressionService.setProgression(file.fullpath, 0, file.size, undefined);
+                    this.progressionService.setProgression(ProgressionType.TORRENT, file.fullpath, 0, file.size, undefined);
                   }
                 }
                 this.progressionService.tellProgressionUseful(file.fullpath);
@@ -259,7 +258,7 @@ export class RtorrentService {
         }
 
         files.forEach((f) => {
-          this.progressionService.switchShouldDownload(f.fullpath, f.size, should);
+          this.progressionService.switchShouldDownload(ProgressionType.TORRENT, f.fullpath, f.size, should);
         });
         //this.logger.debug(files);
         this.getTorrents()

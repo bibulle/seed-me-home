@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
 import { Component, EventEmitter, Inject, Input, NgModule, OnInit, Output, ViewChild } from '@angular/core';
 import { RtorrentTorrent } from '@seed-me-home/models';
 import { MatIconModule } from '@angular/material/icon';
@@ -37,6 +36,7 @@ export class RtorrentTorrentItemComponent implements OnInit {
 
   constructor(private _translateService: TranslateService, private _rtorrentTorrentsService: RtorrentTorrentsService, public dialog: MatDialog) {}
 
+  // eslint-disable-next-line @angular-eslint/no-empty-lifecycle-method, @typescript-eslint/no-empty-function
   ngOnInit() {}
 
   formatDate(dateMilli: number) {
