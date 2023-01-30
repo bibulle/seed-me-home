@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.3](https://github.com/bibulle/seed-me-home/compare/v1.4.2...v1.4.3) (2023-01-30)
+
+
+### Features
+
+* seed could be disabled ([b8ceca1](https://github.com/bibulle/seed-me-home/commit/b8ceca122a02576db5fecf764fd98c3a9dbfedfb))
+
+
+### Bug Fixes
+
+* data should exists ([80b9ae6](https://github.com/bibulle/seed-me-home/commit/80b9ae66c29b9f1243bfccb050542eb67ab86ae1))
+
 ### [1.4.2](https://github.com/bibulle/seed-me-home/compare/v1.4.1...v1.4.2) (2023-01-16)
 
 
