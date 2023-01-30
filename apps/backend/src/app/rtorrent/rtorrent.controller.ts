@@ -10,7 +10,7 @@ export class RtorrentController {
 
   @Get('status')
   @UseGuards(AuthGuard('jwt'))
-  async getStatus(): Promise<RtorrentStatus> {
+  async getStatus(): Promise<RtorrentStatus | void> {
     return this.rtorrentService.getStatus();
   }
 

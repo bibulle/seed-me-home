@@ -1,4 +1,4 @@
-<mat-card appearance="outlined">
+<mat-card appearance="outlined" *ngIf="rtorrentStatus?.down_rate">
   <mat-card-header>{{'title.rtorrent.status' | translate}}</mat-card-header>
   <mat-card-content>
     <div>

@@ -13,9 +13,14 @@ const Rtorrent = require('@electorrent/node-rtorrent');
 export class RtorrentService {
   readonly logger = new Logger(RtorrentService.name);
 
+  private seedEnabled = false;
+
   private _rtorrent;
 
   constructor(private _configService: ConfigService, private progressionService: ProgressionService) {
+    if (this._configService.get('SEEDBOX_MODE')) {
+      this.seedEnabled = true;
+    }
     this.progressionService.init(this._configService.get('PATH_PROGRESS'), this._configService.get('SEEDBOX_FTP_PATH'), this._configService.get('PATH_DOWNLOAD'));
   }
 
@@ -52,12 +57,15 @@ export class RtorrentService {
     });
   }
 
-  getStatus(): Promise<RtorrentStatus> {
+  getStatus(): Promise<RtorrentStatus | void> {
     this._initialize();
-    return new Promise<RtorrentStatus>((resolve, reject) => {
+    return new Promise<RtorrentStatus | void>((resolve, reject) => {
       Promise.all([
         // get torrent status
-        new Promise<RtorrentStatus>((resolve1, reject1) => {
+        new Promise<RtorrentStatus | void>((resolve1, reject1) => {
+          if (!this.seedEnabled) {
+            return resolve();
+          }
           this._getAll((err, status) => {
             if (err) {
               //this.logger.debug(err);
@@ -93,6 +101,9 @@ export class RtorrentService {
   getTorrents(): Promise<RtorrentTorrent[]> {
     this._initialize();
     return new Promise<RtorrentTorrent[]>((resolve, reject) => {
+      if (!this.seedEnabled) {
+        return resolve([]);
+      }
       this._getAll((err, all) => {
         if (err) {
           reject(err);
@@ -295,11 +306,12 @@ export class RtorrentService {
   @Interval(60 * 1000)
   intervalJob_RtorrentService() {
     // this.logger.debug('intervalJob_RtorrentService');
-
-    this.getTorrents().catch((err) => {
-      this.logger.error('getTorrents error');
-      this.logger.error(err);
-    });
+    if (this.seedEnabled) {
+      this.getTorrents().catch((err) => {
+        this.logger.error('getTorrents error');
+        this.logger.error(err);
+      });
+    }
 
     return false;
   }

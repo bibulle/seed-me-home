@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
 import { BytesSizeModule } from '../../utils/pipes/bytes-size.pipe';
 import { MatCardModule } from '@angular/material/card';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'seed-me-home-rtorrent-status',
@@ -34,7 +35,7 @@ export class RtorrentStatusComponent implements OnInit, OnDestroy {
 }
 
 @NgModule({
-  imports: [MatCardModule, TranslateModule, MatIconModule, BytesSizeModule],
+  imports: [MatCardModule, TranslateModule, MatIconModule, BytesSizeModule, CommonModule],
   declarations: [RtorrentStatusComponent],
   providers: [RtorrentStatusService],
   exports: [RtorrentStatusComponent],

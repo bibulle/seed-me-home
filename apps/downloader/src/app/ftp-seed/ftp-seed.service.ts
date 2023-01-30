@@ -16,6 +16,8 @@ export class FtpSeedService {
 
   // Client = require('ssh2');
 
+  private seedEnabled = false;
+
   private _ftpConfig: {
     host: string;
     port: number;
@@ -28,6 +30,9 @@ export class FtpSeedService {
   private _pathDownload: string;
 
   constructor(private _configService: ConfigService, private progressionService: ProgressionService) {
+    if (this._configService.get('SEEDBOX_MODE')) {
+      this.seedEnabled = true;
+    }
     this.progressionService.init(this._configService.get('PATH_PROGRESS'), this._configService.get('SEEDBOX_FTP_PATH'), this._configService.get('PATH_DOWNLOAD'));
   }
 
@@ -52,42 +57,43 @@ export class FtpSeedService {
     // this.logger.debug(`FtpSeedService interval ${FtpSeedService.downloadCurrentList.length} ${FtpSeedService.downloadWaitingList.length}`);
     const shouldDownload: Progression[] = [];
 
-    // read all files
     this._initialize();
 
-    const files = this.progressionService.getAll();
-    files.forEach((file) => {
-      const progress = this.progressionService.getProgressionFromPath(file);
-      if (!progress) {
-        this.logger.warn('Cannot read progression for file : ' + file);
-      } else if (progress.type === ProgressionType.TORRENT) {
-        if (progress.shouldDownload && progress.progress !== 100) {
-          // test if in currentDownload
-          if (!FtpSeedService.downloadCurrentList.includes(progress.fullPath)) {
-            shouldDownload.push(progress);
+    if (this.seedEnabled) {
+      // read all files
+      const files = this.progressionService.getAll();
+      files.forEach((file) => {
+        const progress = this.progressionService.getProgressionFromPath(file);
+        if (!progress) {
+          this.logger.warn('Cannot read progression for file : ' + file);
+        } else if (progress.type === ProgressionType.TORRENT) {
+          if (progress.shouldDownload && progress.progress !== 100) {
+            // test if in currentDownload
+            if (!FtpSeedService.downloadCurrentList.includes(progress.fullPath)) {
+              shouldDownload.push(progress);
+            }
           }
         }
-      }
-    });
+      });
 
-    // sort by progress (already started first) and then by path
-    shouldDownload.sort((a, b) => {
-      const ret = b.progress - a.progress;
-      if (ret !== 0) {
-        return ret;
-      } else {
-        const nameA = a.fullPath ? a.fullPath : a.url;
-        const nameB = b.fullPath ? b.fullPath : b.url;
-        return nameA.localeCompare(nameB);
-      }
-    });
+      // sort by progress (already started first) and then by path
+      shouldDownload.sort((a, b) => {
+        const ret = b.progress - a.progress;
+        if (ret !== 0) {
+          return ret;
+        } else {
+          const nameA = a.fullPath ? a.fullPath : a.url;
+          const nameB = b.fullPath ? b.fullPath : b.url;
+          return nameA.localeCompare(nameB);
+        }
+      });
 
-    FtpSeedService.downloadWaitingList = shouldDownload;
+      FtpSeedService.downloadWaitingList = shouldDownload;
 
-    [...Array(FtpSeedService.PARALLELED_DOWNLOAD_MAX)].map(() => {
-      this._startADownload();
-    });
-
+      [...Array(FtpSeedService.PARALLELED_DOWNLOAD_MAX)].map(() => {
+        this._startADownload();
+      });
+    }
     // clean very old done files
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);

@@ -1,4 +1,4 @@
-<seed-me-home-rtorrent-status></seed-me-home-rtorrent-status>
+<seed-me-home-rtorrent-status *ngIf="environment.hasTorrent"></seed-me-home-rtorrent-status>
 <div class="content">
   <seed-me-home-direct-download *ngIf="environment.hasDirectDownload"></seed-me-home-direct-download>
   <seed-me-home-rtorrent-torrents *ngIf="environment.hasTorrent"></seed-me-home-rtorrent-torrents>

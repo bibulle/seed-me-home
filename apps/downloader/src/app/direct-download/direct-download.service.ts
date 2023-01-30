@@ -15,10 +15,15 @@ export class DirectDownloadService {
   private static downloadCurrentList: string[] = [];
   private static readonly PARALLELED_DOWNLOAD_MAX = 4;
 
+  private ftpEnabled = false;
+
   private uptoboxToken: string;
   private pathDownload: string;
 
   constructor(private _configService: ConfigService, private progressionService: ProgressionService) {
+    if (this._configService.get('DIRECT_DOWNLOAD_MODE')) {
+      this.ftpEnabled = true;
+    }
     this.progressionService.init(this._configService.get('PATH_PROGRESS'), this._configService.get('SEEDBOX_FTP_PATH'), this._configService.get('PATH_DOWNLOAD'));
   }
 
@@ -35,64 +40,65 @@ export class DirectDownloadService {
     // this.logger.debug(`DirectDownloadService interval ${DirectDownloadService.downloadCurrentList.length} ${DirectDownloadService.downloadWaitingList.length}`);
     let shouldDownload: Progression[] = [];
 
-    // read all files
     this._initialize();
 
-    const files = this.progressionService.getAll();
-    files.forEach((file) => {
-      const progress = this.progressionService.getProgressionFromPath(file);
-      if (!progress) {
-        this.logger.warn('Cannot read progression for file : ' + file);
-      } else if (progress.type === ProgressionType.DIRECT) {
-        if (progress.shouldDownload && progress.progress !== 100) {
-          // test if in currentDownload
-          if (!DirectDownloadService.downloadCurrentList.includes(progress.url)) {
-            shouldDownload.push(progress);
+    if (this.ftpEnabled) {
+      // read all files
+      const files = this.progressionService.getAll();
+      files.forEach((file) => {
+        const progress = this.progressionService.getProgressionFromPath(file);
+        if (!progress) {
+          this.logger.warn('Cannot read progression for file : ' + file);
+        } else if (progress.type === ProgressionType.DIRECT) {
+          if (progress.shouldDownload && progress.progress !== 100) {
+            // test if in currentDownload
+            if (!DirectDownloadService.downloadCurrentList.includes(progress.url)) {
+              shouldDownload.push(progress);
+            }
           }
         }
-      }
-    });
+      });
 
-    // sort by progress (already started first) and then by path
-    shouldDownload.sort((a, b) => {
-      const ret = b.progress - a.progress;
-      if (ret !== 0) {
-        return ret;
-      } else {
-        const nameA = a.fullPath ? a.fullPath : a.url;
-        const nameB = b.fullPath ? b.fullPath : b.url;
-        return nameA.localeCompare(nameB);
-      }
-    });
+      // sort by progress (already started first) and then by path
+      shouldDownload.sort((a, b) => {
+        const ret = b.progress - a.progress;
+        if (ret !== 0) {
+          return ret;
+        } else {
+          const nameA = a.fullPath ? a.fullPath : a.url;
+          const nameB = b.fullPath ? b.fullPath : b.url;
+          return nameA.localeCompare(nameB);
+        }
+      });
 
-    shouldDownload = await Promise.all(
-      shouldDownload.map(async (p) => {
-        const fileCode = new URL(p.url).pathname.slice(1);
+      shouldDownload = await Promise.all(
+        shouldDownload.map(async (p) => {
+          const fileCode = new URL(p.url).pathname.slice(1);
 
-        await UptoboxApi.getFilesInfo(fileCode).then((info) => {
-          if (!info[0].fileName) {
-            this.progressionService.switchShouldDownload(p.type, p.url, p.size, false);
-          } else if (p.size !== info[0].fileSize || p.name !== info[0].fileName) {
-            this.progressionService.setProgression(p.type, p.url, p.value, info[0].fileSize, p.downloadStarted, info[0].fileName);
-          }
-        });
+          await UptoboxApi.getFilesInfo(fileCode).then((info) => {
+            if (!info[0].fileName) {
+              this.progressionService.switchShouldDownload(p.type, p.url, p.size, false);
+            } else if (p.size !== info[0].fileSize || p.name !== info[0].fileName) {
+              this.progressionService.setProgression(p.type, p.url, p.value, info[0].fileSize, p.downloadStarted, info[0].fileName);
+            }
+          });
 
-        this._updateprogrssionFromFile(p);
+          this._updateprogrssionFromFile(p);
 
-        return this.progressionService.getProgressionFromUrl(new URL(p.url));
-      })
-    );
-    DirectDownloadService.downloadWaitingList = shouldDownload;
+          return this.progressionService.getProgressionFromUrl(new URL(p.url));
+        })
+      );
+      DirectDownloadService.downloadWaitingList = shouldDownload;
 
-    [...Array(DirectDownloadService.PARALLELED_DOWNLOAD_MAX)].map(() => {
-      this._startADownload();
-    });
+      [...Array(DirectDownloadService.PARALLELED_DOWNLOAD_MAX)].map(() => {
+        this._startADownload();
+      });
 
-    // update downloading files
-    DirectDownloadService.downloadCurrentList.forEach((u) => {
-      this._updateprogrssionFromFile(this.progressionService.getProgressionFromPath(u));
-    });
-
+      // update downloading files
+      DirectDownloadService.downloadCurrentList.forEach((u) => {
+        this._updateprogrssionFromFile(this.progressionService.getProgressionFromPath(u));
+      });
+    }
     // clean very old done files
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
