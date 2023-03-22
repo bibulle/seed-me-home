@@ -129,7 +129,7 @@ export class DirectDownloadService {
       this._downloadFile(progression)
         .then(() => {
           this._updateprogrssionFromFile(progression);
-          // this.logger.debug('_downloadFile then : ' + progression.url);
+          this.logger.debug('_downloadFile then : ' + progression.url);
           for (let i = 0; i < DirectDownloadService.downloadCurrentList.length; i++) {
             if (DirectDownloadService.downloadCurrentList[i] === progression.url) {
               DirectDownloadService.downloadCurrentList.splice(i, 1);
@@ -137,7 +137,7 @@ export class DirectDownloadService {
           }
         })
         .catch((reason) => {
-          // this.logger.debug('_downloadFile catch : ' + progression.url);
+          this.logger.debug('_downloadFile catch : ' + progression.url);
           this.logger.error(reason);
 
           for (let i = 0; i < DirectDownloadService.downloadCurrentList.length; i++) {
