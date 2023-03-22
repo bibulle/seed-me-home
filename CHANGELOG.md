@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.4](https://github.com/bibulle/seed-me-home/compare/v1.4.3...v1.4.4) (2023-03-22)
+
+
+### Bug Fixes
+
+* add loger level ([4b709b7](https://github.com/bibulle/seed-me-home/commit/4b709b7dea5ae68348dfd8107ac3c6361c09273e))
+
 ### [1.4.3](https://github.com/bibulle/seed-me-home/compare/v1.4.2...v1.4.3) (2023-01-30)
 
 
