@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.5](https://github.com/bibulle/seed-me-home/compare/v1.4.4...v1.4.5) (2023-03-22)
+
+
+### Bug Fixes
+
+* update dependencies ([01ac4c9](https://github.com/bibulle/seed-me-home/commit/01ac4c96d3ac279aa720d41b13618b524a31dc9a))
+* update dependencies (angular.json) ([c461ded](https://github.com/bibulle/seed-me-home/commit/c461dedd3dac67244f84c761bd4fc105d44a26bf))
+
 ### [1.4.4](https://github.com/bibulle/seed-me-home/compare/v1.4.3...v1.4.4) (2023-03-22)
 
 
